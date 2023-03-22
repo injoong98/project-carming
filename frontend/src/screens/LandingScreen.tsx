@@ -1,20 +1,32 @@
-import {
-  ImageBackground,
-  StyleSheet,
-  View,
-  ViewStyle,
-  Alert,
-} from 'react-native';
+import {ImageBackground, View} from 'react-native';
 import styled from 'styled-components/native';
-import {Button, Text} from 'react-native-paper';
 import CustomButton from '../components/CustomButton';
+import {NativeStackNavigationProp} from '@react-navigation/native-stack';
 
-const LandingScreen = () => {
+type LandingStackParamList = {
+  Landing: undefined;
+  Login: undefined;
+  Signup: undefined;
+};
+
+type LandingScreenProps = {
+  navigation: NativeStackNavigationProp<LandingStackParamList, 'Landing'>;
+};
+
+const LandingScreen = ({navigation}: LandingScreenProps) => {
   return (
-    <Container source={require('../assets/images/launch_screen_large.png')}>
+    <Container source={require('../assets/images/landing_screen_large.png')}>
       <UpperView>
         <Title> 새로운 여정 경험을 선사하는 </Title>
-        <Title> 자율주행 서비스, 카밍 </Title>
+        <View
+          style={{
+            display: 'flex',
+            flexDirection: 'row',
+            alignItems: 'flex-end',
+          }}>
+          <Title> 자율주행 서비스,</Title>
+          <Title style={{fontSize: 40}}> 카밍 </Title>
+        </View>
       </UpperView>
       <LowerView>
         <BtnView>
@@ -28,7 +40,7 @@ const LandingScreen = () => {
               textShadowOffset: {width: 2, height: 2},
               textShadowRadius: 10,
             }}
-            onPress={() => Alert.alert('로그인')}
+            onPress={() => navigation.navigate('Login')}
           />
           <CustomButton
             text="회원가입"
@@ -40,7 +52,7 @@ const LandingScreen = () => {
               textShadowOffset: {width: 2, height: 2},
               textShadowRadius: 10,
             }}
-            onPress={() => Alert.alert('회원가입')}
+            onPress={() => navigation.navigate('Signup')}
           />
         </BtnView>
       </LowerView>
