@@ -1,0 +1,25 @@
+{
+  "migIndex": 1,
+  "data": [
+    {
+      "path": "src/assets/fonts/SeoulNamsanB.ttf",
+      "sha1": "1ea8540d35c049a95950c0ce369bbbcb108c0653"
+    },
+    {
+      "path": "src/assets/fonts/SeoulNamsanEB.ttf",
+      "sha1": "773164e03b2febea19b3395d97512707f134520f"
+    },
+    {
+      "path": "src/assets/fonts/SeoulNamsanL.ttf",
+      "sha1": "10a42347db38fb9aae4352a6908b57fcd475773c"
+    },
+    {
+      "path": "src/assets/fonts/SeoulNamsanM.ttf",
+      "sha1": "c2285a5ff5c9cb218904e2c93cdd6b583accb2a6"
+    },
+    {
+      "path": "src/assets/fonts/SeoulNamsanvert.ttf",
+      "sha1": "61c037fa810c81815674b16f5b18544e9d95a2ef"
+    }
+  ]
+}

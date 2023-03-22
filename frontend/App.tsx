@@ -6,7 +6,9 @@
  */
 
 import {NavigationContainer} from '@react-navigation/native';
+import {useState} from 'react';
 import L1_RootStackNavigator from './src/navigations/L1_RootStackNavigator';
+import LaunchScreen from './src/screens/LaunchScreen';
 import {MD3LightTheme, Provider as PaperProvider} from 'react-native-paper';
 
 const theme = {
@@ -25,11 +27,21 @@ const theme = {
 };
 
 function App(): JSX.Element {
+  const [isLoaded, setIsLoaded] = useState(false);
+
+  setTimeout(() => {
+    setIsLoaded(true);
+  }, 3000);
+
   return (
     <PaperProvider theme={theme}>
-      <NavigationContainer>
-        <L1_RootStackNavigator />
-      </NavigationContainer>
+      {isLoaded ? (
+        <NavigationContainer>
+          <L1_RootStackNavigator />
+        </NavigationContainer>
+      ) : (
+        <LaunchScreen />
+      )}
     </PaperProvider>
   );
 }
