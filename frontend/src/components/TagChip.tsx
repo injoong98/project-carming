@@ -12,7 +12,7 @@ type Props = {
   onPress?: () => void;
 };
 
-const CommonChip: React.FC<Props> = ({
+const TagChip: React.FC<Props> = ({
   style,
   text,
   selected,
@@ -56,4 +56,4 @@ const StyledText = styled(Text)`
   font-size: 12px;
 `;
 
-export default CommonChip;
+export default TagChip;

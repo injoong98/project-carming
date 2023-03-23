@@ -1,27 +1,30 @@
 import {SafeAreaView} from 'react-native-safe-area-context';
 import LinearGradient from 'react-native-linear-gradient';
 import styled from 'styled-components/native';
-import CommonChip from '../components/CommonChip';
-import {Avatar, Button, IconButton, useTheme} from 'react-native-paper';
+import TagChip from '../components/TagChip';
+import {Avatar, IconButton, Tooltip, useTheme} from 'react-native-paper';
 import {SegmentedButtons} from 'react-native-paper';
 import {useEffect, useRef, useState} from 'react';
 import Carousel from 'react-native-snap-carousel-v4';
 import RecommendCard from '../components/RecommendCard';
-import {Alert, Dimensions, View} from 'react-native';
+import {Dimensions, StyleSheet, View} from 'react-native';
 import {Place, Tag} from '../types';
+import CustomButton from '../components/CustomButton';
+import {
+  ALERT_TYPE,
+  AlertNotificationRoot,
+  Toast,
+} from 'react-native-alert-notification';
+import {Category} from '../types';
+import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+import SelectDropdown from 'react-native-select-dropdown';
 
 const {width: screenWidth} = Dimensions.get('window');
 
-const PlacesRecommendScreen = () => {
+const RecommendScreen = () => {
   const theme = useTheme();
-  const carouselRef = useRef<any>(null);
 
-  const [tagList, setTagList] = useState<Tag[]>([]);
-  const [placeList, setPlaceList] = useState<Place[]>([]);
-  const [placeCart, setPlaceCart] = useState<Place[]>([]);
-  const [recommendType, setRecommendType] = useState<string>('');
-  const [checkedTagIdList, setCheckedTagIdList] = useState<number[]>([]);
-
+  const [recommendType, setRecommendType] = useState<string>('0');
   const recommendTypeChangeButtons = [
     {
       value: '0',
@@ -49,51 +52,103 @@ const PlacesRecommendScreen = () => {
     },
   ];
 
-  const tags: Tag[] = [
-    {
-      id: 0,
-      text: '맛있는',
-    },
-    {
-      id: 1,
-      text: '청결한',
-    },
-    {
-      id: 2,
-      text: '유명한',
-    },
-  ];
+  return (
+    <AlertNotificationRoot theme={'light'}>
+      <GradientBackground colors={['#70558e7a', '#df94c283', '#ffbdc1b0']}>
+        <SafeAreaView style={{flex: 1}}>
+          <StyledView style={{justifyContent: 'space-between'}}>
+            <SegmentedButtons
+              style={{width: 200}}
+              value={recommendType}
+              onValueChange={setRecommendType}
+              buttons={recommendTypeChangeButtons}
+            />
+            <IconButton
+              icon="home"
+              size={30}
+              onPress={() => {
+                console.log('hello');
+              }}
+            />
+          </StyledView>
+          {recommendType === '0' ? (
+            <PlacesRecommendScreen />
+          ) : (
+            <CoursesRecommendScreen />
+          )}
+        </SafeAreaView>
+      </GradientBackground>
+    </AlertNotificationRoot>
+  );
+};
 
-  const places: Place[] = [
-    {
-      id: 0,
-      color: 'yellow',
-      title: 'title1',
-      content: 'content1',
-      imageUrl: 'https://i.imgur.com/UYiroysl.jpg',
-    },
-    {
-      id: 1,
-      color: 'red',
-      title: 'title2',
-      content: 'content2',
-      imageUrl: 'https://i.imgur.com/UPrs1EWl.jpg',
-    },
-    {
-      id: 2,
-      color: 'blue',
-      title: 'title3',
-      content: 'content3',
-      imageUrl: 'https://i.imgur.com/MABUbpDl.jpg',
-    },
-    {
-      id: 3,
-      color: 'green',
-      title: 'title4',
-      content: 'content4',
-      imageUrl: 'https://i.imgur.com/KZsmUi2l.jpg',
-    },
-  ];
+const tags: Tag[] = [
+  {
+    id: 0,
+    text: '맛있는',
+  },
+  {
+    id: 1,
+    text: '청결한',
+  },
+  {
+    id: 2,
+    text: '유명한',
+  },
+];
+
+const places: Place[] = [
+  {
+    id: 0,
+    color: 'yellow',
+    title: '허니치즈 순대국',
+    content: 'content1',
+    imageUrl: 'https://i.imgur.com/UYiroysl.jpg',
+    ratingSum: 17,
+    ratingCnt: 4,
+    location: '노원구 중계 14동',
+  },
+  {
+    id: 1,
+    color: 'red',
+    title: '허니치즈 순대국',
+    content: 'content2',
+    imageUrl: 'https://i.imgur.com/UPrs1EWl.jpg',
+    ratingSum: 17,
+    ratingCnt: 4,
+    location: '노원구 중계 14동',
+  },
+  {
+    id: 2,
+    color: 'blue',
+    title: '허니치즈 순대국',
+    content: 'content3',
+    imageUrl: 'https://i.imgur.com/MABUbpDl.jpg',
+    ratingSum: 17,
+    ratingCnt: 4,
+    location: '노원구 중계 14동',
+  },
+  {
+    id: 3,
+    color: 'green',
+    title: '허니치즈 순대국',
+    content: 'content4',
+    imageUrl: 'https://i.imgur.com/KZsmUi2l.jpg',
+    ratingSum: 17,
+    ratingCnt: 4,
+    location: '노원구 중계 14동',
+  },
+];
+
+const PlacesRecommendScreen = () => {
+  const theme = useTheme();
+  const carouselRef = useRef<any>(null);
+
+  const [tagList, setTagList] = useState<Tag[]>([]);
+  const [placeList, setPlaceList] = useState<Place[]>([]);
+  const [placeCart, setPlaceCart] = useState<Place[]>([]);
+  const [category, setCategory] = useState<Category>([]);
+  const [checkedTagIdList, setCheckedTagIdList] = useState<number[]>([]);
 
   useEffect(() => {
     setTagList(tags);
@@ -116,7 +171,15 @@ const PlacesRecommendScreen = () => {
 
   const addPlaceCartItemById = (placeId: number) => {
     if (placeCart.filter(place => place.id == placeId).length > 0) {
-      Alert.alert('이미 담은 장소입니다.');
+      console.log('되나?');
+      Toast.show({
+        type: ALERT_TYPE.WARNING,
+        textBody: '이미 코스에 담겨있습니다.',
+        textBodyStyle: {
+          fontSize: 14,
+          paddingTop: 3,
+        },
+      });
     } else {
       const place = placeList.filter(place => place.id === placeId)[0];
       setPlaceCart([...placeCart, place]);
@@ -131,79 +194,249 @@ const PlacesRecommendScreen = () => {
   };
 
   return (
-    <GradientBackground colors={['#70558e7a', '#df94c283', '#ffbdc1b0']}>
-      <SafeAreaView style={{flex: 1}}>
-        <StyledView style={{justifyContent: 'space-between'}}>
-          <SegmentedButtons
-            style={{width: 200}}
-            value={recommendType}
-            onValueChange={setRecommendType}
-            buttons={recommendTypeChangeButtons}
-          />
-          <IconButton
-            icon="home"
-            size={30}
-            onPress={() => {
-              console.log('hello');
+    <>
+      <StyledView style={{marginTop: 10, marginBottom: 20}}>
+        <View style={{maxWidth: 150}}>
+          <SelectDropdown
+            data={Object.keys(Category)}
+            defaultValueByIndex={0}
+            onSelect={(selectedItem, index) => {
+              setCategory(Object.values(Category)[index]);
             }}
+            buttonStyle={styles.dropdown2BtnStyle}
+            buttonTextStyle={styles.dropdown2BtnTxtStyle}
+            renderDropdownIcon={isOpened => {
+              return (
+                <Icon
+                  name={isOpened ? 'chevron-up' : 'chevron-down'}
+                  color={'#FFF'}
+                  size={18}
+                />
+              );
+            }}
+            dropdownIconPosition={'right'}
+            dropdownStyle={styles.dropdown2DropdownStyle}
+            rowStyle={styles.dropdown2RowStyle}
+            rowTextStyle={styles.dropdown2RowTxtStyle}
           />
-        </StyledView>
-        <StyledView style={{marginTop: 10, marginBottom: 20}}>
-          {tagList.map(place => {
-            return (
-              <CommonChip
-                key={place.id}
-                style={{marginLeft: 5}}
-                text={place.text}
-                selected={checkedTagIdList.includes(place.id)}
-                selectedBackgroundColor={theme.colors.secondary}
-                onPress={() => tagPressed(place.id)}
-              />
-            );
-          })}
-        </StyledView>
-        <Carousel
-          style={{flex: 1}}
-          layout={'default'}
-          vertical={false}
-          layoutCardOffset={9}
-          ref={carouselRef}
-          data={placeList}
-          renderItem={RecommendCard}
-          sliderWidth={screenWidth}
-          itemWidth={screenWidth - 80}
-          inactiveSlideShift={0}
-          useScrollView={true}
+        </View>
+        {tagList.map(place => {
+          return (
+            <TagChip
+              key={place.id}
+              style={{marginLeft: 5}}
+              text={place.text}
+              selected={checkedTagIdList.includes(place.id)}
+              selectedBackgroundColor={theme.colors.secondary}
+              onPress={() => tagPressed(place.id)}
+            />
+          );
+        })}
+      </StyledView>
+
+      <Carousel
+        style={{flex: 1}}
+        layout={'default'}
+        vertical={false}
+        layoutCardOffset={9}
+        ref={carouselRef}
+        data={placeList}
+        renderItem={RecommendCard}
+        sliderWidth={screenWidth}
+        itemWidth={screenWidth - 80}
+        inactiveSlideShift={0}
+        useScrollView={true}
+      />
+      <StyledView style={{justifyContent: 'center'}}>
+        <IconButton
+          icon="arrow-down-drop-circle"
+          iconColor={theme.colors.background}
+          size={35}
+          style={{marginVertical: 20}}
+          onPress={() => placeAddBtnPressed()}
         />
-        <StyledView style={{justifyContent: 'center'}}>
-          <IconButton
-            icon="arrow-down-drop-circle"
-            iconColor={theme.colors.background}
-            size={40}
-            onPress={() => placeAddBtnPressed()}
-          />
-        </StyledView>
-        <StyledView style={{height: 70}}>
-          {placeCart.map(place => {
-            return (
-              <View key={place.id} style={{marginRight: 5}}>
-                <Avatar.Image size={60} source={{uri: place.imageUrl}} />
+      </StyledView>
+      <StyledView style={{height: 70}}>
+        {placeCart.map(place => {
+          return (
+            <Tooltip key={place.id} title={place.title} enterTouchDelay={1}>
+              <View style={{marginRight: 5}}>
+                <Avatar.Image size={50} source={{uri: place.imageUrl}} />
                 <IconButton
-                  style={{position: 'absolute', right: -15, top: -15}}
+                  style={{position: 'absolute', right: -17, top: -17}}
                   icon="close-circle"
                   iconColor={theme.colors.background}
-                  size={20}
+                  size={15}
                   onPress={() => cancelPlaceCartItemById(place.id)}
                 />
               </View>
-            );
-          })}
-        </StyledView>
-        <StyledView style={{justifyContent: 'center'}}>
-          <Button>hello</Button>
-        </StyledView>
-      </SafeAreaView>
-    </GradientBackground>
+            </Tooltip>
+          );
+        })}
+      </StyledView>
+      <StyledView style={{justifyContent: 'center'}}>
+        <CustomButton
+          text={'선택 완료'}
+          buttonStyle={{
+            width: 200,
+            padding: 14,
+            borderRadius: 30,
+            backgroundColor: theme.colors.surfaceVariant,
+          }}
+          textStyle={{fontWeight: 900, fontSize: 16, textAlign: 'center'}}
+        />
+      </StyledView>
+    </>
+  );
+};
+
+const CoursesRecommendScreen = () => {
+  const theme = useTheme();
+  const carouselRef = useRef<any>(null);
+
+  const [tagList, setTagList] = useState<Tag[]>([]);
+  const [placeList, setPlaceList] = useState<Place[]>([]);
+  const [placeCart, setPlaceCart] = useState<Place[]>([]);
+  const [category, setCategory] = useState<Category>([]);
+  const [checkedTagIdList, setCheckedTagIdList] = useState<number[]>([]);
+
+  useEffect(() => {
+    setTagList(tags);
+    setPlaceList(places);
+    setPlaceCart(places);
+  }, []);
+
+  const tagPressed = (tagId: number) => {
+    checkedTagIdList.includes(tagId)
+      ? checkedTagIdList.splice(checkedTagIdList.indexOf(tagId), 1)
+      : checkedTagIdList.push(tagId);
+    setCheckedTagIdList([...checkedTagIdList]);
+  };
+
+  const placeAddBtnPressed = () => {
+    const place: Place =
+      carouselRef.current.props.data[carouselRef.current._activeItem];
+    addPlaceCartItemById(place.id);
+  };
+
+  const addPlaceCartItemById = (placeId: number) => {
+    if (placeCart.filter(place => place.id == placeId).length > 0) {
+      console.log('되나?');
+      Toast.show({
+        type: ALERT_TYPE.WARNING,
+        textBody: '이미 코스에 담겨있습니다.',
+        textBodyStyle: {
+          fontSize: 14,
+          paddingTop: 3,
+        },
+      });
+    } else {
+      const place = placeList.filter(place => place.id === placeId)[0];
+      setPlaceCart([...placeCart, place]);
+    }
+  };
+
+  const cancelPlaceCartItemById = (placeId: number) => {
+    const idx = placeCart.map(place => place.id).indexOf(placeId);
+    const cart = [...placeCart];
+    cart.splice(idx, 1);
+    setPlaceCart([...cart]);
+  };
+
+  return (
+    <>
+      <StyledView style={{marginTop: 10, marginBottom: 20}}>
+        <View style={{maxWidth: 150}}>
+          <SelectDropdown
+            data={Object.keys(Category)}
+            defaultValueByIndex={0}
+            onSelect={(selectedItem, index) => {
+              setCategory(Object.values(Category)[index]);
+            }}
+            buttonStyle={styles.dropdown2BtnStyle}
+            buttonTextStyle={styles.dropdown2BtnTxtStyle}
+            renderDropdownIcon={isOpened => {
+              return (
+                <Icon
+                  name={isOpened ? 'chevron-up' : 'chevron-down'}
+                  color={'#FFF'}
+                  size={18}
+                />
+              );
+            }}
+            dropdownIconPosition={'right'}
+            dropdownStyle={styles.dropdown2DropdownStyle}
+            rowStyle={styles.dropdown2RowStyle}
+            rowTextStyle={styles.dropdown2RowTxtStyle}
+          />
+        </View>
+        {tagList.map(place => {
+          return (
+            <TagChip
+              key={place.id}
+              style={{marginLeft: 5}}
+              text={place.text}
+              selected={checkedTagIdList.includes(place.id)}
+              selectedBackgroundColor={theme.colors.secondary}
+              onPress={() => tagPressed(place.id)}
+            />
+          );
+        })}
+      </StyledView>
+
+      <Carousel
+        style={{flex: 1}}
+        layout={'default'}
+        vertical={false}
+        layoutCardOffset={9}
+        ref={carouselRef}
+        data={placeList}
+        renderItem={RecommendCard}
+        sliderWidth={screenWidth}
+        itemWidth={screenWidth - 80}
+        inactiveSlideShift={0}
+        useScrollView={true}
+      />
+      <StyledView style={{justifyContent: 'center'}}>
+        <IconButton
+          icon="arrow-down-drop-circle"
+          iconColor={theme.colors.background}
+          size={35}
+          style={{marginVertical: 20}}
+          onPress={() => placeAddBtnPressed()}
+        />
+      </StyledView>
+      <StyledView style={{height: 70}}>
+        {placeCart.map(place => {
+          return (
+            <Tooltip key={place.id} title={place.title} enterTouchDelay={1}>
+              <View style={{marginRight: 5}}>
+                <Avatar.Image size={50} source={{uri: place.imageUrl}} />
+                <IconButton
+                  style={{position: 'absolute', right: -17, top: -17}}
+                  icon="close-circle"
+                  iconColor={theme.colors.background}
+                  size={15}
+                  onPress={() => cancelPlaceCartItemById(place.id)}
+                />
+              </View>
+            </Tooltip>
+          );
+        })}
+      </StyledView>
+      <StyledView style={{justifyContent: 'center'}}>
+        <CustomButton
+          text={'선택 완료'}
+          buttonStyle={{
+            width: 200,
+            padding: 14,
+            borderRadius: 30,
+            backgroundColor: theme.colors.surfaceVariant,
+          }}
+          textStyle={{fontWeight: 900, fontSize: 16, textAlign: 'center'}}
+        />
+      </StyledView>
+    </>
   );
 };
 
@@ -220,4 +453,30 @@ const GradientBackground = styled(LinearGradient)`
   padding-bottom: 20px;
 `;
 
-export default PlacesRecommendScreen;
+const styles = StyleSheet.create({
+  dropdown2BtnStyle: {
+    width: '80%',
+    height: 40,
+    backgroundColor: '#444',
+    borderRadius: 8,
+  },
+  dropdown2BtnTxtStyle: {
+    color: '#FFF',
+    textAlign: 'center',
+    fontWeight: 'bold',
+    fontSize: 14,
+  },
+  dropdown2DropdownStyle: {
+    backgroundColor: '#444',
+    borderBottomLeftRadius: 12,
+    borderBottomRightRadius: 12,
+  },
+  dropdown2RowStyle: {backgroundColor: '#444', borderBottomColor: '#C5C5C5'},
+  dropdown2RowTxtStyle: {
+    color: '#FFF',
+    textAlign: 'center',
+    fontWeight: 'bold',
+    fontSize: 14,
+  },
+});
+export default RecommendScreen;
