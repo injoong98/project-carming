@@ -1,86 +1,18 @@
-import {SafeAreaView} from 'react-native-safe-area-context';
-import LinearGradient from 'react-native-linear-gradient';
 import styled from 'styled-components/native';
 import TagChip from '../components/TagChip';
 import {Avatar, IconButton, Tooltip, useTheme} from 'react-native-paper';
-import {SegmentedButtons} from 'react-native-paper';
 import {useEffect, useRef, useState} from 'react';
 import Carousel from 'react-native-snap-carousel-v4';
-import RecommendCard from '../components/RecommendCard';
+import PlaceRecommendCard from '../components/PlaceRecommendCard';
 import {Dimensions, StyleSheet, View} from 'react-native';
 import {Place, Tag} from '../types';
 import CustomButton from '../components/CustomButton';
-import {
-  ALERT_TYPE,
-  AlertNotificationRoot,
-  Toast,
-} from 'react-native-alert-notification';
+import {ALERT_TYPE, Toast} from 'react-native-alert-notification';
 import {Category} from '../types';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import SelectDropdown from 'react-native-select-dropdown';
 
 const {width: screenWidth} = Dimensions.get('window');
-
-const RecommendScreen = () => {
-  const theme = useTheme();
-
-  const [recommendType, setRecommendType] = useState<string>('0');
-  const recommendTypeChangeButtons = [
-    {
-      value: '0',
-      label: '장소',
-      icon: 'map-marker',
-      checkedColor: 'white',
-      uncheckedColor: 'white',
-      style: {
-        borderRadius: 10,
-        backgroundColor:
-          recommendType === '0' ? theme.colors.primary : theme.colors.shadow,
-      },
-    },
-    {
-      value: '1',
-      label: '코스',
-      icon: 'routes',
-      checkedColor: 'white',
-      uncheckedColor: 'white',
-      style: {
-        borderRadius: 10,
-        backgroundColor:
-          recommendType === '1' ? theme.colors.primary : theme.colors.shadow,
-      },
-    },
-  ];
-
-  return (
-    <AlertNotificationRoot theme={'light'}>
-      <GradientBackground colors={['#70558e7a', '#df94c283', '#ffbdc1b0']}>
-        <SafeAreaView style={{flex: 1}}>
-          <StyledView style={{justifyContent: 'space-between'}}>
-            <SegmentedButtons
-              style={{width: 200}}
-              value={recommendType}
-              onValueChange={setRecommendType}
-              buttons={recommendTypeChangeButtons}
-            />
-            <IconButton
-              icon="home"
-              size={30}
-              onPress={() => {
-                console.log('hello');
-              }}
-            />
-          </StyledView>
-          {recommendType === '0' ? (
-            <PlacesRecommendScreen />
-          ) : (
-            <CoursesRecommendScreen />
-          )}
-        </SafeAreaView>
-      </GradientBackground>
-    </AlertNotificationRoot>
-  );
-};
 
 const tags: Tag[] = [
   {
@@ -196,7 +128,7 @@ const PlacesRecommendScreen = () => {
   return (
     <>
       <StyledView style={{marginTop: 10, marginBottom: 20}}>
-        <View style={{maxWidth: 150}}>
+        <View style={{maxWidth: 120}}>
           <SelectDropdown
             data={Object.keys(Category)}
             defaultValueByIndex={0}
@@ -241,157 +173,7 @@ const PlacesRecommendScreen = () => {
         layoutCardOffset={9}
         ref={carouselRef}
         data={placeList}
-        renderItem={RecommendCard}
-        sliderWidth={screenWidth}
-        itemWidth={screenWidth - 80}
-        inactiveSlideShift={0}
-        useScrollView={true}
-      />
-      <StyledView style={{justifyContent: 'center'}}>
-        <IconButton
-          icon="arrow-down-drop-circle"
-          iconColor={theme.colors.background}
-          size={35}
-          style={{marginVertical: 20}}
-          onPress={() => placeAddBtnPressed()}
-        />
-      </StyledView>
-      <StyledView style={{height: 70}}>
-        {placeCart.map(place => {
-          return (
-            <Tooltip key={place.id} title={place.title} enterTouchDelay={1}>
-              <View style={{marginRight: 5}}>
-                <Avatar.Image size={50} source={{uri: place.imageUrl}} />
-                <IconButton
-                  style={{position: 'absolute', right: -17, top: -17}}
-                  icon="close-circle"
-                  iconColor={theme.colors.background}
-                  size={15}
-                  onPress={() => cancelPlaceCartItemById(place.id)}
-                />
-              </View>
-            </Tooltip>
-          );
-        })}
-      </StyledView>
-      <StyledView style={{justifyContent: 'center'}}>
-        <CustomButton
-          text={'선택 완료'}
-          buttonStyle={{
-            width: 200,
-            padding: 14,
-            borderRadius: 30,
-            backgroundColor: theme.colors.surfaceVariant,
-          }}
-          textStyle={{fontWeight: 900, fontSize: 16, textAlign: 'center'}}
-        />
-      </StyledView>
-    </>
-  );
-};
-
-const CoursesRecommendScreen = () => {
-  const theme = useTheme();
-  const carouselRef = useRef<any>(null);
-
-  const [tagList, setTagList] = useState<Tag[]>([]);
-  const [placeList, setPlaceList] = useState<Place[]>([]);
-  const [placeCart, setPlaceCart] = useState<Place[]>([]);
-  const [category, setCategory] = useState<Category>([]);
-  const [checkedTagIdList, setCheckedTagIdList] = useState<number[]>([]);
-
-  useEffect(() => {
-    setTagList(tags);
-    setPlaceList(places);
-    setPlaceCart(places);
-  }, []);
-
-  const tagPressed = (tagId: number) => {
-    checkedTagIdList.includes(tagId)
-      ? checkedTagIdList.splice(checkedTagIdList.indexOf(tagId), 1)
-      : checkedTagIdList.push(tagId);
-    setCheckedTagIdList([...checkedTagIdList]);
-  };
-
-  const placeAddBtnPressed = () => {
-    const place: Place =
-      carouselRef.current.props.data[carouselRef.current._activeItem];
-    addPlaceCartItemById(place.id);
-  };
-
-  const addPlaceCartItemById = (placeId: number) => {
-    if (placeCart.filter(place => place.id == placeId).length > 0) {
-      console.log('되나?');
-      Toast.show({
-        type: ALERT_TYPE.WARNING,
-        textBody: '이미 코스에 담겨있습니다.',
-        textBodyStyle: {
-          fontSize: 14,
-          paddingTop: 3,
-        },
-      });
-    } else {
-      const place = placeList.filter(place => place.id === placeId)[0];
-      setPlaceCart([...placeCart, place]);
-    }
-  };
-
-  const cancelPlaceCartItemById = (placeId: number) => {
-    const idx = placeCart.map(place => place.id).indexOf(placeId);
-    const cart = [...placeCart];
-    cart.splice(idx, 1);
-    setPlaceCart([...cart]);
-  };
-
-  return (
-    <>
-      <StyledView style={{marginTop: 10, marginBottom: 20}}>
-        <View style={{maxWidth: 150}}>
-          <SelectDropdown
-            data={Object.keys(Category)}
-            defaultValueByIndex={0}
-            onSelect={(selectedItem, index) => {
-              setCategory(Object.values(Category)[index]);
-            }}
-            buttonStyle={styles.dropdown2BtnStyle}
-            buttonTextStyle={styles.dropdown2BtnTxtStyle}
-            renderDropdownIcon={isOpened => {
-              return (
-                <Icon
-                  name={isOpened ? 'chevron-up' : 'chevron-down'}
-                  color={'#FFF'}
-                  size={18}
-                />
-              );
-            }}
-            dropdownIconPosition={'right'}
-            dropdownStyle={styles.dropdown2DropdownStyle}
-            rowStyle={styles.dropdown2RowStyle}
-            rowTextStyle={styles.dropdown2RowTxtStyle}
-          />
-        </View>
-        {tagList.map(place => {
-          return (
-            <TagChip
-              key={place.id}
-              style={{marginLeft: 5}}
-              text={place.text}
-              selected={checkedTagIdList.includes(place.id)}
-              selectedBackgroundColor={theme.colors.secondary}
-              onPress={() => tagPressed(place.id)}
-            />
-          );
-        })}
-      </StyledView>
-
-      <Carousel
-        style={{flex: 1}}
-        layout={'default'}
-        vertical={false}
-        layoutCardOffset={9}
-        ref={carouselRef}
-        data={placeList}
-        renderItem={RecommendCard}
+        renderItem={PlaceRecommendCard}
         sliderWidth={screenWidth}
         itemWidth={screenWidth - 80}
         inactiveSlideShift={0}
@@ -447,16 +229,10 @@ const StyledView = styled(View)`
   padding-right: 20px;
 `;
 
-const GradientBackground = styled(LinearGradient)`
-  flex: 1;
-  padding-top: 20px;
-  padding-bottom: 20px;
-`;
-
 const styles = StyleSheet.create({
   dropdown2BtnStyle: {
-    width: '80%',
-    height: 40,
+    width: '90%',
+    height: 30,
     backgroundColor: '#444',
     borderRadius: 8,
   },
@@ -479,4 +255,5 @@ const styles = StyleSheet.create({
     fontSize: 14,
   },
 });
-export default RecommendScreen;
+
+export default PlacesRecommendScreen;

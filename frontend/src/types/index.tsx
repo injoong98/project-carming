@@ -12,6 +12,8 @@ type Place = {
   imageUrl: string;
   ratingSum: number;
   ratingCnt: number;
+  longitude: number;
+  latitude: number;
 };
 
 enum Category {

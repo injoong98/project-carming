@@ -5,11 +5,15 @@
  * @format
  */
 
-import {NavigationContainer} from '@react-navigation/native';
 import {useState} from 'react';
+import {NavigationContainer} from '@react-navigation/native';
+import {MD3LightTheme, Provider as PaperProvider} from 'react-native-paper';
 import L1_RootStackNavigator from './src/navigations/L1_RootStackNavigator';
 import LaunchScreen from './src/screens/LaunchScreen';
-import {MD3LightTheme, Provider as PaperProvider} from 'react-native-paper';
+
+import {store, persistor} from './src/redux/store';
+import {Provider} from 'react-redux';
+import {PersistGate} from 'redux-persist/integration/react';
 
 const theme = {
   ...MD3LightTheme,
@@ -31,18 +35,22 @@ function App(): JSX.Element {
 
   setTimeout(() => {
     setIsLoaded(true);
-  }, 3000);
+  }, 100);
 
   return (
-    <PaperProvider theme={theme}>
-      {isLoaded ? (
-        <NavigationContainer>
-          <L1_RootStackNavigator />
-        </NavigationContainer>
-      ) : (
-        <LaunchScreen />
-      )}
-    </PaperProvider>
+    <Provider store={store}>
+      <PersistGate persistor={persistor}>
+        <PaperProvider theme={theme}>
+          {isLoaded ? (
+            <NavigationContainer>
+              <L1_RootStackNavigator />
+            </NavigationContainer>
+          ) : (
+            <LaunchScreen />
+          )}
+        </PaperProvider>
+      </PersistGate>
+    </Provider>
   );
 }
 

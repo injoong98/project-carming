@@ -7,7 +7,7 @@
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
-  [GMSServices provideAPIKey:@"_YOUR_API_KEY_"]; // add this line using the api key obtained from Google Console
+  [GMSServices provideAPIKey:@"AIzaSyBtb0O-4QyNab4dHTNExJhGYdnFrHYw_DY"]; // add this line using the api key obtained from Google Console
 
   self.moduleName = @"frontend";
   // You can add your custom initial props in the dictionary below.

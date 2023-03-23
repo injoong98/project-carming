@@ -5,13 +5,16 @@ import {Place} from '../types';
 import RatingStar from './RatingStar';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
-interface RecommendCardProps {
+interface PlaceRecommendCardProps {
   item: Place;
   index: number;
   onPress?: () => void;
 }
 
-const RecommendCard: React.FC<RecommendCardProps> = ({item, index}) => {
+const PlaceRecommendCard: React.FC<PlaceRecommendCardProps> = ({
+  item,
+  index,
+}) => {
   const rating = Math.round((item.ratingSum / item.ratingCnt) * 10) / 10;
   return (
     <CardContainer>
@@ -83,4 +86,4 @@ const TitleContainer = styled(View)`
   align-items: center;
 `;
 
-export default RecommendCard;
+export default PlaceRecommendCard;
