@@ -15,18 +15,18 @@ const PlaceRecommendCard: React.FC<PlaceRecommendCardProps> = ({
   item,
   index,
 }) => {
-  const rating = Math.round((item.ratingSum / item.ratingCnt) * 10) / 10;
+  const rating = Math.round((item.ratingSum / item.ratingCount) * 10) / 10;
   return (
     <CardContainer>
-      <ImageBackGround source={{uri: item.imageUrl}}>
+      <ImageBackGround source={{uri: item.image}}>
         <ContentContainer>
           <LocationText>
             <Icon name="map-marker" />
-            {' ' + item.location}
+            {' ' + item.region}
           </LocationText>
           <TitleContainer>
             <TitleText>
-              #{index + 1} {item.title}
+              #{index + 1} {item.name}
             </TitleText>
             <View style={{flexDirection: 'row'}}>
               <RatingStar
@@ -35,7 +35,7 @@ const PlaceRecommendCard: React.FC<PlaceRecommendCardProps> = ({
                 iconStyle={{margin: -8}}
               />
               <RatingText>
-                {rating} ({item.ratingCnt})
+                {rating} ({item.ratingCount})
               </RatingText>
             </View>
           </TitleContainer>

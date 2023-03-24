@@ -1,92 +1,35 @@
-import styled from 'styled-components/native';
-import TagChip from '../components/TagChip';
-import {Avatar, IconButton, Tooltip, useTheme} from 'react-native-paper';
 import {useEffect, useRef, useState} from 'react';
-import Carousel from 'react-native-snap-carousel-v4';
-import PlaceRecommendCard from '../components/PlaceRecommendCard';
 import {Dimensions, StyleSheet, View} from 'react-native';
-import {Place, Tag} from '../types';
-import CustomButton from '../components/CustomButton';
-import {ALERT_TYPE, Toast} from 'react-native-alert-notification';
-import {Category} from '../types';
+import {useSelector, useDispatch} from 'react-redux';
+import {Avatar, IconButton, Tooltip, useTheme} from 'react-native-paper';
+import Carousel from 'react-native-snap-carousel-v4';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import SelectDropdown from 'react-native-select-dropdown';
+import styled from 'styled-components/native';
+import {Place, Category} from '../types';
+import PlaceRecommendCard from '../components/PlaceRecommendCard';
+import CustomButton from '../components/CustomButton';
+import TagChip from '../components/TagChip';
+import {RootState} from '../redux/store';
+import {
+  addPlaceToPlaceCart,
+  deletePlaceFromPlaceCartById,
+  selectCategory,
+} from '../redux/slices/placeSlice';
 
 const {width: screenWidth} = Dimensions.get('window');
 
-const tags: Tag[] = [
-  {
-    id: 0,
-    text: '맛있는',
-  },
-  {
-    id: 1,
-    text: '청결한',
-  },
-  {
-    id: 2,
-    text: '유명한',
-  },
-];
-
-const places: Place[] = [
-  {
-    id: 0,
-    color: 'yellow',
-    title: '허니치즈 순대국',
-    content: 'content1',
-    imageUrl: 'https://i.imgur.com/UYiroysl.jpg',
-    ratingSum: 17,
-    ratingCnt: 4,
-    location: '노원구 중계 14동',
-  },
-  {
-    id: 1,
-    color: 'red',
-    title: '허니치즈 순대국',
-    content: 'content2',
-    imageUrl: 'https://i.imgur.com/UPrs1EWl.jpg',
-    ratingSum: 17,
-    ratingCnt: 4,
-    location: '노원구 중계 14동',
-  },
-  {
-    id: 2,
-    color: 'blue',
-    title: '허니치즈 순대국',
-    content: 'content3',
-    imageUrl: 'https://i.imgur.com/MABUbpDl.jpg',
-    ratingSum: 17,
-    ratingCnt: 4,
-    location: '노원구 중계 14동',
-  },
-  {
-    id: 3,
-    color: 'green',
-    title: '허니치즈 순대국',
-    content: 'content4',
-    imageUrl: 'https://i.imgur.com/KZsmUi2l.jpg',
-    ratingSum: 17,
-    ratingCnt: 4,
-    location: '노원구 중계 14동',
-  },
-];
-
 const PlacesRecommendScreen = () => {
   const theme = useTheme();
+  const dispatch = useDispatch();
   const carouselRef = useRef<any>(null);
 
-  const [tagList, setTagList] = useState<Tag[]>([]);
-  const [placeList, setPlaceList] = useState<Place[]>([]);
-  const [placeCart, setPlaceCart] = useState<Place[]>([]);
-  const [category, setCategory] = useState<Category>([]);
-  const [checkedTagIdList, setCheckedTagIdList] = useState<number[]>([]);
+  const {placeList, placeCart, category} = useSelector(
+    (state: RootState) => state.place,
+  );
+  const {tagList} = useSelector((state: RootState) => state.tag);
 
-  useEffect(() => {
-    setTagList(tags);
-    setPlaceList(places);
-    setPlaceCart(places);
-  }, []);
+  const [checkedTagIdList, setCheckedTagIdList] = useState<number[]>([]);
 
   const tagPressed = (tagId: number) => {
     checkedTagIdList.includes(tagId)
@@ -98,31 +41,11 @@ const PlacesRecommendScreen = () => {
   const placeAddBtnPressed = () => {
     const place: Place =
       carouselRef.current.props.data[carouselRef.current._activeItem];
-    addPlaceCartItemById(place.id);
-  };
-
-  const addPlaceCartItemById = (placeId: number) => {
-    if (placeCart.filter(place => place.id == placeId).length > 0) {
-      console.log('되나?');
-      Toast.show({
-        type: ALERT_TYPE.WARNING,
-        textBody: '이미 코스에 담겨있습니다.',
-        textBodyStyle: {
-          fontSize: 14,
-          paddingTop: 3,
-        },
-      });
-    } else {
-      const place = placeList.filter(place => place.id === placeId)[0];
-      setPlaceCart([...placeCart, place]);
-    }
+    dispatch(addPlaceToPlaceCart(place));
   };
 
   const cancelPlaceCartItemById = (placeId: number) => {
-    const idx = placeCart.map(place => place.id).indexOf(placeId);
-    const cart = [...placeCart];
-    cart.splice(idx, 1);
-    setPlaceCart([...cart]);
+    dispatch(deletePlaceFromPlaceCartById(placeId));
   };
 
   return (
@@ -133,7 +56,7 @@ const PlacesRecommendScreen = () => {
             data={Object.keys(Category)}
             defaultValueByIndex={0}
             onSelect={(selectedItem, index) => {
-              setCategory(Object.values(Category)[index]);
+              dispatch(selectCategory(Object.values(Category)[index]));
             }}
             buttonStyle={styles.dropdown2BtnStyle}
             buttonTextStyle={styles.dropdown2BtnTxtStyle}
@@ -152,15 +75,15 @@ const PlacesRecommendScreen = () => {
             rowTextStyle={styles.dropdown2RowTxtStyle}
           />
         </View>
-        {tagList.map(place => {
+        {tagList.map(tag => {
           return (
             <TagChip
-              key={place.id}
+              key={tag.id}
               style={{marginLeft: 5}}
-              text={place.text}
-              selected={checkedTagIdList.includes(place.id)}
+              text={tag.name}
+              selected={checkedTagIdList.includes(tag.id)}
               selectedBackgroundColor={theme.colors.secondary}
-              onPress={() => tagPressed(place.id)}
+              onPress={() => tagPressed(tag.id)}
             />
           );
         })}
@@ -179,6 +102,7 @@ const PlacesRecommendScreen = () => {
         inactiveSlideShift={0}
         useScrollView={true}
       />
+
       <StyledView style={{justifyContent: 'center'}}>
         <IconButton
           icon="arrow-down-drop-circle"
@@ -189,11 +113,11 @@ const PlacesRecommendScreen = () => {
         />
       </StyledView>
       <StyledView style={{height: 70}}>
-        {placeCart.map(place => {
+        {placeCart?.map(place => {
           return (
-            <Tooltip key={place.id} title={place.title} enterTouchDelay={1}>
+            <Tooltip key={place.id} title={place.name} enterTouchDelay={1}>
               <View style={{marginRight: 5}}>
-                <Avatar.Image size={50} source={{uri: place.imageUrl}} />
+                <Avatar.Image size={50} source={{uri: place.image}} />
                 <IconButton
                   style={{position: 'absolute', right: -17, top: -17}}
                   icon="close-circle"

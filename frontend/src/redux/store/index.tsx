@@ -5,10 +5,12 @@ import {
 } from '@reduxjs/toolkit';
 import {persistReducer, persistStore} from 'redux-persist';
 import persistConfig from './persistConfig';
-import {placeSlice} from '../slices';
+import {placeSlice, courseSlice, tagSlice} from '../slices';
 
 const rootReducer = combineReducers({
   place: placeSlice.reducer,
+  course: courseSlice.reducer,
+  tag: tagSlice.reducer,
 });
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);
