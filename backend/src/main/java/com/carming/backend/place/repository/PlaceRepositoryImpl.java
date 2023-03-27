@@ -2,18 +2,17 @@ package com.carming.backend.place.repository;
 
 import com.carming.backend.place.domain.Place;
 import com.carming.backend.place.domain.PlaceCategory;
-import com.carming.backend.place.domain.QPlaceTag;
 import com.carming.backend.place.dto.request.PlaceSearch;
-import com.carming.backend.tag.domain.QTag;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
+import org.springframework.util.StringUtils;
 
 import java.util.List;
 
 import static com.carming.backend.place.domain.QPlace.place;
-import static com.carming.backend.place.domain.QPlaceTag.*;
-import static com.carming.backend.tag.domain.QTag.*;
+import static com.carming.backend.place.domain.QPlaceTag.placeTag;
+import static com.carming.backend.tag.domain.QTag.tag;
 
 @RequiredArgsConstructor
 public class PlaceRepositoryImpl implements PlaceRepositoryCustom {
@@ -27,7 +26,7 @@ public class PlaceRepositoryImpl implements PlaceRepositoryCustom {
                 .selectFrom(place)
                 .where(regionEq(search.getRegions()), categoryEq(search.getCategory()))
                 .orderBy(place.ratingSum.desc())
-                .limit(50L)
+                .limit(search.getSize())
                 .fetch();
     }
 
@@ -50,12 +49,14 @@ public class PlaceRepositoryImpl implements PlaceRepositoryCustom {
     }
 
     private BooleanExpression categoryEq(String category) {
-        PlaceCategory placeCategory;
+        if (!StringUtils.hasText(category)) { //category == null || category.equals("")
+            return null;
+        }
+
         try {
-            placeCategory = PlaceCategory.valueOf(category.toUpperCase());
+            return place.category.eq(PlaceCategory.valueOf(category.toUpperCase()));
         } catch (IllegalArgumentException e) {
             return null;
         }
-        return place.category.eq(placeCategory);
     }
 }

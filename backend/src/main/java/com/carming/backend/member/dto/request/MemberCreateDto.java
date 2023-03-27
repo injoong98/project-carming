@@ -3,10 +3,12 @@ package com.carming.backend.member.dto.request;
 import com.carming.backend.member.domain.Member;
 import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import javax.validation.constraints.Pattern;
 import java.time.LocalDate;
 
+@NoArgsConstructor
 @Data
 public class MemberCreateDto {
 
@@ -45,6 +47,7 @@ public class MemberCreateDto {
                 .build();
     }
 
+    @NoArgsConstructor
     @Data
     public static class BirthInfoDto {
 

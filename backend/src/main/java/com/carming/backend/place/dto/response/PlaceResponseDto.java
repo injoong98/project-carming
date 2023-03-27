@@ -5,6 +5,7 @@ import com.carming.backend.place.domain.PlaceCategory;
 import com.querydsl.core.annotations.QueryProjection;
 import lombok.Builder;
 import lombok.Data;
+import org.springframework.util.StringUtils;
 
 import java.util.Arrays;
 import java.util.List;
@@ -52,8 +53,11 @@ public class PlaceResponseDto {
     }
 
     private static List<String> separateKeyword(String keyword) {
-        String[] keywords = keyword.split("\\|");
-        return Arrays.stream(keywords).collect(Collectors.toList());
+        if (StringUtils.hasText(keyword)) {
+            String[] keywords = keyword.split("\\|");
+            return Arrays.stream(keywords).collect(Collectors.toList());
+        }
+        return List.of();
     }
 
 

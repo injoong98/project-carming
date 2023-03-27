@@ -16,7 +16,7 @@ public class AuthNumberFactory {
         return new AuthNumbers(numbers);
     }
 
-    public static List<Integer> pickNumbers(int range, int count) {
+    private static List<Integer> pickNumbers(int range, int count) {
         List<Integer> numbers = new ArrayList<>();
         for (int i = 0; i < count; i++) {
             int number = random.nextInt(range);
