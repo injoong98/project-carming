@@ -34,7 +34,7 @@ class MemberCreateDtoTest {
     void correctPhoneNumber(String phoneNumber) {
         //given
         MemberCreateDto memberCreateDto = MemberCreateDto.builder()
-                .phoneNumber(phoneNumber)
+                .phone(phoneNumber)
                 .build();
 
         //when
@@ -50,7 +50,7 @@ class MemberCreateDtoTest {
     void notValidPhoneNumber(String phoneNumber) {
         //given
         MemberCreateDto memberCreateDto = MemberCreateDto.builder()
-                .phoneNumber(phoneNumber)
+                .phone(phoneNumber)
                 .build();
 
         //when

@@ -1,14 +1,16 @@
 spring:
   datasource:
-    url: jdbc:mysql://localhost:3306/carming?serverTimezone=UTC&characterEncoding=UTF-8
+    url: jdbc:mysql://j8a408.p.ssafy.io:3306/carmingdb
     driver-class-name: com.mysql.cj.jdbc.Driver
-    username: ssafy
-    password: ssafy
+    username: carming
+    password: carming123
 
   redis:
-    host: localhost
+    host: j8a408.p.ssafy.io
     port: 6379
-    password:
+    password: carming123
+    sentinel:
+      password: carming123
 
   # ddl-auto: create -> Entity에 맞게 자동으로 테이블 및 필드 생성 [배포에선 사용 X]
   # show-sql: true -> 해당하는 query를 보여줌 (JPA N + 1 문제 확인용) [배포에선 사용 X]
@@ -25,4 +27,5 @@ spring:
     web:
       pageable:
         one-indexed-parameters: true
-
+server:
+  port: 5000

@@ -4,6 +4,7 @@ import com.carming.backend.common.JsonMapper;
 import com.carming.backend.member.domain.Member;
 import com.carming.backend.member.domain.valid.AuthenticationInfo;
 import com.carming.backend.member.dto.request.MemberCreateDto;
+import com.carming.backend.member.repository.CardRepository;
 import com.carming.backend.member.repository.MemberRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -23,6 +24,8 @@ class MemberServiceTest {
 
     private final MemberRepository memberRepository = Mockito.mock(MemberRepository.class);
 
+    private final CardRepository cardRepository = Mockito.mock(CardRepository.class);
+
     private final RedisTemplate redisTemplate = Mockito.mock(RedisTemplate.class);
 
     private final ValueOperations operations = Mockito.mock(ValueOperations.class);
@@ -32,7 +35,7 @@ class MemberServiceTest {
     @BeforeEach
     void setUp() {
         BDDMockito.given(redisTemplate.opsForValue()).willReturn(operations);
-        memberService = new MemberService(memberRepository, redisTemplate);
+        memberService = new MemberService(memberRepository, cardRepository, redisTemplate);
     }
 
     @Transactional
@@ -63,12 +66,13 @@ class MemberServiceTest {
     }
     private MemberCreateDto createMemberDto(String phoneNumber) {
         return MemberCreateDto.builder()
-                .phoneNumber(phoneNumber)
+                .phone(phoneNumber)
                 .password("1234")
-                .passwordCheck("1234")
+                .passwordConfirm("1234")
                 .nickname("광")
                 .name("이신광")
                 .birthInfo(new MemberCreateDto.BirthInfoDto("1993", "02", "06"))
+                .cardDto(new MemberCreateDto.CardDto("1", "2", "3", "4", "5"))
                 .build();
     }
 }

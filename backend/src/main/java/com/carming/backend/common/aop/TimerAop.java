@@ -27,14 +27,15 @@ public class TimerAop {
     private void timer() {}
 
     @Around("timer()")
-    public void executionTimer(ProceedingJoinPoint joinPoint) throws Throwable {
+    public Object executionTimer(ProceedingJoinPoint joinPoint) throws Throwable {
 
         Long startTime = timer.start();
-        joinPoint.proceed();
+        Object returnValue = joinPoint.proceed();
         Long elapsedTime = timer.getElapsedTime(startTime);
 
         Method method = getMethod(joinPoint);
         log.info("[{}] 경과시간: {}ms", method.getName(), elapsedTime);
+        return returnValue;
     }
 
     private Method getMethod(JoinPoint joinPoint) {

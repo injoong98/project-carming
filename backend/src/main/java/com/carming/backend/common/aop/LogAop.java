@@ -2,7 +2,10 @@ package com.carming.backend.common.aop;
 
 import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.JoinPoint;
-import org.aspectj.lang.annotation.*;
+import org.aspectj.lang.annotation.AfterReturning;
+import org.aspectj.lang.annotation.Aspect;
+import org.aspectj.lang.annotation.Before;
+import org.aspectj.lang.annotation.Pointcut;
 import org.aspectj.lang.reflect.MethodSignature;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
@@ -45,8 +48,9 @@ public class LogAop {
     }
 
     @AfterReturning(value = "logCut()", returning = "response")
-    public void afterReturningLogCut(JoinPoint joinPoint, Object response) {
+    public Object afterReturningLogCut(JoinPoint joinPoint, Object response) {
         log.info(" - returnTYPE[{}] = {}", response.getClass().getSimpleName(), response);
+        return response;
     }
 
     //JoinPoint로 메소드 정보 가져오기

@@ -1,5 +1,8 @@
 package com.carming.backend.common.aop.timer;
 
+import org.springframework.stereotype.Component;
+
+@Component
 public class JavaTimer implements Timer {
 
     @Override

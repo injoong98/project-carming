@@ -26,8 +26,6 @@ public class AuthNumbersService {
 
     private final StringRedisTemplate redisTemplate;
 
-    private final ObjectMapper objectMapper;
-
     @Transactional
     public String saveAuthNumbers(PhoneNumberDto request) {
         String phoneNumber = request.getPhoneNumber();
@@ -37,25 +35,24 @@ public class AuthNumbersService {
         if (!StringUtils.hasText(authenticationInfo)) {
             throw new InvalidAuthRequest();
         }
-        saveAuthenticationInfo(phoneNumber, authenticationInfo, 3L);
+        saveAuthenticationInfo(phoneNumber, authenticationInfo, 30000L);
         return authNumbers;
     }
 
 
-    @Transactional
     public String validAuthNumbers(AuthNumbersDto request) {
         ValueOperations<String, String> operations = redisTemplate.opsForValue();
-        String foundAuthNumbers = operations.get(request.getPhoneNumber());
+        String json = operations.get(request.getPhoneNumber());
+        AuthenticationInfo authentication = JsonMapper.toClass(json, AuthenticationInfo.class);
+
         String requestAuthNumbers = request.getAuthNumber();
-        if (isNotSame(foundAuthNumbers, requestAuthNumbers)) {
+
+        if (isNotSame(authentication.getAuthNumbers(), requestAuthNumbers)) {
             throw new InvalidAuthRequest();
         }
 
-        String authenticationInfo = convertObjectToJson(new AuthenticationInfo(requestAuthNumbers, true));
-        if (!StringUtils.hasText(authenticationInfo)) {
-            throw new InvalidAuthRequest();
-        }
-        saveAuthenticationInfo(request.getPhoneNumber(), requestAuthNumbers, 60L);
+        String passAuthentication = JsonMapper.toJson(new AuthenticationInfo(requestAuthNumbers, true));
+        saveAuthenticationInfo(request.getPhoneNumber(), passAuthentication, 60L);
         return requestAuthNumbers;
     }
 
@@ -64,14 +61,6 @@ public class AuthNumbersService {
             return true;
         }
         return false;
-    }
-
-    private String convertObjectToJson(AuthenticationInfo authenticationInfo) {
-        try {
-            return objectMapper.writeValueAsString(authenticationInfo);
-        } catch (JsonProcessingException e) {
-            return null;
-        }
     }
 
     private void saveAuthenticationInfo(String phoneNumber, String authenticationInfo, Long minutes) {

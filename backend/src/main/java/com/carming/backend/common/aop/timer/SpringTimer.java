@@ -3,10 +3,9 @@ package com.carming.backend.common.aop.timer;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StopWatch;
 
-@Component
 public class SpringTimer implements Timer {
 
-    private StopWatch stopWatch = new StopWatch();
+    private final StopWatch stopWatch = new StopWatch();
 
     @Override
     public Long start() {

@@ -18,6 +18,12 @@ public class PlaceController {
 
     private final PlaceService placeService;
 
+    //todo: must delete, only for spring security test
+    @GetMapping("/test")
+    public String test() {
+        return "Login OK";
+    }
+
     @GetMapping
     public List<PlaceResponseDto> getPlaces(@RequestBody PlaceSearch search) {
         return placeService.getPlaces(search);

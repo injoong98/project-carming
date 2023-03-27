@@ -13,7 +13,7 @@ import java.util.ArrayList;
 
 @RequiredArgsConstructor
 @Service
-public class UserDetailServiceImpl implements UserDetailsService {
+public class UserDetailsServiceImpl implements UserDetailsService {
 
     private final MemberRepository memberRepository;
 

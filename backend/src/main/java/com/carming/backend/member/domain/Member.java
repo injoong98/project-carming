@@ -32,18 +32,31 @@ public class Member implements UserDetails {
     @Column(name = "member_name")
     private String name;
 
+    @Enumerated(EnumType.STRING)
+    @Column(name = "member_gender")
+    private Gender gender;
+
     @Column(name = "member_birthday")
     private LocalDate birthday;
 
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "member_card_id")
+    private Card card;
+
     @Builder
     public Member(String phoneNumber, String password,
-                  String nickname, String name,
+                  String nickname, String name, Gender gender,
                   LocalDate birthday) {
         this.phoneNumber = phoneNumber;
         this.password = password;
         this.nickname = nickname;
         this.name = name;
+        this.gender = gender;
         this.birthday = birthday;
+    }
+
+    public void changeCard(Card card) {
+        this.card = card;
     }
 
     @Override

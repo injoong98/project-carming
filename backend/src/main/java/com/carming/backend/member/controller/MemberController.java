@@ -16,6 +16,7 @@ public class MemberController {
 
     @PostMapping("/signup")
     public ResponseEntity<Void> signupMember(@RequestBody MemberCreateDto request) {
+//        memberService.validAuthenticated(request);
         memberService.saveMember(request);
         return new ResponseEntity<>(HttpStatus.OK);
     }

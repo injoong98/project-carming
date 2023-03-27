@@ -1,6 +1,7 @@
 package com.carming.backend.member.controller;
 
 import com.carming.backend.common.JsonMapper;
+import com.carming.backend.member.domain.Gender;
 import com.carming.backend.member.domain.valid.AuthNumberFactory;
 import com.carming.backend.member.domain.valid.AuthNumbers;
 import com.carming.backend.member.domain.valid.AuthenticationInfo;
@@ -39,7 +40,7 @@ class MemberControllerTest {
         AuthNumbers numbers = AuthNumberFactory.createValidNumbers();
 
         redisTemplate.opsForValue().set(PHONE, JsonMapper.toJson(new AuthenticationInfo(numbers.getAuthNumbers(), AUTHENTICATED)), Duration.ofMinutes(3L));
-        MemberCreateDto request = new MemberCreateDto(PHONE, "1234", "1234", "하이", "이신광", new MemberCreateDto.BirthInfoDto("1993", "02", "06"));
+        MemberCreateDto request = new MemberCreateDto(PHONE, "1234", "1234", "하이", "이신광", Gender.MALE, new MemberCreateDto.BirthInfoDto("1993", "02", "06"), null);
 
         //when
         memberController.signupMember(request);
@@ -58,7 +59,7 @@ class MemberControllerTest {
         AuthNumbers numbers = AuthNumberFactory.createValidNumbers();
 
         redisTemplate.opsForValue().set(PHONE, JsonMapper.toJson(new AuthenticationInfo(numbers.getAuthNumbers(), AUTHENTICATED)), Duration.ofMinutes(3L));
-        MemberCreateDto request = new MemberCreateDto(PHONE, "1234", "1234", "하이", "이신광", new MemberCreateDto.BirthInfoDto("1993", "02", "06"));
+        MemberCreateDto request = new MemberCreateDto(PHONE, "1234", "1234", "하이", "이신광", Gender.MALE, new MemberCreateDto.BirthInfoDto("1993", "02", "06"), null);
 
         //expected
         Assertions.assertThatThrownBy(() -> memberController.signupMember(request))
