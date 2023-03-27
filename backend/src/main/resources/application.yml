@@ -1,0 +1,4 @@
+spring:
+  profiles:
+    active: local # yml 을 해당 파일로 변경해주면 된다..
+    default: local # default는 local
