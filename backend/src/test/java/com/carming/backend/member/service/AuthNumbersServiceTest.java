@@ -35,7 +35,7 @@ class AuthNumbersServiceTest {
     @BeforeEach
     public void setUp() {
         BDDMockito.given(redisTemplate.opsForValue()).willReturn(valueOperations);
-        authNumbersService = new AuthNumbersService(redisTemplate, objectMapper);
+        authNumbersService = new AuthNumbersService(redisTemplate);
     }
 
     @Test
