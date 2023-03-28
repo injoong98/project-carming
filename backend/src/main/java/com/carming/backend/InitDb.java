@@ -32,8 +32,8 @@ public class InitDb {
         }
 
         private void saveMember() {
-            memberService.saveMember(createMemberRequest("01011111111", "1234", "ADMIN", "ADMIN"));
-            memberService.saveMember(createMemberRequest("01022222222", "1234", "ADMIN_M", "ADMIN_M"));
+            memberService.saveMember(createMemberRequest("01011111111", "123456", "ADMIN", "ADMIN"));
+            memberService.saveMember(createMemberRequest("01022222222", "123456", "ADMIN_M", "ADMIN_M"));
         }
 
         private MemberCreateDto createMemberRequest(String phone, String password,
