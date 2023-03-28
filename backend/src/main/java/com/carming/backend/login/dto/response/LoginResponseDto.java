@@ -6,7 +6,7 @@ import lombok.NoArgsConstructor;
 
 @NoArgsConstructor
 @Data
-public class TokenResponseDto {
+public class LoginResponseDto {
 
     private String headerName;
 
@@ -14,9 +14,16 @@ public class TokenResponseDto {
 
     private String accessToken; // jwt
 
-    public TokenResponseDto(String tokenType, String accessToken) {
+    private String nickname;
+
+    private String profile;
+
+    public LoginResponseDto(String tokenType, String accessToken,
+                            String nickname, String profile) {
         this.headerName = JwtConst.HEADER_STRING;
         this.tokenType = tokenType;
         this.accessToken = accessToken;
+        this.nickname = nickname;
+        this.profile = profile;
     }
 }

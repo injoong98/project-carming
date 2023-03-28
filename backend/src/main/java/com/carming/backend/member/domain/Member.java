@@ -32,6 +32,9 @@ public class Member implements UserDetails {
     @Column(name = "member_name")
     private String name;
 
+    @Column(name = "member_image")
+    private String profile;
+
     @Enumerated(EnumType.STRING)
     @Column(name = "member_gender")
     private Gender gender;
@@ -45,12 +48,13 @@ public class Member implements UserDetails {
 
     @Builder
     public Member(String phoneNumber, String password,
-                  String nickname, String name, Gender gender,
-                  LocalDate birthday) {
+                  String nickname, String name, String profile,
+                  Gender gender, LocalDate birthday) {
         this.phoneNumber = phoneNumber;
         this.password = password;
         this.nickname = nickname;
         this.name = name;
+        this.profile = profile;
         this.gender = gender;
         this.birthday = birthday;
     }

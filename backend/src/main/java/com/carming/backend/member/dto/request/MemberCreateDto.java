@@ -53,6 +53,8 @@ public class MemberCreateDto {
                 .password(PasswordEncoder.encode(password))
                 .nickname(nickname)
                 .name(name)
+                //Todo change image
+                .profile("example.com")
                 .gender(gender)
                 .birthday(birthInfo.toLocalDate())
                 .build();

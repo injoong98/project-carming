@@ -2,10 +2,11 @@ package com.carming.backend.login.service;
 
 import com.carming.backend.login.authentication.JwtConst;
 import com.carming.backend.login.authentication.JwtProvider;
-import com.carming.backend.login.authentication.PasswordEncoder;
 import com.carming.backend.login.dto.request.LoginRequestDto;
-import com.carming.backend.login.dto.response.TokenResponseDto;
+import com.carming.backend.login.dto.response.LoginResponseDto;
 import com.carming.backend.member.domain.Member;
+import com.carming.backend.member.exception.MemberNotFound;
+import com.carming.backend.member.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
@@ -19,11 +20,17 @@ import org.springframework.transaction.annotation.Transactional;
 public class LoginService {
     private final AuthenticationManagerBuilder authenticationManagerBuilder;
 
-    public TokenResponseDto login(LoginRequestDto request) {
+    private final MemberRepository memberRepository;
+
+    public LoginResponseDto login(LoginRequestDto request) {
         UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(request.getPhoneNumber(), request.getPassword());
         Authentication authentication = authenticationManagerBuilder.getObject().authenticate(authenticationToken);
 
+        Member foundMember = memberRepository.findByPhone(request.getPhoneNumber())
+                .orElseThrow(MemberNotFound::new);
+
+
         String accessToken = JwtProvider.generateToken(authentication);
-        return new TokenResponseDto(JwtConst.TOKEN_TYPE, accessToken);
+        return new LoginResponseDto(JwtConst.TOKEN_TYPE, accessToken, foundMember.getNickname(), foundMember.getProfile());
     }
 }
