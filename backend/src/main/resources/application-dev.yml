@@ -14,7 +14,7 @@ spring:
     password: carming123
     sentinel:
       password: carming123
-      username:
+
 
   # ddl-auto: create -> Entity에 맞게 자동으로 테이블 및 필드 생성 [배포에선 사용 X]
   # show-sql: true -> 해당하는 query를 보여줌 (JPA N + 1 문제 확인용) [배포에선 사용 X]
