@@ -8,8 +8,6 @@ build/
 ### QueryDSL QClass ignore
 generated
 
-naver-sms.properties
-
 ### STS ###
 .apt_generated
 .classpath

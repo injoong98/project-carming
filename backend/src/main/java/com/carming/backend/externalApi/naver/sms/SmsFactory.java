@@ -17,7 +17,7 @@ import java.nio.charset.StandardCharsets;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 
-@PropertySource("classpath:naver-sms.properties")
+//@PropertySource("classpath:naver-sms-local.properties")
 @Getter
 @Data
 @Component

@@ -1,4 +1,7 @@
 spring:
+  config:
+    import: naver-sms-local.properties
+
   datasource:
     url: jdbc:mysql://localhost:3306/carming?serverTimezone=UTC&characterEncoding=UTF-8
     driver-class-name: com.mysql.cj.jdbc.Driver
@@ -9,6 +12,9 @@ spring:
     host: localhost
     port: 6379
     password:
+    sentinel:
+      password:
+      username:
 
   # ddl-auto: create -> Entity에 맞게 자동으로 테이블 및 필드 생성 [배포에선 사용 X]
   # show-sql: true -> 해당하는 query를 보여줌 (JPA N + 1 문제 확인용) [배포에선 사용 X]
@@ -26,3 +32,8 @@ spring:
       pageable:
         one-indexed-parameters: true
 
+## naver-sms
+#key:
+#  service: ncp:sms:kr:297853391013:carming
+#  access: cAeEXzNhz9oRCqJJJlcr
+#  secret: lKl7HkNpeuwjP9U6W6FIZJxja5edE4mLMY4fFimj
