@@ -4,7 +4,14 @@ import UserPlacesScreen from '../screens/UserPlacesScreen';
 import UserCoursesScreen from '../screens/UserCoursesScreen';
 import UserPaymentsScreen from '../screens/UserPaymentsScreen';
 
-const Drawer = createDrawerNavigator();
+export type L3_MainDrawerParamList = {
+  home: undefined;
+  UserPlaces: undefined;
+  UserCourses: undefined;
+  UserPayments: undefined;
+};
+
+const Drawer = createDrawerNavigator<L3_MainDrawerParamList>();
 
 function L3_MainDrawerNavigator() {
   return (

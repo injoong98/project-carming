@@ -3,7 +3,13 @@ import L4_CourseCreateStackNavigator from './L4_CourseCreateStackNavigator';
 import L4_JourneyStackNavigator from './L4_JourneyStackNavigator';
 import L4_JourneyEndStackNavigator from './L4_JourneyEndStackNavigator';
 
-const Stack = createNativeStackNavigator();
+export type L3_TotalJourneyStackParamList = {
+  CourseCreate: undefined;
+  Journey: undefined;
+  JourneyEnd: undefined;
+};
+
+const Stack = createNativeStackNavigator<L3_TotalJourneyStackParamList>();
 
 function L3_TotalJourneyStackNavigator() {
   return (

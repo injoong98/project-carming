@@ -2,7 +2,12 @@ import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import ReceiptScreen from '../screens/ReceiptScreen';
 import ReviewWirteScreen from '../screens/ReviewWirteScreen';
 
-const Stack = createNativeStackNavigator();
+export type L4_JourneyEndStackParamList = {
+  Receipt: undefined;
+  Review: undefined;
+};
+
+const Stack = createNativeStackNavigator<L4_JourneyEndStackParamList>();
 
 function L4_JourneyEndStackNavigator() {
   return (

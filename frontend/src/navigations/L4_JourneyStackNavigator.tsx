@@ -1,7 +1,11 @@
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import CarCallScreen from '../screens/CarCallScreen';
 
-const Stack = createNativeStackNavigator();
+export type L4_JourneyStackParamList = {
+  CarCall: undefined;
+};
+
+const Stack = createNativeStackNavigator<L4_JourneyStackParamList>();
 
 function L4_JourneyStackNavigator() {
   return (

@@ -3,7 +3,14 @@ import LoginScreen from '../screens/LoginScreen';
 import SignupScreen from '../screens/SignupScreen';
 import LandingScreen from '../screens/LandingScreen';
 
-const Stack = createNativeStackNavigator();
+// StackParamList 인터페이스 정의
+export type L2_LandingStackParamList = {
+  Landing: undefined;
+  Login: undefined;
+  Signup: undefined;
+};
+
+const Stack = createNativeStackNavigator<L2_LandingStackParamList>();
 
 function L2_LandingStackNavigator() {
   return (

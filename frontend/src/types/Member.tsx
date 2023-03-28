@@ -4,4 +4,5 @@ export type Member = {
   nickname: string;
   name: string;
   birthday: string;
+  profile: string;
 };

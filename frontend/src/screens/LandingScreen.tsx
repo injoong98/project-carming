@@ -1,19 +1,17 @@
 import {ImageBackground, View} from 'react-native';
 import styled from 'styled-components/native';
 import CustomButton from '../components/CustomButton';
-import {NativeStackNavigationProp} from '@react-navigation/native-stack';
+import {NavigationProp, useNavigation} from '@react-navigation/native';
+import {L2_LandingStackParamList} from '../navigations/L2_LandingStackNavigator';
 
-type LandingStackParamList = {
-  Landing: undefined;
-  Login: undefined;
-  Signup: undefined;
-};
+type LandingScreenNavigationProp = NavigationProp<
+  L2_LandingStackParamList,
+  'Landing'
+>;
 
-type LandingScreenProps = {
-  navigation: NativeStackNavigationProp<LandingStackParamList, 'Landing'>;
-};
+const LandingScreen = () => {
+  const navigation = useNavigation<LandingScreenNavigationProp>();
 
-const LandingScreen = ({navigation}: LandingScreenProps) => {
   return (
     <Container source={require('../assets/images/landing_screen_large.png')}>
       <UpperView>

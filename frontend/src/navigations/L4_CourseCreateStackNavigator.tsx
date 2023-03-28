@@ -2,7 +2,12 @@ import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import CoursesRecommendScreen from '../screens/CoursesRecommendScreen';
 import PlacesRecommendScreen from '../screens/PlacesRecommendScreen';
 
-const Stack = createNativeStackNavigator();
+export type L4_CourseCreateStackParamList = {
+  Places: undefined;
+  Courses: undefined;
+};
+
+const Stack = createNativeStackNavigator<L4_CourseCreateStackParamList>();
 
 function L4_CourseCreateStackNavigator() {
   return (

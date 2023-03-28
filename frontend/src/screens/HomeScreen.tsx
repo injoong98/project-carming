@@ -1,18 +1,23 @@
-import {Text} from 'react-native';
-import styled from 'styled-components/native';
+import {View, Text, Button} from 'react-native';
+import {useDispatch, useSelector} from 'react-redux';
+import {logout} from '../redux/slices/authSlice';
+import {RootState} from '../redux/store';
 
-function HomeScreen() {
+const HomeScreen = () => {
+  const dispatch = useDispatch();
+  const {token, memberInfo} = useSelector((state: RootState) => state.auth);
+
+  const handleLogout = () => {
+    dispatch(logout());
+  };
+
   return (
-    <StyledSafeAreaView>
-      <Text>HomeScreen</Text>
-    </StyledSafeAreaView>
+    <View>
+      <Text>{memberInfo?.nickname}님 환영합니다.</Text>
+      <Text>로그인 토큰: {token}</Text>
+      <Button title="로그아웃" onPress={handleLogout} />
+    </View>
   );
-}
-
-const StyledSafeAreaView = styled.SafeAreaView`
-  flex: 1;
-  justify-content: center;
-  align-items: center;
-`;
+};
 
 export default HomeScreen;
