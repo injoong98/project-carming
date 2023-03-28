@@ -7,7 +7,7 @@ import lombok.NoArgsConstructor;
 @Data
 public class LoginRequestDto {
 
-    private String phoneNumber;
+    private String phone;
 
     private String password;
 
