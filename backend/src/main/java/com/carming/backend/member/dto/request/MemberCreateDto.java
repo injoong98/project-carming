@@ -10,6 +10,7 @@ import lombok.NoArgsConstructor;
 
 import javax.validation.constraints.Pattern;
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 
 @NoArgsConstructor
 @Data
@@ -29,21 +30,21 @@ public class MemberCreateDto {
 
     private Gender gender;
 
-    private BirthInfoDto birthInfo;
+    private String birthDate;
 
     private CardDto card;
 
     @Builder
     public MemberCreateDto(String phone, String password, String passwordConfirm,
                            String nickname, String name, Gender gender,
-                           BirthInfoDto birthInfo, CardDto cardDto) {
+                           String birthDate, CardDto cardDto) {
         this.phone = phone;
         this.password = password;
         this.passwordConfirm = passwordConfirm;
         this.nickname = nickname;
         this.name = name;
         this.gender = gender;
-        this.birthInfo = birthInfo;
+        this.birthDate = birthDate;
         this.card = cardDto;
     }
 
@@ -56,33 +57,35 @@ public class MemberCreateDto {
                 //Todo change image
                 .profile("example.com")
                 .gender(gender)
-                .birthday(birthInfo.toLocalDate())
+                .birthday(LocalDate.parse(birthDate, DateTimeFormatter.ofPattern("yyyy/MM/dd")))
                 .build();
     }
 
-    @NoArgsConstructor
-    @Data
-    public static class BirthInfoDto {
+//    @NoArgsConstructor
+//    @Data
+//    public static class BirthInfoDto {
+//
+//        @Pattern(regexp = "^(19[0-9][0-9]|20\\d{2})", message = "유효하지 않은 출생년도입니다.")
+//        private String year;
+//
+//        @Pattern(regexp = "(0[1-9]|1[0-2])", message = "유효하지 않은 월입니다.")
+//        private String month;
+//
+//        @Pattern(regexp = "0[1-9]|[1-2][0-9]|3[0-1]", message = "유효하지 않는 일입니다.")
+//        private String day;
+//
+//        public BirthInfoDto(String year, String month, String day) {
+//            this.year = year;
+//            this.month = month;
+//            this.day = day;
+//        }
+//
+//        public LocalDate toLocalDate(List<String> birthDate) {
+//            return LocalDate.of(Integer.valueOf(birthDate.get(0)), Integer.valueOf(birthDate.get(1)), Integer.valueOf(birthDate.get(2)));
+//        }
+//    }
 
-        @Pattern(regexp = "^(19[0-9][0-9]|20\\d{2})", message = "유효하지 않은 출생년도입니다.")
-        private String year;
 
-        @Pattern(regexp = "(0[1-9]|1[0-2])", message = "유효하지 않은 월입니다.")
-        private String month;
-
-        @Pattern(regexp = "0[1-9]|[1-2][0-9]|3[0-1]", message = "유효하지 않는 일입니다.")
-        private String day;
-
-        public BirthInfoDto(String year, String month, String day) {
-            this.year = year;
-            this.month = month;
-            this.day = day;
-        }
-
-        public LocalDate toLocalDate() {
-            return LocalDate.of(Integer.valueOf(year), Integer.valueOf(month), Integer.valueOf(day));
-        }
-    }
 
     @NoArgsConstructor
     @Data

@@ -26,10 +26,18 @@ public class Course {
     @Column(name = "course_name")
     private String name;
 
+    @Column(name = "course_rating_count")
+    private Long ratingCount;
+
+    @Column(name = "course_rating_sum")
+    private Long ratingSum;
+
     @Builder
     public Course(String places, String regions, String name) {
         this.places = places;
         this.regions = regions;
         this.name = name;
+        this.ratingCount = 0L;
+        this.ratingSum = 0L;
     }
 }

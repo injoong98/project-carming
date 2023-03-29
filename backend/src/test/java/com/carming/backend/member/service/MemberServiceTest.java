@@ -71,7 +71,7 @@ class MemberServiceTest {
                 .passwordConfirm("1234")
                 .nickname("광")
                 .name("이신광")
-                .birthInfo(new MemberCreateDto.BirthInfoDto("1993", "02", "06"))
+                .birthDate("1993/02/06")
                 .cardDto(new MemberCreateDto.CardDto("1", "2", "3", "4", "5"))
                 .build();
     }
