@@ -1,4 +1,4 @@
-package com.frontend;
+package com.ssafy.carming.a408;
 
 import com.facebook.react.ReactActivity;
 import com.facebook.react.ReactActivityDelegate;

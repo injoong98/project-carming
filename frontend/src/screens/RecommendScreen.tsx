@@ -1,6 +1,6 @@
 import {useState, useEffect} from 'react';
 import {View} from 'react-native';
-import {useSelector, useDispatch} from 'react-redux';
+import {useDispatch} from 'react-redux';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import {IconButton, useTheme, SegmentedButtons} from 'react-native-paper';
 import {AlertNotificationRoot} from 'react-native-alert-notification';
@@ -8,10 +8,9 @@ import LinearGradient from 'react-native-linear-gradient';
 import styled from 'styled-components/native';
 import PlacesRecommendScreen from './PlacesRecommendScreen';
 import CoursesRecommendScreen from './CoursesRecommendScreen';
-import {setPlaceList} from '../redux/slices/placeSlice';
-import {setTagList} from '../redux/slices/tagSlice';
-import {Tag, Place, Category} from '../types';
-import type {RootState} from '../redux/store';
+import {setPlaceList, setPlaceTagList} from '../redux/slices/placeSlice';
+import {setCourseList, setCourseTagList} from '../redux/slices/courseSlice';
+import {Tag, Place, Category, Course} from '../types';
 
 const tags: Tag[] = [
   {
@@ -42,7 +41,7 @@ const places: Place[] = [
     lat: 37.57171765,
     tel: '010-1577-1577',
     category: Category.음식점,
-    keyword: '맛있는 | 분위기 좋은',
+    keyword: ['맛있는', '분위기 좋은'],
   },
   {
     id: 1,
@@ -55,7 +54,7 @@ const places: Place[] = [
     lat: 37.58459777,
     tel: '010-1577-1577',
     category: Category.음식점,
-    keyword: '맛있는 | 분위기 좋은',
+    keyword: ['맛있는', '분위기 좋은'],
   },
   {
     id: 2,
@@ -68,7 +67,7 @@ const places: Place[] = [
     lat: 37.57033808,
     tel: '010-1577-1577',
     category: Category.음식점,
-    keyword: '맛있는 | 분위기 좋은',
+    keyword: ['맛있는', '분위기 좋은'],
   },
   {
     id: 3,
@@ -78,10 +77,44 @@ const places: Place[] = [
     ratingCount: 4,
     region: '노원구 중계 14동',
     lon: 126.98978922,
-    lat: 37.57409672,
+    lat: 37.60409672,
     tel: '010-1577-1577',
     category: Category.음식점,
-    keyword: '맛있는 | 분위기 좋은',
+    keyword: ['맛있는', '분위기 좋은'],
+  },
+];
+const courses: Course[] = [
+  {
+    id: 0,
+    name: '최고의 코스',
+    regions: ['은평구', '노원구'],
+    places: places,
+    ratingCount: 17,
+    ratingSum: 74,
+  },
+  {
+    id: 1,
+    name: '최고의 코스',
+    regions: ['은평구', '노원구'],
+    places: places,
+    ratingCount: 17,
+    ratingSum: 74,
+  },
+  {
+    id: 2,
+    name: '최고의 코스',
+    regions: ['은평구', '노원구'],
+    places: places,
+    ratingCount: 17,
+    ratingSum: 74,
+  },
+  {
+    id: 3,
+    name: '최고의 코스',
+    regions: ['은평구', '노원구'],
+    places: places,
+    ratingCount: 17,
+    ratingSum: 74,
   },
 ];
 
@@ -121,7 +154,9 @@ const RecommendScreen = () => {
 
   useEffect(() => {
     dispatch(setPlaceList(places));
-    dispatch(setTagList(tags));
+    dispatch(setPlaceTagList(tags));
+    dispatch(setCourseList(courses));
+    dispatch(setCourseTagList(tags));
   }, []);
 
   return (

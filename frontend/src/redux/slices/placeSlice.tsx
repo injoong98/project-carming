@@ -1,9 +1,11 @@
 import {createSlice, PayloadAction} from '@reduxjs/toolkit';
-import {Category, Place} from '../../types';
+import {Category, Place, Tag} from '../../types';
 
 type SliceState = {
   placeList: Place[];
   placeCart: Place[];
+  placeTagList: Tag[];
+  checkedTagList: Tag[];
   selectedCategory: Category;
 };
 
@@ -12,9 +14,12 @@ const placeSlice = createSlice({
   initialState: {
     placeList: [],
     placeCart: [],
+    placeTagList: [],
+    checkedTagList: [],
     selectedCategory: Category.음식점,
   } as SliceState,
   reducers: {
+    // Place List
     addPlaceToPlaceList: (state, action: PayloadAction<Place>) => {
       const newPlace = action.payload;
       state.placeList = [...state.placeList, newPlace];
@@ -27,6 +32,8 @@ const placeSlice = createSlice({
       const newPlaceList = action.payload;
       state.placeList = [...newPlaceList];
     },
+
+    // Place Cart
     addPlaceToPlaceCart: (state, action: PayloadAction<Place>) => {
       const newPlace = action.payload;
       state.placeCart = state.placeCart.filter(
@@ -41,6 +48,25 @@ const placeSlice = createSlice({
       );
       state.placeCart = [...modifiedCart];
     },
+
+    // Place Tag
+    setPlaceTagList: (state, action: PayloadAction<Tag[]>) => {
+      const newPlaceTagList = action.payload;
+      state.placeTagList = [...newPlaceTagList];
+    },
+    addCheckedTag: (state, action: PayloadAction<Tag>) => {
+      const newTag = action.payload;
+      state.checkedTagList = [...state.checkedTagList, newTag];
+    },
+    deleteCheckedTag: (state, action: PayloadAction<Tag>) => {
+      const deletedTag = action.payload;
+      const modifiedTagList = state.checkedTagList.filter(
+        tag => tag.id !== deletedTag.id,
+      );
+      state.checkedTagList = [...modifiedTagList];
+    },
+
+    // Category
     selectCategory: (state, action: PayloadAction<Category>) => {
       const newCategory = action.payload;
       state.selectedCategory = newCategory;
@@ -56,4 +82,7 @@ export const {
   addPlaceToPlaceCart,
   deletePlaceFromPlaceCartById,
   selectCategory,
+  setPlaceTagList,
+  addCheckedTag,
+  deleteCheckedTag,
 } = placeSlice.actions;

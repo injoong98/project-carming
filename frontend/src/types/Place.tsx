@@ -3,13 +3,13 @@ import {Category} from './Category';
 export type Place = {
   id: number;
   name: string;
-  tel: string;
-  category: Category;
+  tel?: string;
+  category?: Category;
   lon: number;
   lat: number;
-  region: string;
+  region?: string;
   ratingCount: number;
   ratingSum: number;
-  keyword: string;
+  keyword?: string[];
   image: string;
 };

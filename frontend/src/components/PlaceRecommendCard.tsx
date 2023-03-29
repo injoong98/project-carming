@@ -4,6 +4,7 @@ import styled from 'styled-components';
 import {Place} from '../types';
 import RatingStar from './RatingStar';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+import {calcRating} from '../utils';
 
 interface PlaceRecommendCardProps {
   item: Place;
@@ -15,7 +16,7 @@ const PlaceRecommendCard: React.FC<PlaceRecommendCardProps> = ({
   item,
   index,
 }) => {
-  const rating = Math.round((item.ratingSum / item.ratingCount) * 10) / 10;
+  const rating = calcRating(item.ratingSum, item.ratingCount);
   return (
     <CardContainer>
       <ImageBackGround source={{uri: item.image}}>

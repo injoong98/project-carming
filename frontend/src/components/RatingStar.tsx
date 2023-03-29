@@ -8,13 +8,14 @@ interface RatingStarProps {
   readonly?: boolean;
   containerStyle?: ViewStyle;
   iconStyle?: ViewStyle;
+  iconSize?: number;
 }
 
 const RatingStar: React.FC<RatingStarProps> = ({
   rating,
   containerStyle,
   iconStyle,
-  readonly = true,
+  iconSize,
 }) => {
   const theme = useTheme();
 
@@ -30,7 +31,7 @@ const RatingStar: React.FC<RatingStarProps> = ({
               ? theme.colors.secondary
               : theme.colors.surfaceDisabled
           }
-          size={15}
+          size={iconSize ?? 15}
         />
       ))}
     </RatingStarContainer>

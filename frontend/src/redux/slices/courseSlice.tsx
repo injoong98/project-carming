@@ -1,9 +1,11 @@
 import {createSlice, PayloadAction} from '@reduxjs/toolkit';
-import type {Course, Place} from '../../types';
+import type {Course, Place, Tag} from '../../types';
 
 type SliceState = {
   courseList: Course[];
   courseCart: Place[];
+  courseTagList: Tag[];
+  checkedTagList: Tag[];
 };
 
 const courseSlice = createSlice({
@@ -11,8 +13,11 @@ const courseSlice = createSlice({
   initialState: {
     courseList: [],
     courseCart: [],
+    courseTagList: [],
+    checkedTagList: [],
   } as SliceState,
   reducers: {
+    // Course List
     addCourseToCourseList: (state, action: PayloadAction<Course>) => {
       const newCourse = action.payload;
       state.courseList = [...state.courseList, newCourse];
@@ -25,6 +30,8 @@ const courseSlice = createSlice({
       const newCourseList = action.payload;
       state.courseList = [...newCourseList];
     },
+
+    // Course Cart
     setCourseToCourseCart: (state, action: PayloadAction<Course>) => {
       const newCourse = action.payload;
       state.courseCart = [...newCourse.places];
@@ -36,6 +43,23 @@ const courseSlice = createSlice({
       );
       state.courseCart = [...modifiedCart];
     },
+
+    // Course Tag
+    setCourseTagList: (state, action: PayloadAction<Tag[]>) => {
+      const newCourseTagList = action.payload;
+      state.courseTagList = [...newCourseTagList];
+    },
+    addCheckedTag: (state, action: PayloadAction<Tag>) => {
+      const newTag = action.payload;
+      state.checkedTagList = [...state.checkedTagList, newTag];
+    },
+    deleteCheckedTag: (state, action: PayloadAction<Tag>) => {
+      const deletedTag = action.payload;
+      const modifiedTagList = state.checkedTagList.filter(
+        tag => tag.id !== deletedTag.id,
+      );
+      state.checkedTagList = [...modifiedTagList];
+    },
   },
 });
 
@@ -46,4 +70,7 @@ export const {
   setCourseList,
   setCourseToCourseCart,
   deletePlaceFromCourseCartById,
+  setCourseTagList,
+  addCheckedTag,
+  deleteCheckedTag,
 } = courseSlice.actions;
