@@ -23,10 +23,10 @@ public class LoginService {
     private final MemberRepository memberRepository;
 
     public LoginResponseDto login(LoginRequestDto request) {
-        UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(request.getPhoneNumber(), request.getPassword());
+        UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(request.getPhone(), request.getPassword());
         Authentication authentication = authenticationManagerBuilder.getObject().authenticate(authenticationToken);
 
-        Member foundMember = memberRepository.findByPhone(request.getPhoneNumber())
+        Member foundMember = memberRepository.findByPhone(request.getPhone())
                 .orElseThrow(MemberNotFound::new);
 
 
