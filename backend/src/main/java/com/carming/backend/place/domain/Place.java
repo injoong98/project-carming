@@ -30,8 +30,8 @@ public class Place {
     @Column(name = "place_lon")
     private Double lon;
 
-    @Column(name = "place_lan")
-    private Double lan;
+    @Column(name = "place_lat")
+    private Double lat;
 
     @Column(name = "place_region")
     private String region;
@@ -51,14 +51,14 @@ public class Place {
 
     @Builder
     public Place(String name, String tel, PlaceCategory category,
-                 Double lon, Double lan,
+                 Double lon, Double lat,
                  String region, Integer ratingCount, Integer ratingSum,
                  String keyword, String image) {
         this.name = name;
         this.tel = tel;
         this.category = category;
         this.lon = lon;
-        this.lan = lan;
+        this.lat = lat;
         this.region = region;
         this.ratingCount = ratingCount;
         this.ratingSum = ratingSum;

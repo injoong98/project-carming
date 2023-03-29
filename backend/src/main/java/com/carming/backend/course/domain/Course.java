@@ -27,8 +27,7 @@ public class Course {
     private String name;
 
     @Builder
-    public Course(Long id, String places, String regions, String name) {
-        this.id = id;
+    public Course(String places, String regions, String name) {
         this.places = places;
         this.regions = regions;
         this.name = name;

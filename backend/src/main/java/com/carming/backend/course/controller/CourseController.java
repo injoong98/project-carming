@@ -1,13 +1,11 @@
 package com.carming.backend.course.controller;
 
+import com.carming.backend.course.dto.request.CourseSearch;
 import com.carming.backend.course.dto.response.CourseResponseDto;
 import com.carming.backend.course.service.CourseService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -18,10 +16,12 @@ public class CourseController {
 
     private final CourseService courseService;
 
-    //todo
+    /**
+     * 지역구에 따른 코스 검색
+     */
     @GetMapping
-    public List<CourseResponseDto> getCourses() {
-        return null;
+    public List<CourseResponseDto> findCourses(@RequestBody CourseSearch search) {
+        return courseService.findCourses(search);
     }
 
     //todo

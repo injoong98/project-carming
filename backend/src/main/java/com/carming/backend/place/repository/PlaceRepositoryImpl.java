@@ -1,8 +1,10 @@
 package com.carming.backend.place.repository;
 
+import com.carming.backend.course.dto.response.CoursePlaceResponse;
 import com.carming.backend.place.domain.Place;
 import com.carming.backend.place.domain.PlaceCategory;
 import com.carming.backend.place.dto.request.PlaceSearch;
+import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
@@ -20,13 +22,23 @@ public class PlaceRepositoryImpl implements PlaceRepositoryCustom {
     private final JPAQueryFactory queryFactory;
 
     @Override
-    public List<Place> getPlaces(PlaceSearch search) {
-
+    public List<Place> findPlaces(PlaceSearch search) {
         return queryFactory
                 .selectFrom(place)
                 .where(regionEq(search.getRegions()), categoryEq(search.getCategory()))
                 .orderBy(place.ratingSum.desc())
                 .limit(search.getSize())
+                .fetch();
+    }
+
+    @Override
+    public List<CoursePlaceResponse> findPlacesByCourse(List<Long> placeKeys) {
+        return queryFactory
+                .select(Projections.fields(CoursePlaceResponse.class,
+                        place.id, place.name, place.lon, place.lat,
+                        place.image, place.ratingCount, place.ratingSum))
+                .from(place)
+                .where(place.id.in(placeKeys))
                 .fetch();
     }
 

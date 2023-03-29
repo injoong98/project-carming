@@ -19,7 +19,7 @@ public class PlaceService {
     private final PlaceRepository placeRepository;
 
     public List<PlaceResponseDto> getPlaces(PlaceSearch search) {
-        List<Place> places = placeRepository.getPlaces(search);
+        List<Place> places = placeRepository.findPlaces(search);
         return places.stream()
                 .map(PlaceResponseDto::from)
                 .collect(Collectors.toList());
