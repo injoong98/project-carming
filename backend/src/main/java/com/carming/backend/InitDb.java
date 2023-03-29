@@ -45,7 +45,7 @@ public class InitDb {
                     .nickname(nickname)
                     .name(name)
                     .gender(Gender.MALE)
-                    .birthInfo(new MemberCreateDto.BirthInfoDto("1999", "05", "15"))
+                    .birthDate("1995/05/15")
                     .cardDto(new MemberCreateDto.CardDto("1", "2", "3", "4", "5"))
                     .build();
         }
