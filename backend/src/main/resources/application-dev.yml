@@ -3,7 +3,7 @@ spring:
     import: naver-sms.properties
 
   datasource:
-    url: jdbc:mysql://j8a408.p.ssafy.io:3306/carmingdb
+      url: jdbc:mysql://j8a408.p.ssafy.io:3306/carmingdb
     driver-class-name: com.mysql.cj.jdbc.Driver
     username: carming
     password: carming123

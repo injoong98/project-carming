@@ -62,6 +62,7 @@ const VerificationModal = ({isVisible, onClose}: VerificationModalProps) => {
             value={verificationCode}
             onChangeText={handleVerificationCodeChange}
             placeholder="인증번호를 입력하세요"
+            secureTextEntry
             keyboardType="numeric"
           />
           <View

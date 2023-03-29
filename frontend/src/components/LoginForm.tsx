@@ -38,11 +38,11 @@ const LoginForm = () => {
 
     dispatch(loginStart());
     try {
-      const {tokenType, accessToken, nickname, profile} = await loginApi({
+      const result = await loginApi({
         phone,
         password,
       });
-      dispatch(loginSuccess({tokenType, accessToken, nickname, profile}));
+      dispatch(loginSuccess(result));
     } catch (error: any) {
       //any 말고 다른 방법은..?
       const message =

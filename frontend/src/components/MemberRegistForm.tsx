@@ -1,14 +1,7 @@
 import React, {useState} from 'react';
 import {Picker} from '@react-native-picker/picker';
-import {Formik, Form, Field, ErrorMessage} from 'formik';
-import {
-  View,
-  Text,
-  TextInput,
-  Button,
-  KeyboardAvoidingView,
-  ScrollView,
-} from 'react-native';
+import {Formik} from 'formik';
+import {View, Text, TextInput, Button} from 'react-native';
 import styled from 'styled-components';
 import * as Yup from 'yup';
 import CommonIcon from './CommonIcon';
@@ -22,7 +15,7 @@ export type RegistFormValues = {
   nickname: string;
   password: string;
   passwordConfirm: string;
-  gender: 'MAIL' | 'FEMAIL';
+  gender: 'MALE' | 'FEMALE';
   birthDate: string;
   cardNumber: string;
   companyName:
@@ -45,7 +38,7 @@ const initialValues: RegistFormValues = {
   nickname: '',
   password: '',
   passwordConfirm: '',
-  gender: 'MAIL',
+  gender: 'MALE',
   birthDate: '',
   cardNumber: '',
   companyName: '현대',
@@ -70,14 +63,14 @@ const RegistSchema = Yup.object().shape({
   ),
   // .required('필수 항목입니다.'),
   gender: Yup.string().oneOf(
-    ['MAIL', 'FEMAIL'],
+    ['MALE', 'FEMALE'],
     '남성 또는 여성을 선택해주세요.',
   ),
   // .required('필수 항목입니다.'),
   birthDate: Yup.string()
     // .required('필수 항목입니다.'),
     .matches(
-      /^[0-9]{4}\/[0-9]{2}\/[0-9]{2}$/,
+      /^[1-2][0-9][0-9][0-9]\/[0-1][0-9]\/[0-3][0-9]$/,
       'YYYY/MM/DD 형식으로 입력해주세요.',
     ),
   cardNumber: Yup.string()
@@ -94,8 +87,8 @@ const RegistSchema = Yup.object().shape({
   cardPassword: Yup.string()
     // .required('필수 항목입니다.')
     .matches(/^[0-9]+$/, '숫자만 입력 가능합니다.')
-    .min(2, '앞 두 숫자만 입력해주세요.')
-    .max(2, '앞 두 숫자만 입력해주세요.'),
+    .min(4, '비밀번호는 4자리입니다.')
+    .max(4, '비밀번호는 4자리입니다.'),
   cvv: Yup.string()
     // .required('필수 항목입니다.')
     .matches(/^[0-9]+$/, '숫자만 입력 가능합니다.')
@@ -103,14 +96,15 @@ const RegistSchema = Yup.object().shape({
     .max(3, 'CVV/CVC는 3자리여야 합니다.'),
   cardExp: Yup.string()
     // .required('필수 항목입니다.')
-    .matches(/^[0-9]{2}\/[0-9]{2}$/, 'MM/YY 형식으로 입력해주세요.'),
+    .matches(/^[0-12]{2}\/[23-99]{2}$/, 'MM/YY 형식으로 입력해주세요.'),
 });
 
 export type RegistFormProps = {
   onSubmit: (values: RegistFormValues) => void;
+  isLoading: boolean;
 };
 
-const RegistForm: React.FC<RegistFormProps> = ({onSubmit}) => {
+const RegistForm: React.FC<RegistFormProps> = ({onSubmit, isLoading}) => {
   const handleSubmit = (values: RegistFormValues) => {
     onSubmit(values);
   };
@@ -277,12 +271,12 @@ const RegistForm: React.FC<RegistFormProps> = ({onSubmit}) => {
                   <Picker.Item
                     style={{fontSize: 13}}
                     label="남성"
-                    value="MAIL"
+                    value="MALE"
                   />
                   <Picker.Item
                     style={{fontSize: 13}}
                     label="여성"
-                    value="FEMAIL"
+                    value="FEMALE"
                   />
                 </Picker>
               </View>
@@ -403,7 +397,7 @@ const RegistForm: React.FC<RegistFormProps> = ({onSubmit}) => {
                 </RegistFormText>
                 <TextInput
                   value={values.cardPassword}
-                  placeholder="카드 비밀번호 앞 두 자리"
+                  placeholder="카드 비밀번호"
                   placeholderTextColor="grey"
                   onChangeText={handleChange('cardPassword')}
                   onBlur={handleBlur('cardPassword')}
@@ -462,6 +456,7 @@ const RegistForm: React.FC<RegistFormProps> = ({onSubmit}) => {
                 title="회원가입"
                 color={'#FFBDC1'}
                 onPress={handleSubmit}
+                disabled={isLoading}
               />
             </View>
           </View>
