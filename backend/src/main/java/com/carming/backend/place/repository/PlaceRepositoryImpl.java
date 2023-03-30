@@ -4,6 +4,7 @@ import com.carming.backend.course.dto.response.CoursePlaceResponse;
 import com.carming.backend.place.domain.Place;
 import com.carming.backend.place.domain.PlaceCategory;
 import com.carming.backend.place.dto.request.PlaceSearch;
+import com.carming.backend.place.dto.response.PopularPlaceResponseDto;
 import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
@@ -39,6 +40,17 @@ public class PlaceRepositoryImpl implements PlaceRepositoryCustom {
                         place.image, place.ratingCount, place.ratingSum))
                 .from(place)
                 .where(place.id.in(placeKeys))
+                .fetch();
+    }
+
+    @Override
+    public List<PopularPlaceResponseDto> getPopular(Long size) {
+        return queryFactory.select(Projections.fields(PopularPlaceResponseDto.class,
+                        place.image, place.name,
+                        place.region, place.ratingSum, place.ratingCount))
+                .from(place)
+                .orderBy(place.ratingSum.desc())
+                .limit(size)
                 .fetch();
     }
 

@@ -28,4 +28,9 @@ public class PlaceController {
     public List<PlaceResponseDto> getPlaces(@RequestBody PlaceSearch search) {
         return placeService.getPlaces(search);
     }
+
+    @GetMapping("/popular")
+    public void getPopularPlaces() {
+
+    }
 }

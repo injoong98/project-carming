@@ -1,12 +1,15 @@
 package com.carming.backend.member.domain;
 
+import com.carming.backend.review.domain.Review;
 import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
@@ -46,6 +49,9 @@ public class Member implements UserDetails {
     @JoinColumn(name = "member_card_id")
     private Card card;
 
+    @OneToMany(mappedBy = "member")
+    private List<Review> reviews = new ArrayList<>();
+
     @Builder
     public Member(String phoneNumber, String password,
                   String nickname, String name, String profile,
@@ -59,9 +65,15 @@ public class Member implements UserDetails {
         this.birthday = birthday;
     }
 
+    //==연관관계 편의 메소드 시작==//
     public void changeCard(Card card) {
         this.card = card;
     }
+
+    public void addReview(Review review) {
+        this.reviews.add(review);
+    }
+    //==연관과녜 편의 메소드 끝==//
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

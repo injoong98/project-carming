@@ -1,11 +1,14 @@
 package com.carming.backend.course.domain;
 
+import com.carming.backend.review.domain.Review;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -27,17 +30,25 @@ public class Course {
     private String name;
 
     @Column(name = "course_rating_count")
-    private Long ratingCount;
+    private Integer ratingCount;
 
     @Column(name = "course_rating_sum")
-    private Long ratingSum;
+    private Integer ratingSum;
+
+    @OneToMany(mappedBy = "course")
+    private List<Review> reviews = new ArrayList<>();
 
     @Builder
     public Course(String places, String regions, String name) {
         this.places = places;
         this.regions = regions;
         this.name = name;
-        this.ratingCount = 0L;
-        this.ratingSum = 0L;
+        this.ratingCount = 0;
+        this.ratingSum = 0;
+    }
+
+    //== 연관관계 편의 메소드==//
+    public void addReview(Review review) {
+        this.reviews.add(review);
     }
 }

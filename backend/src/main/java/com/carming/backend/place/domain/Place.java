@@ -65,4 +65,8 @@ public class Place {
         this.keyword = keyword;
         this.image = image;
     }
+
+    public void addRating(Integer rating) {
+        this.ratingSum += rating;
+    }
 }
