@@ -12,6 +12,7 @@ import org.junit.jupiter.api.Test;
 import org.mockito.BDDMockito;
 import org.mockito.Mockito;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.transaction.annotation.Transactional;
@@ -26,7 +27,7 @@ class MemberServiceTest {
 
     private final CardRepository cardRepository = Mockito.mock(CardRepository.class);
 
-    private final RedisTemplate redisTemplate = Mockito.mock(RedisTemplate.class);
+    private final StringRedisTemplate redisTemplate = Mockito.mock(StringRedisTemplate.class);
 
     private final ValueOperations operations = Mockito.mock(ValueOperations.class);
 
