@@ -26,12 +26,12 @@ public class ReviewResponseDto {
 
     private List<String> tags;
 
-    private LocalDateTime createdTime;
+    private String createdTime;
 
     @Builder
     public ReviewResponseDto(String profile, String nickname,
                              Integer rating, String content,
-                             List<String> tags, LocalDateTime createdTime) {
+                             List<String> tags, String createdTime) {
         this.profile = profile;
         this.nickname = nickname;
         this.rating = rating;
@@ -47,7 +47,7 @@ public class ReviewResponseDto {
                 .rating(review.getCourseRating())
                 .content(review.getContent())
                 .tags(getTags(review))
-                .createdTime(review.getCreatedTime())
+                .createdTime(review.getCreatedTime().toLocalDate().toString())
                 .build();
     }
 

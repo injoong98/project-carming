@@ -99,7 +99,7 @@ public class ReviewService {
                         .rating(review.getCourseRating())
                         .content(review.getContent())
                         .tags(getTagName(review.getReviewTags()))
-                        .createdTime(review.getCreatedTime())
+                        .createdTime(review.getCreatedTime().toLocalDate().toString())
                         .build()
                 )
                 .collect(Collectors.toList());
