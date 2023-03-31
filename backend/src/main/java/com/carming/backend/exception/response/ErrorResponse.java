@@ -1,6 +1,7 @@
 package com.carming.backend.exception.response;
 
 import lombok.Builder;
+import lombok.Data;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -14,6 +15,7 @@ import java.util.Map;
  *     }
  * }
  */
+@Data
 public class ErrorResponse {
 
     private final String code;

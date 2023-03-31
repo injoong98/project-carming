@@ -18,6 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional(readOnly = true)
 @Service
 public class LoginService {
+
     private final AuthenticationManagerBuilder authenticationManagerBuilder;
 
     private final MemberRepository memberRepository;
