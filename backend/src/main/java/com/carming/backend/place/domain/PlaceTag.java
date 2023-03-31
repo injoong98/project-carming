@@ -25,4 +25,9 @@ public class PlaceTag {
     @ManyToOne
     @JoinColumn(name = "tag_id")
     private Tag tag;
+
+    public PlaceTag(Place place, Tag tag) {
+        this.place = place;
+        this.tag = tag;
+    }
 }

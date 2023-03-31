@@ -3,6 +3,8 @@ package com.carming.backend.course.controller;
 import com.carming.backend.course.dto.request.CourseSearch;
 import com.carming.backend.course.dto.response.CourseResponseDto;
 import com.carming.backend.course.service.CourseService;
+import com.carming.backend.review.dto.response.ReviewResponseDto;
+import com.carming.backend.review.service.ReviewService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -16,12 +18,22 @@ public class CourseController {
 
     private final CourseService courseService;
 
+    private final ReviewService reviewService;
+
     /**
      * 지역구에 따른 코스 검색
      */
     @GetMapping
     public List<CourseResponseDto> findCourses(@RequestBody CourseSearch search) {
         return courseService.findCourses(search);
+    }
+
+    /**
+     * 코스에 따른 리뷰
+     */
+    @GetMapping("/{id}/reviews")
+    public List<ReviewResponseDto> findCourseReviews(@PathVariable Long id) {
+        return reviewService.findByCourseTest1(id);
     }
 
     //todo

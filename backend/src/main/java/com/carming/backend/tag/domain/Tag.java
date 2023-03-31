@@ -1,7 +1,7 @@
 package com.carming.backend.tag.domain;
 
-import com.carming.backend.place.domain.PlaceCategory;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -22,5 +22,11 @@ public class Tag {
 
     @Enumerated(EnumType.STRING)
     @Column(name = "tag_category")
-    private PlaceCategory category;
+    private Category category;
+
+    @Builder
+    public Tag(String name, Category category) {
+        this.name = name;
+        this.category = category;
+    }
 }
