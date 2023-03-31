@@ -13,6 +13,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.validation.Valid;
+
 @RequiredArgsConstructor
 @RequestMapping("/api/member/valid-number")
 @RestController
@@ -23,14 +25,14 @@ public class AuthNumberController {
     private final SmsFactory smsFactory;
 
     @PostMapping("/request")
-    public ResponseEntity<Void> makeAuthNumber(@RequestBody PhoneNumberDto request) {
+    public ResponseEntity<Void> makeAuthNumber(@RequestBody @Valid PhoneNumberDto request) {
         String authNumbers = authNumberService.saveAuthNumbers(request);
-        SmsResponse response = smsFactory.send(request.getPhoneNumber(), authNumbers);
+        SmsResponse response = smsFactory.send(request.getPhone(), authNumbers);
         return new ResponseEntity<>(HttpStatus.resolve(Integer.parseInt(response.getStatusCode())));
     }
 
     @PostMapping("/valid")
-    public ResponseEntity<Void> validAuthNumber(@RequestBody AuthNumbersDto request) {
+    public ResponseEntity<Void> validAuthNumber(@RequestBody @Valid AuthNumbersDto request) {
         authNumberService.validAuthNumbers(request);
         return new ResponseEntity<>(HttpStatus.OK);
     }

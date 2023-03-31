@@ -8,8 +8,6 @@ import com.carming.backend.member.dto.request.PhoneNumberDto;
 import com.carming.backend.member.exception.InvalidAuthRequest;
 import com.carming.backend.member.exception.MemberAlreadySigned;
 import com.carming.backend.member.repository.MemberRepository;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.redis.core.StringRedisTemplate;
@@ -32,8 +30,8 @@ public class AuthNumbersService {
 
     @Transactional
     public String saveAuthNumbers(PhoneNumberDto request) {
-        String phoneNumber = request.getPhoneNumber();
-        if (memberRepository.findByPhone(request.getPhoneNumber()).isPresent()) {
+        String phoneNumber = request.getPhone();
+        if (memberRepository.findByPhone(request.getPhone()).isPresent()) {
             throw new MemberAlreadySigned();
         }
 
@@ -50,7 +48,7 @@ public class AuthNumbersService {
 
     public String validAuthNumbers(AuthNumbersDto request) {
         ValueOperations<String, String> operations = redisTemplate.opsForValue();
-        String json = operations.get(request.getPhoneNumber()); //잘못 입력할 수도 있으니, getAndDelete 가 아닌 get
+        String json = operations.get(request.getPhone()); //잘못 입력할 수도 있으니, getAndDelete 가 아닌 get
         AuthenticationInfo authentication = JsonMapper.toClass(json, AuthenticationInfo.class);
 
         String requestAuthNumbers = request.getAuthNumber();
@@ -60,7 +58,7 @@ public class AuthNumbersService {
         }
 
         String passAuthentication = JsonMapper.toJson(new AuthenticationInfo(requestAuthNumbers, true));
-        saveAuthenticationInfo(request.getPhoneNumber(), passAuthentication, 60L);
+        saveAuthenticationInfo(request.getPhone(), passAuthentication, 60L);
         return requestAuthNumbers;
     }
 

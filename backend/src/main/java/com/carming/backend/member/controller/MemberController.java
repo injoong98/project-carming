@@ -7,6 +7,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
+
 @RequiredArgsConstructor
 @RequestMapping("/api/member")
 @RestController
@@ -15,7 +17,7 @@ public class MemberController {
     private final MemberService memberService;
 
     @PostMapping("/signup")
-    public ResponseEntity<Void> signupMember(@RequestBody MemberCreateDto request) {
+    public ResponseEntity<Void> signupMember(@RequestBody @Valid MemberCreateDto request) {
         memberService.validAuthenticated(request);
         memberService.saveMember(request);
         return new ResponseEntity<>(HttpStatus.OK);

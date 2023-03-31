@@ -1,13 +1,10 @@
 package com.carming.backend.member.service;
 
-import com.carming.backend.member.domain.valid.AuthenticationInfo;
 import com.carming.backend.member.dto.request.AuthNumbersDto;
 import com.carming.backend.member.dto.request.PhoneNumberDto;
-import com.carming.backend.member.exception.InvalidAuthRequest;
 import com.carming.backend.member.repository.MemberRepository;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -15,13 +12,10 @@ import org.mockito.BDDMockito;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.data.redis.core.ValueOperations;
 
-import java.time.Duration;
-
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.times;
 
 class AuthNumbersServiceTest {
 
@@ -98,13 +92,13 @@ class AuthNumbersServiceTest {
 
     private PhoneNumberDto createPhoneNumber(String phoneNumber) {
         PhoneNumberDto phoneNumberDto = new PhoneNumberDto();
-        phoneNumberDto.setPhoneNumber(phoneNumber);
+        phoneNumberDto.setPhone(phoneNumber);
         return phoneNumberDto;
     }
 
     private AuthNumbersDto createAuthNumberDto(String phoneNumber, String authNumber) {
         AuthNumbersDto authNumbersDto = new AuthNumbersDto();
-        authNumbersDto.setPhoneNumber(phoneNumber);
+        authNumbersDto.setPhone(phoneNumber);
         authNumbersDto.setAuthNumber(authNumber);
         return authNumbersDto;
     }

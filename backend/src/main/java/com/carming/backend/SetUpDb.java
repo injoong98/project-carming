@@ -7,7 +7,9 @@ import com.carming.backend.member.domain.Member;
 import com.carming.backend.member.repository.MemberRepository;
 import com.carming.backend.place.domain.Place;
 import com.carming.backend.place.domain.PlaceCategory;
+import com.carming.backend.place.domain.PlaceTag;
 import com.carming.backend.place.repository.PlaceRepository;
+import com.carming.backend.place.repository.PlaceTagRepository;
 import com.carming.backend.review.domain.Review;
 import com.carming.backend.review.domain.ReviewTag;
 import com.carming.backend.review.repository.ReviewRepository;
@@ -46,14 +48,31 @@ public class SetUpDb {
     @Autowired
     private ReviewTagRepository reviewTagRepository;
 
+    @Autowired
+    private PlaceTagRepository placeTagRepository;
+
     @Transactional
     @PostConstruct
     public void init() {
-        saveReviewTag();
-        savePlace();
+        List<Tag> tags = saveReviewTag();
+        savePlaceTag(tags);
     }
 
-    private void saveReviewTag() {
+    private void savePlaceTag(List<Tag> tags) {
+        Random random = new Random();
+
+        List<Place> places = savePlace();
+        for (Place place : places) {
+            for (int i = 0; i < 10; i++) {
+                placeTagRepository.save(new PlaceTag(place, tags.get(random.nextInt(4) + 4)));
+                placeTagRepository.save(new PlaceTag(place, tags.get(random.nextInt(4) + 4)));
+                placeTagRepository.save(new PlaceTag(place, tags.get(random.nextInt(4) + 4)));
+            }
+
+        }
+    }
+
+    private List<Tag> saveReviewTag() {
         Random random = new Random();
 
         List<Review> reviews = saveReview();
@@ -63,6 +82,8 @@ public class SetUpDb {
 
             reviewTagRepository.save(new ReviewTag(review, tags.get(random.nextInt(4))));
         }
+
+        return tags;
     }
 
     private List<Tag> saveTags() {
@@ -71,10 +92,18 @@ public class SetUpDb {
         tags.add(tagRepository.save(new Tag("분위기 좋은", Category.COURSE)));
         tags.add(tagRepository.save(new Tag("드라이브 코스", Category.COURSE)));
         tags.add(tagRepository.save(new Tag("놀거리가 많은", Category.COURSE)));
+
+        tags.add(tagRepository.save(new Tag("커피가 맛있는", Category.CAFE)));
+        tags.add(tagRepository.save(new Tag("분위기 있는", Category.CAFE)));
+        tags.add(tagRepository.save(new Tag("시그니처 메뉴", Category.CAFE)));
+        tags.add(tagRepository.save(new Tag("조용한", Category.CAFE)));
+
         tags.add(tagRepository.save(new Tag("맛있는", Category.FOOD)));
         tags.add(tagRepository.save(new Tag("청결한", Category.FOOD)));
         tags.add(tagRepository.save(new Tag("양이 많은", Category.FOOD)));
         tags.add(tagRepository.save(new Tag("친절한", Category.FOOD)));
+
+
         return tags;
     }
 
@@ -103,7 +132,6 @@ public class SetUpDb {
     private List<Course> saveCourse() {
         Course course1 = courseRepository.save(new Course("1|2|3|4|5", "노원구|은평구|관악구", "노잼은 아닌 코스"));
         Course course2 = courseRepository.save(new Course("1|4|5|10|7", "서대문구|은평구|관악구", "평타코스"));
-
         return List.of(course1, course2);
     }
 
