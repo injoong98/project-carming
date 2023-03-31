@@ -2,10 +2,12 @@ package com.carming.backend.course.dto.request;
 
 import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.util.List;
 
 
+@NoArgsConstructor
 @Data
 public class CourseSearch {
 
@@ -13,9 +15,8 @@ public class CourseSearch {
 
     private List<String> regions;
 
-    private Long size;
+    private Long size = DEFAULT_SIZE;
 
-    @Builder
     public CourseSearch(List<String> regions, Long size) {
         this.regions = regions;
         this.size = size == null ? DEFAULT_SIZE : size;

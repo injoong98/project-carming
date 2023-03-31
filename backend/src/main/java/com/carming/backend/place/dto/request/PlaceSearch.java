@@ -1,8 +1,10 @@
 package com.carming.backend.place.dto.request;
 
 import com.carming.backend.place.domain.PlaceCategory;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import lombok.Builder;
 import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.util.List;
@@ -17,20 +19,11 @@ public class PlaceSearch {
 
     private String category;
 
-    private Long size;
+    private Long size = DEFAULT_SIZE;
 
-
-    @Builder
     public PlaceSearch(List<String> regions, String category, Long size) {
         this.regions = regions;
         this.category = category;
-        this.size = validNull(size);
-    }
-
-    private Long validNull(Long size) {
-        if (size == null) {
-            size = DEFAULT_SIZE;
-        }
-        return size;
+        this.size = size == null ? DEFAULT_SIZE : size;
     }
 }
