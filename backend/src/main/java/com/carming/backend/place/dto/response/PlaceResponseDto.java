@@ -28,6 +28,8 @@ public class PlaceResponseDto {
 
     private String region;
 
+    private String address;
+
     private Integer ratingCount;
 
     private Integer ratingSum;
@@ -45,6 +47,7 @@ public class PlaceResponseDto {
                 .lon(place.getLon())
                 .lat(place.getLat())
                 .region(place.getRegion())
+                .address(place.getAddress())
                 .ratingCount(place.getRatingCount())
                 .ratingSum(place.getRatingSum())
                 .keyword(separateKeyword(place.getKeyword()))
@@ -64,7 +67,7 @@ public class PlaceResponseDto {
     @QueryProjection
     @Builder
     public PlaceResponseDto(Long id, String name, String tel, PlaceCategory category,
-                            Double lon, Double lat, String region,
+                            Double lon, Double lat, String region, String address,
                             Integer ratingCount, Integer ratingSum, List<String> keyword, String image) {
         this.id = id;
         this.name = name;
@@ -73,6 +76,7 @@ public class PlaceResponseDto {
         this.lon = lon;
         this.lat = lat;
         this.region = region;
+        this.address = address;
         this.ratingCount = ratingCount;
         this.ratingSum = ratingSum;
         this.keyword = keyword;

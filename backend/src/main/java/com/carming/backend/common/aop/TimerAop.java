@@ -1,6 +1,7 @@
 package com.carming.backend.common.aop;
 
 import com.carming.backend.common.aop.timer.Timer;
+import com.carming.backend.exception.CustomException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.JoinPoint;
@@ -28,9 +29,14 @@ public class TimerAop {
 
     @Around("timer()")
     public Object executionTimer(ProceedingJoinPoint joinPoint) throws Throwable {
+        Object returnValue = null;
 
         Long startTime = timer.start();
-        Object returnValue = joinPoint.proceed();
+        try {
+            returnValue = joinPoint.proceed();
+        } catch (CustomException e) {
+            throw e;
+        }
         Long elapsedTime = timer.getElapsedTime(startTime);
 
         Method method = getMethod(joinPoint);

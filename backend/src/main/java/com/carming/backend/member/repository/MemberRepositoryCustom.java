@@ -6,5 +6,7 @@ import java.util.Optional;
 
 public interface MemberRepositoryCustom {
 
-    Optional<Member> findByPhone(String phoneNumber);
+    Optional<Member> findByPhone(String phoneNumber); //Login에 사용
+
+    Optional<String> findNickname(String nickname);
 }

@@ -2,12 +2,10 @@ package com.carming.backend.place.controller;
 
 import com.carming.backend.place.dto.request.PlaceSearch;
 import com.carming.backend.place.dto.response.PlaceResponseDto;
+import com.carming.backend.place.dto.response.PopularPlaceResponseDto;
 import com.carming.backend.place.service.PlaceService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -30,7 +28,12 @@ public class PlaceController {
     }
 
     @GetMapping("/popular")
-    public void getPopularPlaces() {
+    public List<PopularPlaceResponseDto> getPopularPlaces() {
+        return placeService.getPopularPlaces();
+    }
 
+    @GetMapping("/popular/{id}")
+    public void getPopularPlaceDetail(@PathVariable("id") Long placeId) {
+        placeService.getPopularPlaceDetail(placeId);
     }
 }

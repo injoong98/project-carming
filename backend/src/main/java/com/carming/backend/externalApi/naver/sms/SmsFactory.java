@@ -2,6 +2,7 @@ package com.carming.backend.externalApi.naver.sms;
 
 import lombok.Data;
 import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 import org.apache.tomcat.util.codec.binary.Base64;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
@@ -18,6 +19,7 @@ import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 
 //@PropertySource("classpath:naver-sms-local.properties")
+@RequiredArgsConstructor
 @Getter
 @Data
 @Component
@@ -42,6 +44,7 @@ public class SmsFactory {
         return webClient.post()
                 .uri("/services/" + serviceId +
                         "/messages")
+                .headers(this::addDefaultHeaders)
                 .contentType(MediaType.APPLICATION_JSON)
                 .bodyValue(new Sms(to, validNumber))
                 .retrieve()
@@ -52,7 +55,7 @@ public class SmsFactory {
     private void createWebClient() {
         this.webClient = WebClient.builder()
                 .baseUrl(NaverSmsConst.BASE_URL)
-                .defaultHeaders(this::addDefaultHeaders)
+//                .defaultHeaders(this::addDefaultHeaders)
                 .build();
     }
 

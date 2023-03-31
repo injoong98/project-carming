@@ -20,4 +20,13 @@ public class MemberRepositoryImpl implements MemberRepositoryCustom{
                 .where(member.phoneNumber.eq(phoneNumber))
                 .fetchFirst());
     }
+
+    @Override
+    public Optional<String> findNickname(String nickname) {
+        return Optional.ofNullable(queryFactory
+                .select(member.nickname)
+                .from(member)
+                .where(member.nickname.eq(nickname))
+                .fetchFirst());
+    }
 }

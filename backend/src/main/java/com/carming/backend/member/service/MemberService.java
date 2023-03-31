@@ -1,6 +1,7 @@
 package com.carming.backend.member.service;
 
 import com.carming.backend.common.JsonMapper;
+import com.carming.backend.exception.InvalidRequest;
 import com.carming.backend.member.domain.Card;
 import com.carming.backend.member.domain.Member;
 import com.carming.backend.member.domain.valid.AuthenticationInfo;
@@ -30,6 +31,10 @@ public class MemberService {
 
     @Transactional
     public Long saveMember(MemberCreateDto request) {
+        if (memberRepository.findNickname(request.getNickname()).isPresent()) {
+            throw new InvalidRequest("nickname", "이미 등록된 닉네임입니다.");
+        }
+
         Card card = request.getCard().toEntity();
         cardRepository.save(card);
 

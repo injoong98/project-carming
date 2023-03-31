@@ -36,6 +36,9 @@ public class Place {
     @Column(name = "place_region")
     private String region;
 
+    @Column(name = "place_address")
+    private String address;
+
     @Column(name = "place_rating_count")
     private Integer ratingCount;
 
@@ -52,7 +55,8 @@ public class Place {
     @Builder
     public Place(String name, String tel, PlaceCategory category,
                  Double lon, Double lat,
-                 String region, Integer ratingCount, Integer ratingSum,
+                 String region, String address,
+                 Integer ratingCount, Integer ratingSum,
                  String keyword, String image) {
         this.name = name;
         this.tel = tel;
@@ -60,6 +64,7 @@ public class Place {
         this.lon = lon;
         this.lat = lat;
         this.region = region;
+        this.address = address;
         this.ratingCount = ratingCount;
         this.ratingSum = ratingSum;
         this.keyword = keyword;

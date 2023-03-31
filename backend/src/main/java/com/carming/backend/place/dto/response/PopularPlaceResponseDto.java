@@ -7,11 +7,15 @@ import lombok.NoArgsConstructor;
 @Data
 public class PopularPlaceResponseDto {
 
-    private String image;
+    private Long id;
 
     private String name;
 
+    private String image;
+
     private String region;
+
+    private String address;
 
     private Integer ratingSum;
 

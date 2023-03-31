@@ -108,10 +108,10 @@ public class SetUpDb {
     }
 
     private List<Place> savePlace() {
-        Place place1 = placeRepository.save(new Place("어반플랜트 합정", "070-4192-0378", PlaceCategory.CAFE, 126.9171881, 37.54789417, "마포구", 275, 1155, "데이트코스|브런치카페|식물카페", "http://t1.daumcdn.net/localfiy/searchregister_1152174062"));
-        Place place2 = placeRepository.save(new Place("피오니 홍대점", "02-333-5325", PlaceCategory.CAFE, 126.91976584, 37.55008538, "마포구", 214, 813, "일회용품없는가게", "http://t1.daumcdn.net/cfile/276E0A4C550A37652A"));
-        Place place3 = placeRepository.save(new Place("프릳츠 도화점", "02-3275-2045", PlaceCategory.CAFE, 126.94907049, 37.54101958, "마포구", 288, 1123, "레트로풍|베이커리카페|빈티지분위기", "http://t1.kakaocdn.net/fiy_reboot/place/0E03C7048DF94AB187582A216C7CA500"));
-        Place place4 = placeRepository.save(new Place("카페공명", "070-8869-6304", PlaceCategory.CAFE, 126.92635262, 37.5598709, "마포구", 127, 470, "공부하기좋은|베이커리카페|북카페|이색카페", "http://t1.daumcdn.net/localfiy/searchregister_1919726515"));
+        Place place1 = placeRepository.save(new Place("어반플랜트 합정", "070-4192-0378", PlaceCategory.CAFE, 126.9171881, 37.54789417, "마포구", "서울 마포구 독막로4길 3", 275, 1155, "데이트코스|브런치카페|식물카페", "http://t1.daumcdn.net/localfiy/searchregister_1152174062"));
+        Place place2 = placeRepository.save(new Place("피오니 홍대점", "02-333-5325", PlaceCategory.CAFE, 126.91976584, 37.55008538, "마포구", "서울 마포구 독막로7길 51", 214, 813, "일회용품없는가게", "http://t1.daumcdn.net/cfile/276E0A4C550A37652A"));
+        Place place3 = placeRepository.save(new Place("프릳츠 도화점", "02-3275-2045", PlaceCategory.CAFE, 126.94907049, 37.54101958, "마포구", "서울 마포구 새창로2길 17", 288, 1123, "레트로풍|베이커리카페|빈티지분위기", "http://t1.kakaocdn.net/fiy_reboot/place/0E03C7048DF94AB187582A216C7CA500"));
+        Place place4 = placeRepository.save(new Place("카페공명", "070-8869-6304", PlaceCategory.CAFE, 126.92635262, 37.5598709, "마포구", "서울 마포구 연희로 11", 127, 470, "공부하기좋은|베이커리카페|북카페|이색카페", "http://t1.daumcdn.net/localfiy/searchregister_1919726515"));
         return List.of(place1, place2, place3, place4);
     }
 
