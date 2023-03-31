@@ -4,6 +4,7 @@ import com.carming.backend.member.domain.valid.AuthenticationInfo;
 import com.carming.backend.member.dto.request.AuthNumbersDto;
 import com.carming.backend.member.dto.request.PhoneNumberDto;
 import com.carming.backend.member.exception.InvalidAuthRequest;
+import com.carming.backend.member.repository.MemberRepository;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.assertj.core.api.Assertions;
@@ -28,6 +29,8 @@ class AuthNumbersServiceTest {
 
     private final ValueOperations valueOperations = mock(ValueOperations.class);
 
+    private final MemberRepository memberRepository = mock(MemberRepository.class);
+
     private AuthNumbersService authNumbersService;
 
     private final ObjectMapper objectMapper = new ObjectMapper();
@@ -35,7 +38,7 @@ class AuthNumbersServiceTest {
     @BeforeEach
     public void setUp() {
         BDDMockito.given(redisTemplate.opsForValue()).willReturn(valueOperations);
-        authNumbersService = new AuthNumbersService(redisTemplate);
+        authNumbersService = new AuthNumbersService(redisTemplate, memberRepository);
     }
 
     @Test
