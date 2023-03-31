@@ -23,6 +23,7 @@ function RootStackNavigator() {
       {isLoggedIn ? (
         <Stack.Screen name="AppDrawer" component={L2_AppDrawerNavigator} />
       ) : (
+        // <Stack.Screen name="AppDrawer" component={L2_AppDrawerNavigator} />
         <Stack.Screen
           name="LandingStack"
           component={L2_LandingStackNavigator}

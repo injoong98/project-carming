@@ -30,7 +30,7 @@ const LandingScreen = () => {
         <BtnView>
           <CustomButton
             text="로그인"
-            buttonStyle={{backgroundColor: 'transparent'}}
+            buttonStyle={{backgroundColor: 'transparent', elevation: 0}}
             textStyle={{
               fontSize: 30,
               fontFamily: 'SeoulNamsanB',
@@ -42,7 +42,7 @@ const LandingScreen = () => {
           />
           <CustomButton
             text="회원가입"
-            buttonStyle={{backgroundColor: 'transparent'}}
+            buttonStyle={{backgroundColor: 'transparent', elevation: 0}}
             textStyle={{
               fontSize: 30,
               fontFamily: 'SeoulNamsanB',

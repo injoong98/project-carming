@@ -1,21 +1,50 @@
 import {useState} from 'react';
-import {Modal, Text, TouchableOpacity, View, TextInput} from 'react-native';
+import {
+  Modal,
+  Text,
+  TouchableOpacity,
+  View,
+  TextInput,
+  Alert,
+} from 'react-native';
+import {useVerifyMutation} from '../apis/memberRegistApi';
+import {useDispatch} from 'react-redux';
+import {verifySuccess} from '../redux/slices/authSlice';
 
-export type VerificationModalProps = {
+export interface VerificationModalProps {
   isVisible: boolean;
   onClose: () => void;
-};
+  phone: string;
+}
 
-const VerificationModal = ({isVisible, onClose}: VerificationModalProps) => {
+const VerificationModal: React.FC<VerificationModalProps> = ({
+  isVisible,
+  onClose,
+  phone,
+}) => {
   const [verificationCode, setVerificationCode] = useState<string>('');
+  const [verify, {isLoading}] = useVerifyMutation();
+  const dispatch = useDispatch();
 
   const handleVerificationCodeChange = (text: string) => {
     setVerificationCode(text);
   };
 
   const handleVerificationCodeSubmit = () => {
+    const data = {phone: phone, authNumber: verificationCode};
     // handle verification code submit logic here
-    onClose();
+    verify(data)
+      .unwrap()
+      .then(response => {
+        console.log(response);
+        dispatch(verifySuccess());
+        onClose();
+        Alert.alert('인증이 완료되었습니다.');
+      })
+      .catch(error => {
+        console.log(JSON.stringify(error));
+        Alert.alert('인증번호를 다시 확인해주세요.');
+      });
   };
 
   const handleCancel = () => {
@@ -79,7 +108,8 @@ const VerificationModal = ({isVisible, onClose}: VerificationModalProps) => {
                 padding: 7,
                 borderRadius: 5,
                 alignItems: 'center',
-              }}>
+              }}
+              disabled={isLoading}>
               <Text style={{color: '#fff', fontWeight: 'bold'}}>확인</Text>
             </TouchableOpacity>
             <TouchableOpacity
@@ -90,7 +120,8 @@ const VerificationModal = ({isVisible, onClose}: VerificationModalProps) => {
                 padding: 7,
                 borderRadius: 5,
                 alignItems: 'center',
-              }}>
+              }}
+              disabled={isLoading}>
               <Text style={{color: '#fff', fontWeight: 'bold'}}>취소</Text>
             </TouchableOpacity>
           </View>

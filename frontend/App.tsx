@@ -31,6 +31,7 @@ const theme = {
 };
 
 function App(): JSX.Element {
+
   const [isLoaded, setIsLoaded] = useState(false);
 
   setTimeout(() => {

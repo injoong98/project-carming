@@ -1,4 +1,8 @@
-import {NavigationProp, useNavigation} from '@react-navigation/native';
+import {
+  NavigationProp,
+  useIsFocused,
+  useNavigation,
+} from '@react-navigation/native';
 import {
   ImageBackground,
   Text,
@@ -15,7 +19,11 @@ import MemberRegistForm, {
   RegistFormValues,
 } from '../components/MemberRegistForm';
 import {L2_LandingStackParamList} from '../navigations/L2_LandingStackNavigator';
+import {verifyInitialize} from '../redux/slices/authSlice';
 import {RegistRequestPayload} from '../types/RegistRequestPayload';
+import {useDispatch} from 'react-redux';
+import {useEffect, useRef} from 'react';
+import {FormikProps} from 'formik';
 
 type SignupScreenNavigationProp = NavigationProp<
   L2_LandingStackParamList,
@@ -25,6 +33,7 @@ type SignupScreenNavigationProp = NavigationProp<
 const SignupScreen = () => {
   const navigation = useNavigation<SignupScreenNavigationProp>();
   const [signup, {isLoading}] = useSignupMutation();
+  const dispatch = useDispatch();
 
   const handleSubmit = (data: RegistFormValues) => {
     const newMember: RegistRequestPayload = {
@@ -49,11 +58,21 @@ const SignupScreen = () => {
       .unwrap()
       .then(response => {
         console.log(response);
+        dispatch(verifyInitialize());
         Alert.alert('회원가입이 완료되었습니다.');
+        navigation.navigate('Login');
       })
       .catch(error => {
-        console.log(JSON.stringify(error));
-        Alert.alert(`회원가입에 실패했습니다. ${JSON.stringify(error)}`);
+        console.log(error);
+        if (!error.data || !error.data.validation) {
+          Alert.alert('회원가입에 실패했습니다.');
+        } else if (
+          error.data.validation.nickname === '이미 등록된 닉네임입니다.'
+        ) {
+          Alert.alert('이미 등록된 닉네임입니다.');
+        } else {
+          Alert.alert('회원가입에 실패했습니다.');
+        }
       });
     // Handle form submission logic here
   };
@@ -70,13 +89,16 @@ const SignupScreen = () => {
                 alignItems: 'center',
                 justifyContent: 'space-between',
               }}>
-              <BackButton />
+              <BackButton onPress={() => dispatch(verifyInitialize())} />
               <Image
                 source={require('../assets/images/logo_white.png')}
                 style={{height: 30, width: 114, resizeMode: 'contain'}}
               />
             </View>
-            <MemberRegistForm onSubmit={handleSubmit} isLoading={isLoading} />
+            <MemberRegistForm
+              onSubmit={handleSubmit}
+              isSignupLoading={isLoading}
+            />
           </View>
           <View
             style={{
@@ -88,7 +110,11 @@ const SignupScreen = () => {
             <Text style={styles.signUpText}>이미 가입된 회원이신가요? </Text>
             <Text
               style={[styles.signUpText, {fontSize: 16}]}
-              onPress={() => navigation.navigate('Login')}>
+              onPress={() => {
+                navigation.goBack();
+                dispatch(verifyInitialize());
+                navigation.navigate('Login');
+              }}>
               로그인
             </Text>
           </View>
@@ -119,6 +145,7 @@ const styles = StyleSheet.create({
     marginBottom: '20%',
   },
   signUpText: {
+    fontFamily: 'SeoulNamsanM',
     color: 'white',
     fontSize: 12,
   },

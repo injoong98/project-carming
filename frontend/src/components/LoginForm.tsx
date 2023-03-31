@@ -8,6 +8,7 @@ import {
   loginSuccess,
 } from '../redux/slices/authSlice';
 import {RootState} from '../redux/store';
+import CustomButton from './CustomButton';
 
 const LoginForm = () => {
   // LoginForm 컴포넌트 내부
@@ -70,9 +71,13 @@ const LoginForm = () => {
         placeholderTextColor="lightgray"
         style={styles.loginFormText}
       />
-      <Button
-        title="로그인"
-        color={'#8398D1'}
+      <CustomButton
+        text="로그인"
+        textStyle={{color: 'white', fontSize: 14, fontFamily: 'SeoulNamsanM'}}
+        buttonStyle={{
+          backgroundColor: '#8398D1',
+          paddingVertical: 10,
+        }}
         onPress={handleLogin}
         disabled={isLoading}
       />

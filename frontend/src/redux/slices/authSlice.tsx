@@ -10,6 +10,7 @@ type AuthState = {
   isLoading: boolean;
   error: string | null;
   isLoggedIn: boolean;
+  isVerified: boolean; // 번호를 인증했는지 확인
 };
 
 const initialState: AuthState = {
@@ -18,6 +19,7 @@ const initialState: AuthState = {
   isLoading: false,
   error: null,
   isLoggedIn: false,
+  isVerified: false,
 };
 
 // 로그인 API 호출 액션 생성
@@ -60,6 +62,12 @@ const authSlice = createSlice({
       state.error = null;
       state.isLoggedIn = false;
     },
+    verifySuccess: state => {
+      state.isVerified = true;
+    },
+    verifyInitialize: state => {
+      state.isVerified = false;
+    },
   },
   extraReducers: builder => {
     builder
@@ -89,7 +97,13 @@ const authSlice = createSlice({
   },
 });
 
-export const {loginStart, loginSuccess, loginFailure, logout} =
-  authSlice.actions;
+export const {
+  loginStart,
+  loginSuccess,
+  loginFailure,
+  logout,
+  verifySuccess,
+  verifyInitialize,
+} = authSlice.actions;
 
 export default authSlice;

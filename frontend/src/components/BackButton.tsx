@@ -16,7 +16,7 @@ const BackButton: React.FC<BackButtonProps> = ({
   const navigation = useNavigation();
 
   const handlePress = () => {
-    onPress;
+    onPress && onPress();
     navigation.goBack();
   };
 
