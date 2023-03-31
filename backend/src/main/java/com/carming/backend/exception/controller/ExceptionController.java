@@ -5,11 +5,15 @@ import com.carming.backend.exception.response.ErrorResponse;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
+
+import javax.naming.AuthenticationException;
 
 @RestControllerAdvice
-public class ExceptionController {
+public class ExceptionController extends ResponseEntityExceptionHandler {
 
-    @ExceptionHandler(CustomException.class)
+    //Custom.class
+    @ExceptionHandler(AuthenticationException.class)
     public ResponseEntity<ErrorResponse> customException(CustomException e) {
         int statusCode = e.getStatusCode();
 
