@@ -1,12 +1,19 @@
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
-import L4_CourseCreateStackNavigator from './L4_CourseCreateStackNavigator';
-import L4_JourneyStackNavigator from './L4_JourneyStackNavigator';
-import L4_JourneyEndStackNavigator from './L4_JourneyEndStackNavigator';
+import L4_CourseCreateStackNavigator, {
+  L4_CourseCreateStackParamList,
+} from './L4_CourseCreateStackNavigator';
+import L4_JourneyStackNavigator, {
+  L4_JourneyStackParamList,
+} from './L4_JourneyStackNavigator';
+import L4_JourneyEndStackNavigator, {
+  L4_JourneyEndStackParamList,
+} from './L4_JourneyEndStackNavigator';
+import {NavigatorScreenParams} from '@react-navigation/native';
 
 export type L3_TotalJourneyStackParamList = {
-  CourseCreate: undefined;
-  Journey: undefined;
-  JourneyEnd: undefined;
+  CourseCreate: NavigatorScreenParams<L4_CourseCreateStackParamList>;
+  Journey: NavigatorScreenParams<L4_JourneyStackParamList>;
+  JourneyEnd: NavigatorScreenParams<L4_JourneyEndStackParamList>;
 };
 
 const Stack = createNativeStackNavigator<L3_TotalJourneyStackParamList>();

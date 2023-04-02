@@ -6,21 +6,24 @@ import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import {useTheme} from 'react-native-paper';
 import styled from 'styled-components';
 import RatingStar from './RatingStar';
-import {calcRating} from '../utils';
+import {calcRating, isPlace} from '../utils';
+
+export type iconPlace = {
+  iconName: string;
+  lon: number;
+  lat: number;
+};
 
 interface MapMarkerProps {
-  place?: Place;
-  iconPlace?: {
-    iconName: string;
-    coordinate: Coordinate;
-  };
-  index?: number;
+  place: Place | iconPlace;
+  index: number;
+  useIndex?: boolean;
 }
 
-const MapMarker: React.FC<MapMarkerProps> = ({place, iconPlace, index}) => {
+const MapMarker: React.FC<MapMarkerProps> = ({place, index, useIndex}) => {
   const theme = useTheme();
 
-  if (place) {
+  if (isPlace(place)) {
     const rating = calcRating(place.ratingSum, place.ratingCount);
     return (
       <Marker
@@ -28,16 +31,15 @@ const MapMarker: React.FC<MapMarkerProps> = ({place, iconPlace, index}) => {
           latitude: place.lat,
           longitude: place.lon,
         }}>
-        <StyledMapMarkerContainer
-        // style={{backgroundColor: theme.colors.shadow}}
-        >
+        <StyledMapMarkerContainer>
           <Image
             source={{uri: place.image}}
             style={{width: 50, height: 50, borderRadius: 10}}
           />
           <RatingStar rating={rating} iconSize={15} iconStyle={{margin: -8}} />
           <StyledMapMarkerText>
-            #{index + 1} {place.name}
+            {useIndex ? `#${index + 1} ` : ' '}
+            {place.name}
           </StyledMapMarkerText>
           <Icon
             name={'map-marker'}
@@ -48,21 +50,22 @@ const MapMarker: React.FC<MapMarkerProps> = ({place, iconPlace, index}) => {
         </StyledMapMarkerContainer>
       </Marker>
     );
-  }
-
-  if (iconPlace) {
+  } else {
     return (
       <Marker
         coordinate={{
-          latitude: iconPlace.coordinate.latitude,
-          longitude: iconPlace.coordinate.longitude,
+          latitude: place.lat,
+          longitude: place.lon,
         }}>
-        <Icon name={iconPlace.iconName} color={'#FFF'} size={18} />
+        <MarkerIcon
+          style={{backgroundColor: theme.colors.onPrimary}}
+          name={place.iconName}
+          color={'#fff'}
+          size={30}
+        />
       </Marker>
     );
   }
-
-  return <></>;
 };
 
 const StyledMapMarkerContainer = styled(View)`
@@ -72,8 +75,6 @@ const StyledMapMarkerContainer = styled(View)`
   padding: 10px;
   padding-bottom: 0px;
   border-radius: 10px;
-  /* width: 200px;
-  height: 200px; */
 `;
 
 const StyledMapMarkerText = styled(Text)`
@@ -84,6 +85,11 @@ const StyledMapMarkerText = styled(Text)`
   border-radius: 5px;
   background-color: #0000005c;
   font-weight: bold;
+`;
+
+const MarkerIcon = styled(Icon)`
+  padding: 10px;
+  border-radius: 25px;
 `;
 
 export default MapMarker;

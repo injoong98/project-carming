@@ -1,5 +1,5 @@
 import {useState, useEffect} from 'react';
-import {View} from 'react-native';
+import {View, StyleSheet} from 'react-native';
 import {useDispatch} from 'react-redux';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import {IconButton, useTheme, SegmentedButtons} from 'react-native-paper';
@@ -8,23 +8,18 @@ import LinearGradient from 'react-native-linear-gradient';
 import styled from 'styled-components/native';
 import PlacesRecommendScreen from './PlacesRecommendScreen';
 import CoursesRecommendScreen from './CoursesRecommendScreen';
-import {setPlaceList, setPlaceTagList} from '../redux/slices/placeSlice';
-import {setCourseList, setCourseTagList} from '../redux/slices/courseSlice';
-import {Tag, Place, Category, Course} from '../types';
-import {NavigationProp, useNavigation} from '@react-navigation/native';
 import {L4_CourseCreateStackParamList} from '../navigations/L4_CourseCreateStackNavigator';
 import {CustomButton} from '../components';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
+import {useGetTagsQuery} from '../apis/tagApi';
+import {setTagList} from '../redux/slices/tagSlice';
 
 export type RecommendScreenProps = NativeStackScreenProps<
   L4_CourseCreateStackParamList,
   'Recommend'
 >;
 
-const RecommendScreen: React.FC<RecommendScreenProps> = ({
-  navigation,
-  route,
-}) => {
+const RecommendScreen: React.FC<RecommendScreenProps> = ({navigation}) => {
   const theme = useTheme();
   const dispatch = useDispatch();
 
@@ -57,13 +52,11 @@ const RecommendScreen: React.FC<RecommendScreenProps> = ({
       },
     },
   ];
+  const {data: tagLists} = useGetTagsQuery();
 
   useEffect(() => {
-    dispatch(setPlaceList(places));
-    dispatch(setPlaceTagList(tags));
-    dispatch(setCourseList(courses));
-    dispatch(setCourseTagList(tags));
-  }, [dispatch]);
+    if (tagLists !== undefined) dispatch(setTagList(tagLists));
+  }, [tagLists]);
 
   return (
     <AlertNotificationRoot theme={'light'}>
@@ -94,16 +87,10 @@ const RecommendScreen: React.FC<RecommendScreenProps> = ({
               text={'선택 완료'}
               onPress={() => navigation.navigate('CourseEdit', {recommendType})}
               buttonStyle={{
-                width: 200,
-                padding: 14,
-                borderRadius: 30,
+                ...styles.buttonStyle,
                 backgroundColor: theme.colors.surfaceVariant,
               }}
-              textStyle={{
-                fontWeight: 'bold',
-                fontSize: 16,
-                textAlign: 'center',
-              }}
+              textStyle={styles.buttonText}
             />
           </StyledView>
         </SafeAreaView>
@@ -111,6 +98,19 @@ const RecommendScreen: React.FC<RecommendScreenProps> = ({
     </AlertNotificationRoot>
   );
 };
+
+const styles = StyleSheet.create({
+  buttonStyle: {
+    width: 200,
+    padding: 14,
+    borderRadius: 30,
+  },
+  buttonText: {
+    fontWeight: 'bold',
+    fontSize: 16,
+    textAlign: 'center',
+  },
+});
 
 const StyledView = styled(View)`
   align-items: center;
@@ -124,111 +124,5 @@ const GradientBackground = styled(LinearGradient)`
   padding-top: 20px;
   padding-bottom: 20px;
 `;
-
-const tags: Tag[] = [
-  {
-    id: 0,
-    name: '맛있는',
-    category: Category.음식점,
-  },
-  {
-    id: 1,
-    name: '청결한',
-    category: Category.음식점,
-  },
-  {
-    id: 2,
-    name: '유명한',
-    category: Category.음식점,
-  },
-];
-const places: Place[] = [
-  {
-    id: 0,
-    name: '허니치즈 순대국',
-    image: 'https://i.imgur.com/UYiroysl.jpg',
-    ratingSum: 17,
-    ratingCount: 4,
-    region: '노원구 중계 14동',
-    lon: 126.97944891,
-    lat: 37.57171765,
-    tel: '010-1577-1577',
-    category: Category.음식점,
-    keyword: ['맛있는', '분위기 좋은'],
-  },
-  {
-    id: 1,
-    name: '파리 엉터리 생고기',
-    image: 'https://i.imgur.com/UPrs1EWl.jpg',
-    ratingSum: 222,
-    ratingCount: 80,
-    region: '노원구 중계 14동',
-    lon: 126.98197125,
-    lat: 37.58459777,
-    tel: '010-1577-1577',
-    category: Category.음식점,
-    keyword: ['맛있는', '분위기 좋은'],
-  },
-  {
-    id: 2,
-    name: '경복궁',
-    image: 'https://i.imgur.com/MABUbpDl.jpg',
-    ratingSum: 12,
-    ratingCount: 3,
-    region: '노원구 중계 14동',
-    lon: 127.00569602,
-    lat: 37.57033808,
-    tel: '010-1577-1577',
-    category: Category.음식점,
-    keyword: ['맛있는', '분위기 좋은'],
-  },
-  {
-    id: 3,
-    name: '상파울로 엽기 떡볶이',
-    image: 'https://i.imgur.com/KZsmUi2l.jpg',
-    ratingSum: 2763,
-    ratingCount: 839,
-    region: '노원구 중계 14동',
-    lon: 126.98978922,
-    lat: 37.60409672,
-    tel: '010-1577-1577',
-    category: Category.음식점,
-    keyword: ['맛있는', '분위기 좋은'],
-  },
-];
-const courses: Course[] = [
-  {
-    id: 0,
-    name: '최고의 코스',
-    regions: ['은평구', '노원구'],
-    places: places,
-    ratingCount: 17,
-    ratingSum: 74,
-  },
-  {
-    id: 1,
-    name: '최고의 코스',
-    regions: ['은평구', '노원구'],
-    places: places,
-    ratingCount: 17,
-    ratingSum: 74,
-  },
-  {
-    id: 2,
-    name: '최고의 코스',
-    regions: ['은평구', '노원구'],
-    places: places,
-    ratingCount: 17,
-    ratingSum: 74,
-  },
-  {
-    id: 3,
-    name: '최고의 코스',
-    regions: ['은평구', '노원구'],
-    places: places,
-    ratingCount: 17,
-    ratingSum: 74,
-  },
-];
 
 export default RecommendScreen;

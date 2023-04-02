@@ -5,7 +5,9 @@ import com.carming.backend.place.domain.Place;
 import com.carming.backend.place.domain.PlaceCategory;
 import com.carming.backend.place.domain.PlaceTag;
 import com.carming.backend.place.dto.request.PlaceSearch;
+import com.carming.backend.place.dto.response.PlaceTagsBox;
 import com.carming.backend.place.dto.response.PopularPlaceResponseDto;
+import com.querydsl.core.Tuple;
 import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
@@ -56,16 +58,17 @@ public class PlaceRepositoryImpl implements PlaceRepositoryCustom {
     }
 
     @Override
-    public List<PlaceTag> getPlaceTag(Long id) {
-        List<PlaceTag> fetch = queryFactory
-                .select(placeTag)
+    public List<PlaceTagsBox> getPlaceTag(Long id) {
+        return queryFactory
+                .select(Projections.fields(PlaceTagsBox.class,
+                        placeTag.tag.name.as("tagName"),
+                        placeTag.count().as("tagCount")))
                 .from(placeTag)
-                .join(placeTag.tag, tag).fetchJoin()
-                .join(placeTag.place, place).fetchJoin()
+                .join(placeTag.tag, tag)
+                .join(placeTag.place, place)
                 .groupBy(placeTag.tag)
                 .where(placeTag.place.id.eq(id))
                 .fetch();
-        return fetch;
     }
 
     private BooleanExpression regionEq(List<String> regions) {

@@ -1,5 +1,6 @@
 import axios from 'axios';
 import {Coordinate} from '../types';
+import {NAVER_MAPS_API_ID, NAVER_MAPS_API_KEY} from '@env';
 
 const callNaverDirectionApi = async (coordinates: Coordinate[]) => {
   const start = `${coordinates[0].longitude},${coordinates[0].latitude}`;
@@ -14,8 +15,8 @@ const callNaverDirectionApi = async (coordinates: Coordinate[]) => {
     `https://naveropenapi.apigw.ntruss.com/map-direction-15/v1/driving?start=${start}&goal=${end}&waypoints=${waypoints}`,
     {
       headers: {
-        'X-NCP-APIGW-API-KEY-ID': '9zcu207bzs',
-        'X-NCP-APIGW-API-KEY': 'Sa1cNjNkp70zrMBtjxannzf1rcI94Wh905saO9LI',
+        'X-NCP-APIGW-API-KEY-ID': NAVER_MAPS_API_ID,
+        'X-NCP-APIGW-API-KEY': NAVER_MAPS_API_KEY,
       },
     },
   );

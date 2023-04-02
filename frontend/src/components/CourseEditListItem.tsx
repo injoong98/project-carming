@@ -14,16 +14,14 @@ const CourseEditListItem: React.FC<RenderItemParams<Place>> = ({
   item,
   drag,
   isActive,
-  getIndex,
 }) => {
   const theme = useTheme();
-  //   const index = getIndex() ?? 0;
   const rating = calcRating(item.ratingSum, item.ratingCount);
   return (
     <ScaleDecorator>
       <TouchableOpacity
         onLongPress={drag}
-        delayLongPress={10}
+        delayLongPress={1}
         disabled={isActive}
         style={[
           styles.rowItem,
@@ -37,12 +35,18 @@ const CourseEditListItem: React.FC<RenderItemParams<Place>> = ({
           <Avatar.Image size={40} source={{uri: item.image}} />
           <Text style={styles.text}>{item.name}</Text>
         </StyledView>
-        <StyledView>
-          <RatingStar iconSize={12} iconStyle={{margin: -8}} rating={rating} />
-          <RatingText style={{paddingHorizontal: 3}}>{rating}</RatingText>
-          <RatingText style={{fontSize: 8, marginTop: 4, marginRight: 10}}>
-            ({item.ratingCount})
-          </RatingText>
+        <StyledView style={{width: 140, justifyContent: 'space-between'}}>
+          <StyledView>
+            <RatingStar
+              iconSize={12}
+              iconStyle={{margin: -8}}
+              rating={rating}
+            />
+            <RatingText style={{paddingHorizontal: 3}}>{rating}</RatingText>
+            <RatingText style={{fontSize: 8, marginTop: 4, marginRight: 10}}>
+              ({item.ratingCount})
+            </RatingText>
+          </StyledView>
           <Icon name={'view-headline'} color={'#fff'} size={20} />
         </StyledView>
       </TouchableOpacity>
@@ -61,7 +65,6 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
   },
   text: {
-    // flex: 1,
     color: 'white',
     fontSize: 13,
     fontWeight: 'bold',

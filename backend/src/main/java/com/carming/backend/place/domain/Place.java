@@ -73,5 +73,6 @@ public class Place {
 
     public void addRating(Integer rating) {
         this.ratingSum += rating;
+        this.ratingCount += 1;
     }
 }

@@ -127,8 +127,8 @@ public class SetUpDb {
     }
 
     private List<Course> saveCourse() {
-        Course course1 = courseRepository.save(new Course("1|2|3|4|5", "노원구|은평구|관악구", "노잼은 아닌 코스"));
-        Course course2 = courseRepository.save(new Course("1|4|5|10|7", "서대문구|은평구|관악구", "평타코스"));
+        Course course1 = courseRepository.save(new Course("1|2|3|4|5", "노원구|은평구|관악구", "노잼은 아닌 코스", 3, 9));
+        Course course2 = courseRepository.save(new Course("1|4|5|10|7", "서대문구|은평구|관악구", "평타코스", 4, 10));
 
         System.out.println(">>>>>>>>>>>>>>>>> coures1 " + course1.getId());
         System.out.println(">>>>>>>>>>>>>>>>> coures2 " + course2.getId());

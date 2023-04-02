@@ -20,5 +20,4 @@ public class PopularPlaceResponseDto {
     private Integer ratingSum;
 
     private Integer ratingCount;
-
 }

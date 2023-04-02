@@ -1,7 +1,13 @@
-import {useRef} from 'react';
-import {Dimensions, StyleSheet, View} from 'react-native';
+import {useEffect, useRef} from 'react';
+import {Dimensions, ScrollView, StyleSheet, Text, View} from 'react-native';
 import {useSelector, useDispatch} from 'react-redux';
-import {Avatar, IconButton, Tooltip, useTheme} from 'react-native-paper';
+import {
+  ActivityIndicator,
+  Avatar,
+  IconButton,
+  Tooltip,
+  useTheme,
+} from 'react-native-paper';
 import Carousel from 'react-native-snap-carousel-v4';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import SelectDropdown from 'react-native-select-dropdown';
@@ -16,7 +22,12 @@ import {
   deleteCheckedTag,
   deletePlaceFromPlaceCartById,
   selectCategory,
+  setPlaceTagList,
 } from '../redux/slices/placeSlice';
+import {useGetPlacesQuery} from '../apis/placeApi';
+import {useGetTagsQuery} from '../apis/tagApi';
+import {setTagList} from '../redux/slices/tagSlice';
+import {filterTagsByCategory} from '../utils';
 
 interface PlacesRecommendScreenScreenProps {}
 
@@ -27,9 +38,24 @@ const PlacesRecommendScreen: React.FC<
   const dispatch = useDispatch();
   const carouselRef = useRef<any>(null);
 
-  const {placeList, placeCart, placeTagList, checkedTagList} = useSelector(
-    (state: RootState) => state.place,
-  );
+  const {placeCart, placeTagList, checkedTagList, selectedCategory} =
+    useSelector((state: RootState) => state.place);
+  const tags = useSelector((state: RootState) => state.tag);
+
+  const {
+    data: places,
+    isFetching,
+    isError,
+    isSuccess,
+  } = useGetPlacesQuery({
+    regions: ['마포구'],
+    category: selectedCategory,
+    size: 10,
+  });
+
+  useEffect(() => {
+    dispatch(setPlaceTagList(filterTagsByCategory(tags, selectedCategory)));
+  }, [selectedCategory, tags]);
 
   const tagPressed = (tag: Tag) => {
     checkedTagList.includes(tag)
@@ -38,12 +64,46 @@ const PlacesRecommendScreen: React.FC<
   };
 
   const placeAddBtnPressed = () => {
-    const place: Place = placeList[carouselRef.current._activeItem];
-    dispatch(addPlaceToPlaceCart(place));
+    if (places) {
+      const place: Place = places[carouselRef.current._activeItem];
+      dispatch(addPlaceToPlaceCart(place));
+    }
   };
 
   const placeCancelBtnPressed = (placeId: number) => {
     dispatch(deletePlaceFromPlaceCartById(placeId));
+  };
+
+  const carouselSection = () => {
+    if (isFetching) {
+      return (
+        <ActivityIndicator
+          size={'large'}
+          animating={true}
+          color={theme.colors.onPrimary}
+        />
+      );
+    }
+    if (isError || places?.length === 0) {
+      return <Text style={{fontSize: 40}}>😭</Text>;
+    }
+    if (isSuccess) {
+      return (
+        <Carousel
+          style={{flex: 1}}
+          layout={'default'}
+          vertical={false}
+          layoutCardOffset={9}
+          ref={carouselRef}
+          data={places}
+          renderItem={PlaceRecommendCard}
+          sliderWidth={screenWidth}
+          itemWidth={screenWidth - 80}
+          inactiveSlideShift={0}
+          useScrollView={true}
+        />
+      );
+    }
   };
 
   return (
@@ -73,33 +133,26 @@ const PlacesRecommendScreen: React.FC<
             rowTextStyle={styles.dropdown2RowTxtStyle}
           />
         </View>
-        {placeTagList.map(tag => {
-          return (
-            <TagChip
-              key={tag.id}
-              style={{marginLeft: 5}}
-              text={tag.name}
-              selected={checkedTagList.includes(tag)}
-              selectedBackgroundColor={theme.colors.secondary}
-              onPress={() => tagPressed(tag)}
-            />
-          );
-        })}
+        <ScrollView
+          style={styles.tagScrollViewStyle}
+          horizontal={true}
+          showsHorizontalScrollIndicator={false}>
+          {placeTagList.map(tag => {
+            return (
+              <TagChip
+                key={tag.id}
+                style={{marginLeft: 5}}
+                text={tag.name}
+                selected={checkedTagList.includes(tag)}
+                selectedBackgroundColor={theme.colors.secondary}
+                onPress={() => tagPressed(tag)}
+              />
+            );
+          })}
+        </ScrollView>
       </StyledView>
 
-      <Carousel
-        style={{flex: 1}}
-        layout={'default'}
-        vertical={false}
-        layoutCardOffset={9}
-        ref={carouselRef}
-        data={placeList}
-        renderItem={PlaceRecommendCard}
-        sliderWidth={screenWidth}
-        itemWidth={screenWidth - 80}
-        inactiveSlideShift={0}
-        useScrollView={true}
-      />
+      <CenterView>{carouselSection()}</CenterView>
 
       <StyledView style={{justifyContent: 'center'}}>
         <IconButton
@@ -141,6 +194,12 @@ const StyledView = styled(View)`
   padding-right: 20px;
 `;
 
+const CenterView = styled(View)`
+  align-items: center;
+  justify-content: center;
+  flex: 1;
+`;
+
 const styles = StyleSheet.create({
   dropdown2BtnStyle: {
     width: '90%',
@@ -165,6 +224,9 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     fontWeight: 'bold',
     fontSize: 14,
+  },
+  tagScrollViewStyle: {
+    flexDirection: 'row',
   },
 });
 

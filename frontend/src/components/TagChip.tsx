@@ -42,7 +42,9 @@ interface ChipStyleContainer {
 const StyledView = styled(View)<ChipStyleContainer>`
   justify-content: center;
   align-items: center;
-  width: 60px;
+  // width: 60px;
+  padding-left: 10px;
+  padding-right: 10px;
   height: 30px;
   border-radius: 15px;
   background-color: ${props =>

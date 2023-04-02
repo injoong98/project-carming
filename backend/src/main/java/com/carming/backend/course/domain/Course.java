@@ -39,12 +39,17 @@ public class Course {
     private List<Review> reviews = new ArrayList<>();
 
     @Builder
-    public Course(String places, String regions, String name) {
+    public Course(String places, String regions, String name, Integer ratingCount, Integer ratingSum) {
         this.places = places;
         this.regions = regions;
         this.name = name;
-        this.ratingCount = 0;
-        this.ratingSum = 0;
+        this.ratingCount = (ratingCount == null ? 0 : ratingCount);
+        this.ratingSum = (ratingSum == null ? 0 : ratingSum);
+    }
+
+    public void addRating(Integer rating) {
+        this.ratingSum += rating;
+        this.ratingCount += 1;
     }
 
     //== 연관관계 편의 메소드==//

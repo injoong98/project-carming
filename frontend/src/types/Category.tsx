@@ -3,5 +3,5 @@ export enum Category {
   카페 = 'CAFE',
   놀거리 = 'PLAY',
   명소 = 'ATTRACTION',
-  숙박 = 'ACCOMODATION',
+  숙박 = 'SLEEP',
 }

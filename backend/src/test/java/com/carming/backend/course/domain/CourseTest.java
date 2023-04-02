@@ -11,7 +11,7 @@ class CourseTest {
     @DisplayName("Regions, Places split 테스트")
     void splitTest() {
         //given
-        Course course = new Course("1|2|3|4", "은평구|노원구|종로구", "Test1");
+        Course course = new Course("1|2|3|4", "은평구|노원구|종로구", "Test1", 0, 0);
 
         //when
         String[] regions = course.getRegions().split("\\|");

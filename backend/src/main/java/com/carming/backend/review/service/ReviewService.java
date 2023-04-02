@@ -55,6 +55,7 @@ public class ReviewService {
 
         Course foundCourse = courseRepository.findById(request.getCourseReview().getCourseId())
                 .orElseThrow(CourseNotFound::new);
+        foundCourse.addRating(request.getCourseReview().getCourseRating());
 
         Review review = Review.builder()
                 .courseRating(request.getCourseReview().getCourseRating())

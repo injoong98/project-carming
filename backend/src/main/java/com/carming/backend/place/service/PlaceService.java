@@ -1,11 +1,12 @@
 package com.carming.backend.place.service;
 
 import com.carming.backend.place.domain.Place;
-import com.carming.backend.place.domain.PlaceTag;
 import com.carming.backend.place.dto.request.PlaceSearch;
 import com.carming.backend.place.dto.response.PlaceResponseDto;
+import com.carming.backend.place.dto.response.PlaceTagsBox;
 import com.carming.backend.place.dto.response.PopularPlaceResponseDto;
 import com.carming.backend.place.repository.PlaceRepository;
+import com.querydsl.core.Tuple;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -33,10 +34,10 @@ public class PlaceService {
         return placeRepository.getPopular(DEFAULT_POPULAR_SIZE);
     }
 
-    public void getPopularPlaceDetail(Long placeId) {
-        List<PlaceTag> placeTag = placeRepository.getPlaceTag(placeId);
+    public List<PlaceTagsBox> getPopularPlaceDetail(Long placeId) {
+        List<PlaceTagsBox> placeTag = placeRepository.getPlaceTag(placeId);
 
-        System.out.println(placeTag);
 
+        return placeTag;
     }
 }

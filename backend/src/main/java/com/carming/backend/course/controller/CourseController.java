@@ -24,7 +24,7 @@ public class CourseController {
      * 지역구에 따른 코스 검색
      */
     @GetMapping
-    public List<CourseResponseDto> findCourses(@RequestBody CourseSearch search) {
+    public List<CourseResponseDto> findCourses(@ModelAttribute CourseSearch search) {
         return courseService.findCourses(search);
     }
 

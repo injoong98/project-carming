@@ -1,10 +1,6 @@
 package com.carming.backend.place.dto.request;
 
-import com.carming.backend.place.domain.PlaceCategory;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import lombok.Builder;
 import lombok.Data;
-import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.util.List;

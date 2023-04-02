@@ -12,7 +12,7 @@ const Drawer = createDrawerNavigator<L2_AppDrawerParamList>();
 function L2_AppDrawerNavigator() {
   return (
     <Drawer.Navigator
-      initialRouteName="Main"
+      initialRouteName="TotalJourney"
       screenOptions={{
         drawerPosition: 'right',
         headerShown: false,

@@ -2,21 +2,32 @@ import {createSlice, PayloadAction} from '@reduxjs/toolkit';
 import type {Tag} from '../../types';
 
 type SliceState = {
-  tagList: Tag[];
+  cafeTags: Tag[];
+  foodTags: Tag[];
+  playTags: Tag[];
+  attractionTags: Tag[];
+  sleepTags: Tag[];
+  courseTags: Tag[];
 };
 
 const tagSlice = createSlice({
   name: 'tagSlice',
   initialState: {
-    tagList: [],
+    cafeTags: [],
+    foodTags: [],
+    playTags: [],
+    attractionTags: [],
+    sleepTags: [],
+    courseTags: [],
   } as SliceState,
   reducers: {
-    setTagList: (state, action: PayloadAction<Tag[]>) => {
+    setTagList: (state, action: PayloadAction<SliceState>) => {
       const newTagList = action.payload;
-      state.tagList = [...newTagList];
+      state = Object.assign(state, newTagList);
     },
   },
 });
 
 export default tagSlice;
 export const {setTagList} = tagSlice.actions;
+export type {SliceState as TagSliceState};

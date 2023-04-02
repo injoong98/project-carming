@@ -1,19 +1,27 @@
 import styled from 'styled-components/native';
 import TagChip from '../components/TagChip';
-import {Avatar, IconButton, Tooltip, useTheme} from 'react-native-paper';
+import {
+  ActivityIndicator,
+  Avatar,
+  IconButton,
+  Tooltip,
+  useTheme,
+} from 'react-native-paper';
 import {useEffect, useRef, useState} from 'react';
 import Carousel from 'react-native-snap-carousel-v4';
 import CourseRecommendCard from '../components/CourseRecommendCard';
-import {Dimensions, View} from 'react-native';
-import {Course, Tag} from '../types';
+import {Dimensions, ScrollView, StyleSheet, Text, View} from 'react-native';
+import {Category, Course, Tag} from '../types';
 import {useDispatch, useSelector} from 'react-redux';
 import {RootState} from '../redux/store';
 import {
   addCheckedTag,
   deleteCheckedTag,
   deletePlaceFromCourseCartById,
+  setCourseTagList,
   setCourseToCourseCart,
 } from '../redux/slices/courseSlice';
+import {useGetCoursesQuery} from '../apis/courseApi';
 
 interface CoursesRecommendScreenProps {}
 
@@ -22,15 +30,28 @@ const CoursesRecommendScreen: React.FC<CoursesRecommendScreenProps> = ({}) => {
   const dispatch = useDispatch();
   const carouselRef = useRef<any>(null);
 
-  const {courseList, courseCart, courseTagList, checkedTagList} = useSelector(
+  const {courseCart, courseTagList, checkedTagList} = useSelector(
     (state: RootState) => state.course,
   );
+  const tags = useSelector((state: RootState) => state.tag);
+
+  const {
+    data: courses,
+    error,
+    isFetching,
+    isError,
+    isSuccess,
+  } = useGetCoursesQuery({regions: ['은평구'], size: 10});
   const [carouselData, setCarouselData] = useState<any[]>([]);
 
   useEffect(() => {
-    makeCarouselData(0);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+    dispatch(setCourseTagList(tags.courseTags));
+  }, [tags]);
+
+  useEffect(() => {
+    const activeIdx = carouselRef.current ? carouselRef.current._activeItem : 0;
+    makeCarouselData(activeIdx);
+  }, [courses]);
 
   const tagPressed = (tag: Tag) => {
     checkedTagList.includes(tag)
@@ -39,8 +60,10 @@ const CoursesRecommendScreen: React.FC<CoursesRecommendScreenProps> = ({}) => {
   };
 
   const courseAddBtnPressed = () => {
-    const course: Course = courseList[carouselRef.current._activeItem];
-    dispatch(setCourseToCourseCart(course));
+    if (courses) {
+      const course: Course = courses[carouselRef.current._activeItem];
+      dispatch(setCourseToCourseCart(course));
+    }
   };
 
   const canclePlaceBtnPressed = (placeId: number) => {
@@ -48,45 +71,74 @@ const CoursesRecommendScreen: React.FC<CoursesRecommendScreenProps> = ({}) => {
   };
 
   const makeCarouselData = (index: number) => {
-    const tmpList: any[] = courseList.map((course, idx) => {
-      return {course: course, isActive: idx === index};
-    });
-    setCarouselData(tmpList);
+    if (courses) {
+      const tmpList: any[] = courses.map((course, idx) => ({
+        course: course,
+        isActive: idx === index,
+      }));
+      setCarouselData(tmpList);
+    }
+  };
+
+  const carouselSection = () => {
+    if (isFetching) {
+      return (
+        <ActivityIndicator
+          size={'large'}
+          animating={true}
+          color={theme.colors.onPrimary}
+        />
+      );
+    }
+    if (isError) {
+      return <Text style={{fontSize: 40}}>😭</Text>;
+    }
+    if (isSuccess) {
+      return (
+        <Carousel
+          style={{flex: 1}}
+          layout={'default'}
+          vertical={false}
+          layoutCardOffset={9}
+          ref={carouselRef}
+          data={carouselData}
+          renderItem={CourseRecommendCard}
+          sliderWidth={screenWidth}
+          itemWidth={screenWidth - 80}
+          inactiveSlideShift={0}
+          useScrollView={true}
+          onScrollIndexChanged={index => {
+            makeCarouselData(index);
+          }}
+        />
+      );
+    }
   };
 
   return (
     <>
       <StyledView style={{marginTop: 10, marginBottom: 20}}>
-        {courseTagList.map(tag => {
-          return (
-            <TagChip
-              key={tag.id}
-              style={{marginLeft: 5}}
-              text={tag.name}
-              selected={checkedTagList.includes(tag)}
-              selectedBackgroundColor={theme.colors.secondary}
-              onPress={() => tagPressed(tag)}
-            />
-          );
-        })}
+        <ScrollView
+          style={styles.tagScrollViewStyle}
+          horizontal={true}
+          showsHorizontalScrollIndicator={false}>
+          {courseTagList.map(tag => {
+            return (
+              <TagChip
+                key={tag.id}
+                style={{marginLeft: 5}}
+                text={tag.name}
+                selected={checkedTagList.includes(tag)}
+                selectedBackgroundColor={theme.colors.secondary}
+                onPress={() => tagPressed(tag)}
+              />
+            );
+          })}
+        </ScrollView>
       </StyledView>
 
-      <Carousel
-        style={{flex: 1}}
-        layout={'default'}
-        vertical={false}
-        layoutCardOffset={9}
-        ref={carouselRef}
-        data={carouselData}
-        renderItem={CourseRecommendCard}
-        sliderWidth={screenWidth}
-        itemWidth={screenWidth - 80}
-        inactiveSlideShift={0}
-        useScrollView={true}
-        onScrollIndexChanged={index => {
-          makeCarouselData(index);
-        }}
-      />
+      <CenterView>{carouselSection()}</CenterView>
+
       <StyledView style={{justifyContent: 'center'}}>
         <IconButton
           icon="arrow-down-drop-circle"
@@ -96,6 +148,7 @@ const CoursesRecommendScreen: React.FC<CoursesRecommendScreenProps> = ({}) => {
           onPress={() => courseAddBtnPressed()}
         />
       </StyledView>
+
       <StyledView style={{height: 70}}>
         {courseCart.map(place => {
           return (
@@ -126,5 +179,17 @@ const StyledView = styled(View)`
   padding-left: 20px;
   padding-right: 20px;
 `;
+
+const CenterView = styled(View)`
+  align-items: center;
+  justify-content: center;
+  flex: 1;
+`;
+
+const styles = StyleSheet.create({
+  tagScrollViewStyle: {
+    flexDirection: 'row',
+  },
+});
 
 export default CoursesRecommendScreen;
