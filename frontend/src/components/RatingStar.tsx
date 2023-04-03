@@ -9,6 +9,8 @@ interface RatingStarProps {
   containerStyle?: ViewStyle;
   iconStyle?: ViewStyle;
   iconSize?: number;
+  activeColor?: string;
+  inactiveColor?: string;
 }
 
 const RatingStar: React.FC<RatingStarProps> = ({
@@ -16,6 +18,8 @@ const RatingStar: React.FC<RatingStarProps> = ({
   containerStyle,
   iconStyle,
   iconSize,
+  activeColor,
+  inactiveColor,
 }) => {
   const theme = useTheme();
 
@@ -28,8 +32,8 @@ const RatingStar: React.FC<RatingStarProps> = ({
           style={[iconStyle]}
           iconColor={
             score <= rating
-              ? theme.colors.secondary
-              : theme.colors.surfaceDisabled
+              ? activeColor ?? theme.colors.secondary
+              : inactiveColor ?? theme.colors.surfaceDisabled
           }
           size={iconSize ?? 15}
         />

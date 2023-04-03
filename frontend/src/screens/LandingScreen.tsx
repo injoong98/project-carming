@@ -1,4 +1,4 @@
-import {ImageBackground, View} from 'react-native';
+import {ImageBackground, View, SafeAreaView} from 'react-native';
 import styled from 'styled-components/native';
 import CustomButton from '../components/CustomButton';
 import {NavigationProp, useNavigation} from '@react-navigation/native';
@@ -13,48 +13,50 @@ const LandingScreen = () => {
   const navigation = useNavigation<LandingScreenNavigationProp>();
 
   return (
-    <Container source={require('../assets/images/landing_screen_large.png')}>
-      <UpperView>
-        <Title> 새로운 여정 경험을 선사하는 </Title>
-        <View
-          style={{
-            display: 'flex',
-            flexDirection: 'row',
-            alignItems: 'flex-end',
-          }}>
-          <Title> 자율주행 서비스,</Title>
-          <Title style={{fontSize: 40}}> 카밍 </Title>
-        </View>
-      </UpperView>
-      <LowerView>
-        <BtnView>
-          <CustomButton
-            text="로그인"
-            buttonStyle={{backgroundColor: 'transparent', elevation: 0}}
-            textStyle={{
-              fontSize: 30,
-              fontFamily: 'SeoulNamsanB',
-              textShadowColor: 'gray',
-              textShadowOffset: {width: 2, height: 2},
-              textShadowRadius: 10,
-            }}
-            onPress={() => navigation.navigate('Login')}
-          />
-          <CustomButton
-            text="회원가입"
-            buttonStyle={{backgroundColor: 'transparent', elevation: 0}}
-            textStyle={{
-              fontSize: 30,
-              fontFamily: 'SeoulNamsanB',
-              textShadowColor: 'gray',
-              textShadowOffset: {width: 2, height: 2},
-              textShadowRadius: 10,
-            }}
-            onPress={() => navigation.navigate('Signup')}
-          />
-        </BtnView>
-      </LowerView>
-    </Container>
+    <SafeAreaView style={{flex: 1}}>
+      <Container source={require('../assets/images/landing_screen_large.png')}>
+        <UpperView>
+          <Title> 새로운 여정 경험을 선사하는 </Title>
+          <View
+            style={{
+              display: 'flex',
+              flexDirection: 'row',
+              alignItems: 'flex-end',
+            }}>
+            <Title> 자율주행 서비스,</Title>
+            <Title style={{fontSize: 40}}> 카밍 </Title>
+          </View>
+        </UpperView>
+        <LowerView>
+          <BtnView>
+            <CustomButton
+              text="로그인"
+              buttonStyle={{backgroundColor: 'transparent', elevation: 0}}
+              textStyle={{
+                fontSize: 30,
+                fontFamily: 'SeoulNamsanB',
+                textShadowColor: 'gray',
+                textShadowOffset: {width: 2, height: 2},
+                textShadowRadius: 10,
+              }}
+              onPress={() => navigation.navigate('Login')}
+            />
+            <CustomButton
+              text="회원가입"
+              buttonStyle={{backgroundColor: 'transparent', elevation: 0}}
+              textStyle={{
+                fontSize: 30,
+                fontFamily: 'SeoulNamsanB',
+                textShadowColor: 'gray',
+                textShadowOffset: {width: 2, height: 2},
+                textShadowRadius: 10,
+              }}
+              onPress={() => navigation.navigate('Signup')}
+            />
+          </BtnView>
+        </LowerView>
+      </Container>
+    </SafeAreaView>
   );
 };
 

@@ -11,6 +11,7 @@ import {
   StyleSheet,
   ScrollView,
   Alert,
+  SafeAreaView,
 } from 'react-native';
 import styled from 'styled-components';
 import {useSignupMutation} from '../apis/memberRegistApi';
@@ -78,49 +79,51 @@ const SignupScreen = () => {
   };
 
   return (
-    <ScrollView contentContainerStyle={{flexGrow: 1}}>
-      <Container source={require('../assets/images/signup_screen.png')}>
-        <View style={styles.container}>
-          <View>
+    <SafeAreaView style={{flex: 1}}>
+      <ScrollView contentContainerStyle={{flexGrow: 1}}>
+        <Container source={require('../assets/images/signup_screen.png')}>
+          <View style={styles.container}>
+            <View>
+              <View
+                style={{
+                  flexDirection: 'row',
+                  marginBottom: '15%',
+                  alignItems: 'center',
+                  justifyContent: 'space-between',
+                }}>
+                <BackButton onPress={() => dispatch(verifyInitialize())} />
+                <Image
+                  source={require('../assets/images/logo_white.png')}
+                  style={{height: 30, width: 114, resizeMode: 'contain'}}
+                />
+              </View>
+              <MemberRegistForm
+                onSubmit={handleSubmit}
+                isSignupLoading={isLoading}
+              />
+            </View>
             <View
               style={{
                 flexDirection: 'row',
-                marginBottom: '15%',
-                alignItems: 'center',
-                justifyContent: 'space-between',
+                alignItems: 'flex-end',
+                justifyContent: 'center',
+                marginTop: '10%',
               }}>
-              <BackButton onPress={() => dispatch(verifyInitialize())} />
-              <Image
-                source={require('../assets/images/logo_white.png')}
-                style={{height: 30, width: 114, resizeMode: 'contain'}}
-              />
+              <Text style={styles.signUpText}>이미 가입된 회원이신가요? </Text>
+              <Text
+                style={[styles.signUpText, {fontSize: 16}]}
+                onPress={() => {
+                  navigation.goBack();
+                  dispatch(verifyInitialize());
+                  navigation.navigate('Login');
+                }}>
+                로그인
+              </Text>
             </View>
-            <MemberRegistForm
-              onSubmit={handleSubmit}
-              isSignupLoading={isLoading}
-            />
           </View>
-          <View
-            style={{
-              flexDirection: 'row',
-              alignItems: 'flex-end',
-              justifyContent: 'center',
-              marginTop: '10%',
-            }}>
-            <Text style={styles.signUpText}>이미 가입된 회원이신가요? </Text>
-            <Text
-              style={[styles.signUpText, {fontSize: 16}]}
-              onPress={() => {
-                navigation.goBack();
-                dispatch(verifyInitialize());
-                navigation.navigate('Login');
-              }}>
-              로그인
-            </Text>
-          </View>
-        </View>
-      </Container>
-    </ScrollView>
+        </Container>
+      </ScrollView>
+    </SafeAreaView>
   );
 };
 

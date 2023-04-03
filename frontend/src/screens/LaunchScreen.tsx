@@ -1,13 +1,15 @@
 import styled from 'styled-components/native';
-import {ImageBackground} from 'react-native';
+import {ImageBackground, SafeAreaView} from 'react-native';
 
 const LaunchScreen = () => {
   return (
-    <Container source={require('../assets/images/launch_screen.png')}>
-      <Title style={{fontSize: 40}}> CARMING </Title>
-      <Title> IS COMMING </Title>
-      <Title style={{fontSize: 24}}> ... </Title>
-    </Container>
+    <SafeAreaView style={{flex: 1}}>
+      <Container source={require('../assets/images/launch_screen.png')}>
+        <Title style={{fontSize: 40}}> CARMING </Title>
+        <Title> IS COMMING </Title>
+        <Title style={{fontSize: 24}}> ... </Title>
+      </Container>
+    </SafeAreaView>
   );
 };
 

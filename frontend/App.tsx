@@ -36,7 +36,7 @@ function App(): JSX.Element {
 
   setTimeout(() => {
     setIsLoaded(true);
-  }, 100);
+  }, 1500);
 
   return (
     <Provider store={store}>

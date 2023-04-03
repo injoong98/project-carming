@@ -61,6 +61,7 @@ const LoginForm = () => {
         placeholder="전화번호를 입력하세요"
         placeholderTextColor="lightgray"
         style={styles.loginFormText}
+        keyboardType='numeric'
       />
       <Text style={styles.loginFormText}>비밀번호</Text>
       <TextInput
