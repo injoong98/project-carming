@@ -3,6 +3,7 @@ package com.carming.backend.course.service;
 import com.carming.backend.common.SplitFactory;
 import com.carming.backend.course.domain.Course;
 import com.carming.backend.course.dto.request.CourseSearch;
+import com.carming.backend.course.dto.response.CheckCourseDto;
 import com.carming.backend.course.dto.response.CoursePlaceResponse;
 import com.carming.backend.course.dto.response.CourseResponseDto;
 import com.carming.backend.course.dto.response.PopularCourseListDto;
@@ -16,6 +17,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
@@ -29,8 +31,12 @@ public class CourseService {
 
     private final PlaceRepository placeRepository;
 
-    public boolean isNewCourse(List<Long> placeKeys) {
-        return courseRepository.findCourseByPlaces(convertLongToString(placeKeys)).isEmpty();
+    public CheckCourseDto isNewCourse(List<Long> placeKeys) {
+        Optional<Course> course = courseRepository.findCourseByPlaces(convertLongToString(placeKeys));
+        if (course.isEmpty()) {
+            return new CheckCourseDto(null);
+        }
+        return new CheckCourseDto(course.get());
     }
 
     @Transactional

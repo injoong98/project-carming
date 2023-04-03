@@ -1,6 +1,7 @@
 package com.carming.backend.course.controller;
 
 import com.carming.backend.course.dto.request.CourseSearch;
+import com.carming.backend.course.dto.response.CheckCourseDto;
 import com.carming.backend.course.dto.response.CourseResponseDto;
 import com.carming.backend.course.dto.response.PopularCourseListDto;
 import com.carming.backend.course.service.CourseService;
@@ -54,7 +55,7 @@ public class CourseController {
     }
 
     @GetMapping("/new")
-    public ResponseEntity<Boolean> isNewCourse(@RequestBody List<Long> placeKeys) {
+    public ResponseEntity<CheckCourseDto> isNewCourse(@RequestBody List<Long> placeKeys) {
         return ResponseEntity.ok(courseService.isNewCourse(placeKeys));
     }
 
