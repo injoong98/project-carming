@@ -29,10 +29,15 @@ public class CourseRepositoryImpl implements CourseRepositoryCustom {
         return queryFactory
                 .selectFrom(course)
                 .where(containsRegions(search))
+                .orderBy(course.ratingSum.desc())
+                .limit(search.getSize())
                 .fetch();
     }
 
     private BooleanBuilder containsRegions(CourseSearch search) {
+        if (search.getRegions() == null) {
+            return null;
+        }
         BooleanBuilder builder = new BooleanBuilder();
 
         for (String region : search.getRegions()) {

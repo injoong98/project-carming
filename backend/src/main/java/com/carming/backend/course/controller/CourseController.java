@@ -2,6 +2,7 @@ package com.carming.backend.course.controller;
 
 import com.carming.backend.course.dto.request.CourseSearch;
 import com.carming.backend.course.dto.response.CourseResponseDto;
+import com.carming.backend.course.dto.response.PopularCourseListDto;
 import com.carming.backend.course.service.CourseService;
 import com.carming.backend.review.dto.response.ReviewResponseDto;
 import com.carming.backend.review.service.ReviewService;
@@ -36,9 +37,25 @@ public class CourseController {
         return reviewService.findByCourseTest1(id);
     }
 
-    //todo
-    @PostMapping
-    public ResponseEntity<Void> saveCourse() {
-        return null;
+    /**
+     * 인기 코스 리스트
+     */
+    @GetMapping("/popular")
+    public List<PopularCourseListDto> findPopularCourses() {
+        return courseService.findPopularCourseList();
     }
+
+    /**
+     * 인기 코스 상세
+     */
+    @GetMapping("/popular/{courseId}")
+    public ResponseEntity<CourseResponseDto> findPopularDetail(@PathVariable Long courseId) {
+        return ResponseEntity.ok(courseService.findPopularDetail(courseId));
+    }
+
+    @GetMapping("/new")
+    public ResponseEntity<Boolean> isNewCourse(@RequestBody List<Long> placeKeys) {
+        return ResponseEntity.ok(courseService.isNewCourse(placeKeys));
+    }
+
 }

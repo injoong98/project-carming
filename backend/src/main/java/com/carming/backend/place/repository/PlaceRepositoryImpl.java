@@ -1,13 +1,11 @@
 package com.carming.backend.place.repository;
 
-import com.carming.backend.course.dto.response.CoursePlaceResponse;
 import com.carming.backend.place.domain.Place;
 import com.carming.backend.place.domain.PlaceCategory;
-import com.carming.backend.place.domain.PlaceTag;
 import com.carming.backend.place.dto.request.PlaceSearch;
-import com.carming.backend.place.dto.response.PlaceTagsBox;
-import com.carming.backend.place.dto.response.PopularPlaceResponseDto;
-import com.querydsl.core.Tuple;
+import com.carming.backend.place.dto.response.popular.PlaceTagsBox;
+import com.carming.backend.place.dto.response.popular.PopularPlaceDetailDto;
+import com.carming.backend.place.dto.response.popular.PopularPlaceListDto;
 import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
@@ -36,19 +34,16 @@ public class PlaceRepositoryImpl implements PlaceRepositoryCustom {
     }
 
     @Override
-    public List<CoursePlaceResponse> findPlacesByCourse(List<Long> placeKeys) {
+    public List<Place> findPlacesByCourse(List<Long> placeKeys) {
         return queryFactory
-                .select(Projections.fields(CoursePlaceResponse.class,
-                        place.id, place.name, place.lon, place.lat,
-                        place.image, place.ratingCount, place.ratingSum))
-                .from(place)
+                .selectFrom(place)
                 .where(place.id.in(placeKeys))
                 .fetch();
     }
 
     @Override
-    public List<PopularPlaceResponseDto> getPopular(Long size) {
-        return queryFactory.select(Projections.fields(PopularPlaceResponseDto.class,
+    public List<PopularPlaceListDto> findPopular(Long size) {
+        return queryFactory.select(Projections.fields(PopularPlaceListDto.class,
                         place.id, place.image, place.name, place.address,
                         place.region, place.ratingSum, place.ratingCount))
                 .from(place)
@@ -58,8 +53,16 @@ public class PlaceRepositoryImpl implements PlaceRepositoryCustom {
     }
 
     @Override
-    public List<PlaceTagsBox> getPlaceTag(Long id) {
-        return queryFactory
+    public PopularPlaceDetailDto findPopularPlaceDetail(Long id) {
+        PopularPlaceDetailDto placeDetail = queryFactory
+                .select(Projections.fields(PopularPlaceDetailDto.class,
+                        place.id, place.name, place.image, place.region,
+                        place.address, place.ratingSum, place.ratingCount))
+                .from(place)
+                .where(place.id.eq(id))
+                .fetchFirst();
+
+        List<PlaceTagsBox> tags = queryFactory
                 .select(Projections.fields(PlaceTagsBox.class,
                         placeTag.tag.name.as("tagName"),
                         placeTag.count().as("tagCount")))
@@ -69,10 +72,34 @@ public class PlaceRepositoryImpl implements PlaceRepositoryCustom {
                 .groupBy(placeTag.tag)
                 .where(placeTag.place.id.eq(id))
                 .fetch();
+
+        placeDetail.changePlaceTagsBox(tags);
+        return placeDetail;
+    }
+
+    @Override
+    public List<String> findPlaceNamesById(List<Long> placeKeys) {
+        return queryFactory
+                .select(place.name)
+                .from(place)
+                .where(place.id.in(placeKeys))
+                .fetch();
+    }
+
+    @Override
+    public List<String> findRegionsById(List<Long> placeKeys) {
+        return queryFactory
+                .select(place.region)
+                .from(place)
+                .where(place.id.in(placeKeys))
+                .fetch();
     }
 
     private BooleanExpression regionEq(List<String> regions) {
-        if (regions.isEmpty()) {
+        if (regions == null) { //지역구 선택이 없을 시
+            return null;
+        }
+        if (regions.isEmpty()) {//빈 리스트일 때
             return null;
         }
         return place.region.in(regions);

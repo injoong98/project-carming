@@ -15,6 +15,7 @@ import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StringUtils;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -47,9 +48,10 @@ public class MemberService {
 
     public void validAuthenticated(MemberCreateDto request) {
         ValueOperations<String, String> operations = redisTemplate.opsForValue();
-        log.info(">>>>>>>>>>>> request.getPhone = {}", request.getPhone());
         String json = operations.get(request.getPhone());
-        log.info(">>>>>>> json = {}", json);
+        if (!StringUtils.hasText(json)) {
+            throw new InvalidRequest("authNumber", "인증되지 않았습니다.");
+        }
         AuthenticationInfo authenticationInfo = JsonMapper.toClass(json, AuthenticationInfo.class);
 
         if (!authenticationInfo.getAuthenticated()) {

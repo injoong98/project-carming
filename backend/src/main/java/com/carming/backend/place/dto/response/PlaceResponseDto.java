@@ -1,15 +1,13 @@
 package com.carming.backend.place.dto.response;
 
+import com.carming.backend.common.SplitFactory;
 import com.carming.backend.place.domain.Place;
 import com.carming.backend.place.domain.PlaceCategory;
 import com.querydsl.core.annotations.QueryProjection;
 import lombok.Builder;
 import lombok.Data;
-import org.springframework.util.StringUtils;
 
-import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Data
 public class PlaceResponseDto {
@@ -50,19 +48,10 @@ public class PlaceResponseDto {
                 .address(place.getAddress())
                 .ratingCount(place.getRatingCount())
                 .ratingSum(place.getRatingSum())
-                .keyword(separateKeyword(place.getKeyword()))
+                .keyword(SplitFactory.splitKeyword(place.getKeyword()))
                 .image(place.getImage())
                 .build();
     }
-
-    private static List<String> separateKeyword(String keyword) {
-        if (StringUtils.hasText(keyword)) {
-            String[] keywords = keyword.split("\\|");
-            return Arrays.stream(keywords).collect(Collectors.toList());
-        }
-        return List.of();
-    }
-
 
     @QueryProjection
     @Builder

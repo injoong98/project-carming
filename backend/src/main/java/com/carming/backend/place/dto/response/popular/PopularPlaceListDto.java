@@ -1,11 +1,11 @@
-package com.carming.backend.place.dto.response;
+package com.carming.backend.place.dto.response.popular;
 
-import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+@NoArgsConstructor
 @Data
-public class PopularPlaceResponseDto {
+public class PopularPlaceListDto {
 
     private Long id;
 

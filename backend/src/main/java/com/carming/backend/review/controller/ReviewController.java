@@ -1,5 +1,6 @@
 package com.carming.backend.review.controller;
 
+import com.carming.backend.course.service.CourseService;
 import com.carming.backend.review.dto.request.ReviewRequestDto;
 import com.carming.backend.review.service.ReviewService;
 import lombok.RequiredArgsConstructor;
@@ -18,10 +19,25 @@ public class ReviewController {
 
     private final ReviewService reviewService;
 
+    private final CourseService courseService;
+
     @PostMapping
     public ResponseEntity<Void> saveReview(@RequestBody ReviewRequestDto request) {
         Long memberId = Long.valueOf(SecurityContextHolder.getContext().getAuthentication().getName());
+
+        if (isNewCourse(request)) {
+            courseService.saveCourse(request);
+        }
+
         reviewService.saveReview(request, memberId);
         return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    private boolean isNewCourse(ReviewRequestDto request) {
+        if (request.getCourseReview().getCourseId() == null
+                && request.getCourseReview().getName() == null) {
+            return true;
+        }
+        return false;
     }
 }

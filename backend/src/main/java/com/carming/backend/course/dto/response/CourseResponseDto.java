@@ -12,15 +12,22 @@ public class CourseResponseDto {
 
     private String name;
 
+    private Integer ratingCount;
+
+    private Integer ratingSum;
+
     private List<String> regions;
 
     private List<CoursePlaceResponse> places;
 
     @Builder
     public CourseResponseDto(String name,
+                             Integer ratingCount, Integer ratingSum,
                              List<String> regions,
                              List<CoursePlaceResponse> places) {
         this.name = name;
+        this.ratingCount = ratingCount;
+        this.ratingSum = ratingSum;
         this.regions = regions;
         this.places = places;
     }
@@ -28,6 +35,8 @@ public class CourseResponseDto {
     public static CourseResponseDto from(Course course, List<CoursePlaceResponse> places) {
         return CourseResponseDto.builder()
                 .name(course.getName())
+                .ratingCount(course.getRatingCount())
+                .ratingSum(course.getRatingSum())
                 .regions(SplitFactory.splitRegions(course.getRegions()))
                 .places(places)
                 .build();
