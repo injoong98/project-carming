@@ -90,6 +90,7 @@ public class PlaceRepositoryImpl implements PlaceRepositoryCustom {
     public List<String> findRegionsById(List<Long> placeKeys) {
         return queryFactory
                 .select(place.region)
+                .distinct()
                 .from(place)
                 .where(place.id.in(placeKeys))
                 .fetch();

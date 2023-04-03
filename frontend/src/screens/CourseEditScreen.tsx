@@ -25,17 +25,18 @@ import {
   useSetDriveStartStatusMutation,
   useSetIsDestinationMutation,
 } from '../apis/journeyApi';
-import {
-  AlertNotificationRoot,
-  ALERT_TYPE,
-  Toast,
-} from 'react-native-alert-notification';
+import {ALERT_TYPE, Toast} from 'react-native-alert-notification';
 import {L3_TotalJourneyStackParamList} from '../navigations/L3_TotalJourneyStackNavigator';
 import {setJourneyPlaceList} from '../redux/slices/journeySlice';
+import {DrawerScreenProps} from '@react-navigation/drawer';
+import {L2_AppDrawerParamList} from '../navigations/L2_AppDrawerNavigator';
 
 export type CourseEditScreenProps = CompositeScreenProps<
   NativeStackScreenProps<L4_CourseCreateStackParamList, 'CourseEdit'>,
-  NativeStackScreenProps<L3_TotalJourneyStackParamList>
+  CompositeScreenProps<
+    NativeStackScreenProps<L3_TotalJourneyStackParamList>,
+    DrawerScreenProps<L2_AppDrawerParamList>
+  >
 >;
 
 const {width: screenWidth, height: screenHeight} = Dimensions.get('window');
@@ -89,7 +90,7 @@ const CourseEditScreen: React.FC<CourseEditScreenProps> = ({
       dispatch(setJourneyPlaceList([clientPlace, ...coursePlaces]));
       setDriveStartStatus(1);
       setIsDestination(0);
-      navigation.navigate('Journey', {
+      navigation.replace('Journey', {
         screen: 'CarCall',
         params: {start: currentCarPosition, end: currentClientPosition},
       });
@@ -104,105 +105,103 @@ const CourseEditScreen: React.FC<CourseEditScreenProps> = ({
   };
 
   return (
-    <AlertNotificationRoot>
-      <GradientBackground colors={['#70558e7a', '#df94c283', '#ffbdc1b0']}>
-        <SafeAreaView style={{flex: 1}}>
-          <StyledView
-            style={{justifyContent: 'space-between', flexDirection: 'row'}}>
-            <IconButton
-              icon="chevron-left"
-              size={30}
-              onPress={() => {
-                navigation.goBack();
-              }}
-            />
-            <IconButton
-              icon="home"
-              size={30}
-              onPress={() => {
-                console.log('hello');
-              }}
-            />
-          </StyledView>
-          <TitleText>코스 짜기</TitleText>
-          <DescText>드래그 & 드롭으로 순서를 변경할 수 있어요!</DescText>
-          <DraggableFlatList
-            containerStyle={{padding: 20}}
-            data={coursePlaces}
-            onDragEnd={({data}) => setCoursePlaces(data)}
-            keyExtractor={item => item.id.toString()}
-            renderItem={CourseEditListItem}
+    <GradientBackground colors={['#70558e7a', '#df94c283', '#ffbdc1b0']}>
+      <SafeAreaView style={{flex: 1}}>
+        <StyledView
+          style={{justifyContent: 'space-between', flexDirection: 'row'}}>
+          <IconButton
+            icon="chevron-left"
+            size={30}
+            onPress={() => {
+              navigation.goBack();
+            }}
           />
-          <StyledView style={{justifyContent: 'center'}}>
+          <IconButton
+            icon="home"
+            size={30}
+            onPress={() => {
+              navigation.navigate('Main');
+            }}
+          />
+        </StyledView>
+        <TitleText>코스 짜기</TitleText>
+        <DescText>드래그 & 드롭으로 순서를 변경할 수 있어요!</DescText>
+        <DraggableFlatList
+          containerStyle={{padding: 20}}
+          data={coursePlaces}
+          onDragEnd={({data}) => setCoursePlaces(data)}
+          keyExtractor={item => item.id.toString()}
+          renderItem={CourseEditListItem}
+        />
+        <StyledView style={{justifyContent: 'center'}}>
+          <CustomButton
+            text={'경로 계산하기'}
+            onPress={async () => {
+              await calcRoute();
+              setRouteModalVisible(true);
+            }}
+            buttonStyle={{
+              ...styles.button,
+              backgroundColor: theme.colors.surfaceVariant,
+            }}
+            textStyle={styles.buttonText}
+          />
+        </StyledView>
+      </SafeAreaView>
+      <Modal
+        testID={'modal'}
+        isVisible={routeModalVisible}
+        onSwipeComplete={() => setRouteModalVisible(false)}
+        swipeDirection={['down']}
+        style={styles.view}>
+        <StyledView style={styles.modalView}>
+          <CustomMapView
+            places={[clientPlace, ...coursePlaces]}
+            viewStyle={{
+              width: screenWidth * 0.8,
+              height: screenWidth * 0.8,
+            }}
+            useIndex={true}
+            routeCoordinates={routeCoordinates}
+          />
+          <ModalInfoText>
+            예상 이동시간 : 총{' '}
+            {calcTime(routeInfo.duration).hour
+              ? calcTime(routeInfo.duration).hour + '시간 '
+              : ' '}
+            {calcTime(routeInfo.duration).minute}분
+          </ModalInfoText>
+          <ModalInfoText>
+            예상 비용 : 총{' '}
+            {routeInfo.taxiFare + routeInfo.fuelPrice + routeInfo.tollFare}원
+          </ModalInfoText>
+          <ModalPriceText>
+            (대여료 {routeInfo.taxiFare}원 + 유류비 {routeInfo.fuelPrice}원 +
+            통행 요금 {routeInfo.tollFare}원)
+          </ModalPriceText>
+          <View style={{flexDirection: 'row'}}>
             <CustomButton
-              text={'경로 계산하기'}
-              onPress={async () => {
-                await calcRoute();
-                setRouteModalVisible(true);
-              }}
+              text={'여정 시작하기'}
+              onPress={() => journeyStartBtnPressed()}
               buttonStyle={{
-                ...styles.button,
+                ...styles.modalButton,
                 backgroundColor: theme.colors.surfaceVariant,
               }}
-              textStyle={styles.buttonText}
+              textStyle={styles.modalButtonText}
             />
-          </StyledView>
-        </SafeAreaView>
-        <Modal
-          testID={'modal'}
-          isVisible={routeModalVisible}
-          onSwipeComplete={() => setRouteModalVisible(false)}
-          swipeDirection={['down']}
-          style={styles.view}>
-          <StyledView style={styles.modalView}>
-            <CustomMapView
-              places={[clientPlace, ...coursePlaces]}
-              viewStyle={{
-                width: screenWidth * 0.8,
-                height: screenWidth * 0.8,
+            <CustomButton
+              text={'취소하기'}
+              onPress={() => setRouteModalVisible(false)}
+              buttonStyle={{
+                ...styles.modalButton,
+                backgroundColor: theme.colors.tertiary,
               }}
-              useIndex={true}
-              routeCoordinates={routeCoordinates}
+              textStyle={styles.modalButtonText}
             />
-            <ModalInfoText>
-              예상 이동시간 : 총{' '}
-              {calcTime(routeInfo.duration).hour
-                ? calcTime(routeInfo.duration).hour + '시간 '
-                : ' '}
-              {calcTime(routeInfo.duration).minute}분
-            </ModalInfoText>
-            <ModalInfoText>
-              예상 비용 : 총{' '}
-              {routeInfo.taxiFare + routeInfo.fuelPrice + routeInfo.tollFare}원
-            </ModalInfoText>
-            <ModalPriceText>
-              (대여료 {routeInfo.taxiFare}원 + 유류비 {routeInfo.fuelPrice}원 +
-              통행 요금 {routeInfo.tollFare}원)
-            </ModalPriceText>
-            <View style={{flexDirection: 'row'}}>
-              <CustomButton
-                text={'여정 시작하기'}
-                onPress={() => journeyStartBtnPressed()}
-                buttonStyle={{
-                  ...styles.modalButton,
-                  backgroundColor: theme.colors.surfaceVariant,
-                }}
-                textStyle={styles.modalButtonText}
-              />
-              <CustomButton
-                text={'취소하기'}
-                onPress={() => setRouteModalVisible(false)}
-                buttonStyle={{
-                  ...styles.modalButton,
-                  backgroundColor: theme.colors.tertiary,
-                }}
-                textStyle={styles.modalButtonText}
-              />
-            </View>
-          </StyledView>
-        </Modal>
-      </GradientBackground>
-    </AlertNotificationRoot>
+          </View>
+        </StyledView>
+      </Modal>
+    </GradientBackground>
   );
 };
 
@@ -210,12 +209,17 @@ const styles = StyleSheet.create({
   button: {
     width: 200,
     padding: 14,
+    height: 50,
+    marginTop: 20,
     borderRadius: 30,
   },
   modalButton: {
     width: 150,
     padding: 14,
+    height: 50,
+    marginTop: 30,
     borderRadius: 30,
+    margin: 5,
   },
   buttonText: {
     fontWeight: 'bold',

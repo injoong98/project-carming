@@ -55,7 +55,7 @@ export const journeyApi = createApi({
     }),
     checkDriveStartStatus: builder.query<boolean, void>({
       query: () => ({
-        url: '?key=drive_start',
+        url: '?key=get_in',
         responseHandler: res => res.text(),
       }),
       transformResponse: (res: string) => res === '1',
@@ -88,7 +88,7 @@ export const journeyApi = createApi({
         url: '',
         method: 'POST',
         body: {
-          key: 'drive_start',
+          key: 'get_in',
           value: status,
         },
       }),

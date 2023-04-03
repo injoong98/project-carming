@@ -1,6 +1,7 @@
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import RecommendScreen from '../screens/RecommendScreen';
 import CourseEditScreen from '../screens/CourseEditScreen';
+import {AlertNotificationRoot} from 'react-native-alert-notification';
 
 export type L4_CourseCreateStackParamList = {
   Recommend: undefined;
@@ -11,14 +12,16 @@ const Stack = createNativeStackNavigator<L4_CourseCreateStackParamList>();
 
 function L4_CourseCreateStackNavigator() {
   return (
-    <Stack.Navigator
-      initialRouteName="Recommend"
-      screenOptions={{
-        headerShown: false,
-      }}>
-      <Stack.Screen name="Recommend" component={RecommendScreen} />
-      <Stack.Screen name="CourseEdit" component={CourseEditScreen} />
-    </Stack.Navigator>
+    <AlertNotificationRoot>
+      <Stack.Navigator
+        initialRouteName="Recommend"
+        screenOptions={{
+          headerShown: false,
+        }}>
+        <Stack.Screen name="Recommend" component={RecommendScreen} />
+        <Stack.Screen name="CourseEdit" component={CourseEditScreen} />
+      </Stack.Navigator>
+    </AlertNotificationRoot>
   );
 }
 

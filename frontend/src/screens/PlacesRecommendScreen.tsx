@@ -25,8 +25,6 @@ import {
   setPlaceTagList,
 } from '../redux/slices/placeSlice';
 import {useGetPlacesQuery} from '../apis/placeApi';
-import {useGetTagsQuery} from '../apis/tagApi';
-import {setTagList} from '../redux/slices/tagSlice';
 import {filterTagsByCategory} from '../utils';
 
 interface PlacesRecommendScreenScreenProps {}
@@ -38,6 +36,7 @@ const PlacesRecommendScreen: React.FC<
   const dispatch = useDispatch();
   const carouselRef = useRef<any>(null);
 
+  const {regionList} = useSelector((state: RootState) => state.main);
   const {placeCart, placeTagList, checkedTagList, selectedCategory} =
     useSelector((state: RootState) => state.place);
   const tags = useSelector((state: RootState) => state.tag);
@@ -48,7 +47,7 @@ const PlacesRecommendScreen: React.FC<
     isError,
     isSuccess,
   } = useGetPlacesQuery({
-    regions: ['마포구'],
+    regions: regionList,
     category: selectedCategory,
     size: 10,
   });

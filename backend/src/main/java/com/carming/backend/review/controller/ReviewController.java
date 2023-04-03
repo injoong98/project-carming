@@ -4,6 +4,7 @@ import com.carming.backend.course.service.CourseService;
 import com.carming.backend.review.dto.request.ReviewRequestDto;
 import com.carming.backend.review.service.ReviewService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -23,10 +24,10 @@ public class ReviewController {
 
     @PostMapping
     public ResponseEntity<Void> saveReview(@RequestBody ReviewRequestDto request) {
-        Long memberId = Long.valueOf(SecurityContextHolder.getContext().getAuthentication().getName());
+       Long memberId = Long.valueOf(SecurityContextHolder.getContext().getAuthentication().getName());
 
         if (isNewCourse(request)) {
-            courseService.saveCourse(request);
+            request.getCourseReview().setCourseId(courseService.saveCourse(request));
         }
 
         reviewService.saveReview(request, memberId);
@@ -34,8 +35,7 @@ public class ReviewController {
     }
 
     private boolean isNewCourse(ReviewRequestDto request) {
-        if (request.getCourseReview().getCourseId() == null
-                && request.getCourseReview().getName() == null) {
+        if (request.getCourseReview().getCourseId() == null) {
             return true;
         }
         return false;

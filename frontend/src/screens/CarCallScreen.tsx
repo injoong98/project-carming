@@ -45,12 +45,12 @@ const CarCallScreen: React.FC<CarCallScreenProps> = ({navigation, route}) => {
   const {data: currentCarCoordinate} = useGetCurrentCarPositionQuery(
     undefined,
     {
-      pollingInterval: 1000,
+      pollingInterval: navigation.isFocused() ? 1000 : undefined,
     },
   );
   const {data: globalPath} = useGetGlobalPathQuery();
   const {data: isDestination} = useCheckIsDestinationQuery(undefined, {
-    pollingInterval: 1000,
+    pollingInterval: navigation.isFocused() ? 1000 : undefined,
   });
   const [setDriveStartStatus] = useSetDriveStartStatusMutation();
   const [setIsDestination] = useSetIsDestinationMutation();
@@ -124,6 +124,7 @@ const styles = StyleSheet.create({
   buttonStyle: {
     width: 200,
     padding: 14,
+    height: 50,
     borderRadius: 30,
     position: 'absolute',
     bottom: 20,

@@ -1,6 +1,13 @@
 import {iconPlace} from '../components/MapMarker';
 import {TagSliceState} from '../redux/slices/tagSlice';
-import {Category, Coordinate, Course, Place, Tag} from '../types';
+import {
+  Category,
+  Coordinate,
+  Course,
+  Place,
+  PlaceReviewRequest,
+  Tag,
+} from '../types';
 
 const calcRating = (sum: number, count: number) => {
   return Math.round((sum / count) * 10) / 10;
@@ -133,6 +140,18 @@ const filterTagsByCategory = (
     .filter(tag => tag.category === category);
 };
 
+const filterRealPlace = (places: (Place | iconPlace)[]): Place[] => {
+  return places.filter<Place>((place: any): place is Place => isPlace(place));
+};
+
+const placesToPlaceReviewRequests = (places: Place[]): PlaceReviewRequest[] => {
+  return places.map(place => ({
+    placeId: place.id,
+    placeRating: 0,
+    placeTags: [],
+  }));
+};
+
 export {
   calcRating,
   calcCoordinates,
@@ -150,4 +169,6 @@ export {
   placeToCoordinate,
   placeToIconPlace,
   filterTagsByCategory,
+  filterRealPlace,
+  placesToPlaceReviewRequests,
 };

@@ -1,10 +1,13 @@
 import {createDrawerNavigator} from '@react-navigation/drawer';
 import L3_MainDrawerNavigator from './L3_MainDrawerNavigator';
-import L3_TotalJourneyStackNavigator from './L3_TotalJourneyStackNavigator';
+import L3_TotalJourneyStackNavigator, {
+  L3_TotalJourneyStackParamList,
+} from './L3_TotalJourneyStackNavigator';
+import {NavigatorScreenParams} from '@react-navigation/native';
 
 export type L2_AppDrawerParamList = {
   Main: undefined;
-  TotalJourney: undefined;
+  TotalJourney: NavigatorScreenParams<L3_TotalJourneyStackParamList>;
 };
 
 const Drawer = createDrawerNavigator<L2_AppDrawerParamList>();

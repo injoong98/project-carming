@@ -10,8 +10,9 @@ export type PlaceReviewRequest = {
 };
 
 export type CourseReviewRequest = {
-  courseId: number;
+  courseId?: number;
   courseTags: number[];
   courseRating: number;
   content: string;
+  name?: string;
 };

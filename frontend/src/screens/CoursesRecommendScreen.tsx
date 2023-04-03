@@ -33,6 +33,7 @@ const CoursesRecommendScreen: React.FC<CoursesRecommendScreenProps> = ({}) => {
   const {courseCart, courseTagList, checkedTagList} = useSelector(
     (state: RootState) => state.course,
   );
+  const {regionList} = useSelector((state: RootState) => state.main);
   const tags = useSelector((state: RootState) => state.tag);
 
   const {
@@ -41,7 +42,7 @@ const CoursesRecommendScreen: React.FC<CoursesRecommendScreenProps> = ({}) => {
     isFetching,
     isError,
     isSuccess,
-  } = useGetCoursesQuery({regions: ['은평구'], size: 10});
+  } = useGetCoursesQuery({regions: regionList, size: 10});
   const [carouselData, setCarouselData] = useState<any[]>([]);
 
   useEffect(() => {

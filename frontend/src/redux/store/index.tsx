@@ -11,6 +11,7 @@ import {
   tagSlice,
   authSlice,
   journeySlice,
+  reviewSlice,
   mainSlice,
 } from '../slices';
 import {
@@ -19,6 +20,7 @@ import {
   courseApi,
   journeyApi,
   tagApi,
+  reviewApi,
 } from './../../apis';
 
 const rootReducer = combineReducers({
@@ -28,11 +30,13 @@ const rootReducer = combineReducers({
   auth: authSlice.reducer,
   main: mainSlice.reducer,
   journey: journeySlice.reducer,
+  review: reviewSlice.reducer,
   [memberRegistApi.reducerPath]: memberRegistApi.reducer,
   [placeApi.reducerPath]: placeApi.reducer,
   [courseApi.reducerPath]: courseApi.reducer,
   [journeyApi.reducerPath]: journeyApi.reducer,
   [tagApi.reducerPath]: tagApi.reducer,
+  [reviewApi.reducerPath]: reviewApi.reducer,
 });
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);
@@ -44,6 +48,7 @@ const store = configureStore({
     courseApi.middleware,
     journeyApi.middleware,
     tagApi.middleware,
+    reviewApi.middleware,
   ), // redux toolkit과 redux persist를 함께 사용하여 발생하는 에러 해결
   // RTK query를 사용하기 위해 api 를 생성하고 middleware 추가
 });

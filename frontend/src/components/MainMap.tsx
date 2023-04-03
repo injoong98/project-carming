@@ -8,6 +8,9 @@ import {useDispatch, useSelector} from 'react-redux';
 import {RootState} from '../redux/store';
 import {useEffect} from 'react';
 import {initializeMainState} from '../redux/slices/mainSlice';
+import {useNavigation} from '@react-navigation/native';
+import {L2_AppDrawerParamList} from '../navigations/L2_AppDrawerNavigator';
+import {DrawerNavigationProp} from '@react-navigation/drawer';
 
 interface MainMapProps {
   imgStyle?: ImageStyle;
@@ -15,8 +18,11 @@ interface MainMapProps {
   disabled?: boolean;
 }
 
+type MainMapNavigationProp = DrawerNavigationProp<L2_AppDrawerParamList>;
+
 const MainMap: React.FC<MainMapProps> = ({imgStyle, onPress, disabled}) => {
   const dispatch = useDispatch();
+  const navigation = useNavigation<MainMapNavigationProp>();
   //스크린이 처음 렌더링 될 때 main store 초기화(regionList, preCart)
   useEffect(() => {
     dispatch(initializeMainState());
@@ -24,6 +30,12 @@ const MainMap: React.FC<MainMapProps> = ({imgStyle, onPress, disabled}) => {
   }, []);
 
   const regionList = useSelector((state: RootState) => state.main.regionList);
+  const startBtnPressed = () => {
+    navigation.navigate('TotalJourney', {
+      screen: 'CourseCreate',
+      params: {screen: 'Recommend'},
+    });
+  };
 
   return (
     <>
@@ -168,7 +180,7 @@ const MainMap: React.FC<MainMapProps> = ({imgStyle, onPress, disabled}) => {
           paddingHorizontal: 40,
           borderRadius: 100,
         }}
-        onPress={() => console.log(regionList)}
+        onPress={() => startBtnPressed()}
       />
       <View style={{marginBottom: '5%'}}></View>
       {/* </View> */}

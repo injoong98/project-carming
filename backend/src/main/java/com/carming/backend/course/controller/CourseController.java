@@ -55,7 +55,7 @@ public class CourseController {
     }
 
     @GetMapping("/new")
-    public ResponseEntity<CheckCourseDto> isNewCourse(@RequestBody List<Long> placeKeys) {
+    public ResponseEntity<CheckCourseDto> isNewCourse(@RequestParam List<Long> placeKeys) {
         return ResponseEntity.ok(courseService.isNewCourse(placeKeys));
     }
 

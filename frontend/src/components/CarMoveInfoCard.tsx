@@ -5,6 +5,7 @@ import {Place} from '../types';
 import {calcRating, isPlace} from '../utils';
 import RatingStar from './RatingStar';
 import {iconPlace} from './MapMarker';
+import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
 interface CarMoveInfoCardProps {
   place: Place | iconPlace;
@@ -26,37 +27,34 @@ const CarMoveInfoCard: React.FC<CarMoveInfoCardProps> = ({
         <PlaceContainer>
           <PlaceImage source={{uri: place.image}} />
           <PlaceInfoContainer>
-            <PlaceTitleText>
-              #{index} {place.name}
-            </PlaceTitleText>
-            <RatingContainer>
-              <RatingStar
-                iconSize={18}
-                iconStyle={{margin: -8}}
-                rating={rating}
-              />
-              <RatingText
-                style={{paddingHorizontal: 3, color: theme.colors.secondary}}>
-                {rating}
-              </RatingText>
-              <RatingText
-                style={{
-                  fontSize: 10,
-                  marginTop: 6,
-                  marginRight: 10,
-                  color: theme.colors.secondary,
-                }}>
-                ({place.ratingCount})
-              </RatingText>
-            </RatingContainer>
+            <View>
+              <LocationText>
+                <Icon name="map-marker" />
+                {place.region}
+              </LocationText>
+              <PlaceTitleText>
+                #{index} {place.name}
+              </PlaceTitleText>
+              <RatingContainer>
+                <RatingStar
+                  iconSize={16}
+                  iconStyle={{margin: -8}}
+                  rating={rating}
+                />
+                <RatingAvgText style={{color: theme.colors.secondary}}>
+                  {rating}
+                </RatingAvgText>
+                <RatingCntText style={{color: theme.colors.secondary}}>
+                  ({place.ratingCount})
+                </RatingCntText>
+              </RatingContainer>
+            </View>
             <TagText style={{color: theme.colors.secondary}}>
-              #맛있는 #분위기있는
+              {place.keyword?.reduce((prev, curr) => prev + `#${curr} `, '')}
             </TagText>
           </PlaceInfoContainer>
         </PlaceContainer>
-        <InfoText style={{color: useTheme().colors.primary}}>
-          {infoText}
-        </InfoText>
+        <InfoText style={{color: theme.colors.primary}}>{infoText}</InfoText>
       </CardContainer>
     );
   } else {
@@ -77,16 +75,17 @@ const PlaceContainer = styled(View)`
 
 const PlaceInfoContainer = styled(View)`
   flex-direction: column;
+  justify-content: space-around;
+  height: 150px;
 `;
 
 const RatingContainer = styled(View)`
   flex-direction: row;
   margin-top: 5px;
-  margin-bottom: 20px;
 `;
 
 const PlaceTitleText = styled(Text)`
-  font-size: 15px;
+  font-size: 16px;
   font-weight: bold;
 `;
 
@@ -98,19 +97,33 @@ const InfoText = styled(Text)`
 `;
 
 const PlaceImage = styled(Image)`
-  width: 100px;
-  height: 100px;
+  width: 130px;
+  height: 130px;
   border-radius: 5px;
   margin-right: 10px;
 `;
 
-const RatingText = styled(Text)`
-  font-size: 15px;
+const RatingAvgText = styled(Text)`
+  font-size: 16px;
+  padding: 0px 3px;
   margin-left: 0px;
   margin-right: 0px;
 `;
 
-const TagText = styled(Text)`
-  font-size: 13px;
+const RatingCntText = styled(Text)`
+  font-size: 10px;
+  padding: 0px 3px;
+  margin: 6px 10px 0px 0px;
 `;
+
+const TagText = styled(Text)`
+  font-size: 12px;
+`;
+
+const LocationText = styled(Text)`
+  color: black;
+  font-size: 10px;
+  margin-bottom: 5px;
+`;
+
 export default CarMoveInfoCard;
