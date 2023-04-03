@@ -11,6 +11,7 @@ import VerificationModal from './VerificationModal';
 import {useVerifyStartMutation} from '../apis/memberRegistApi';
 import {useSelector} from 'react-redux';
 import {RootState} from '../redux/store';
+import {Bank} from '../types/Bank';
 
 export type RegistFormValues = {
   phone: string;
@@ -21,15 +22,7 @@ export type RegistFormValues = {
   gender: 'MALE' | 'FEMALE';
   birthDate: string;
   cardNumber: string;
-  companyName:
-    | '현대'
-    | '신한'
-    | 'KB국민'
-    | '롯데'
-    | '하나'
-    | '우리'
-    | 'NH농협'
-    | 'IBK';
+  companyName: string;
   cardPassword: string;
   cvv: string;
   cardExp: string;
@@ -44,7 +37,7 @@ const initialValues: RegistFormValues = {
   gender: 'MALE',
   birthDate: '',
   cardNumber: '',
-  companyName: '현대',
+  companyName: 'IBK_BC',
   cardPassword: '',
   cvv: '',
   cardExp: '',
@@ -83,10 +76,7 @@ const RegistSchema = Yup.object().shape({
       'XXXX/XXXX/XXXX/XXXX형식으로 입력해주세요.',
     )
     .max(19, '카드번호는 16자리여야 합니다.'),
-  companyName: Yup.string().oneOf(
-    ['현대', '신한', 'KB국민', '롯데', '하나', '우리', 'NH농협', 'IBK'],
-    '카드사를 선택해주세요.',
-  ),
+  companyName: Yup.string().oneOf(Object.keys(Bank), '카드사를 선택해주세요.'),
   cardPassword: Yup.string()
     // .required('필수 항목입니다.')
     .matches(/^[0-9]+$/, '숫자만 입력 가능합니다.')
@@ -122,6 +112,7 @@ const RegistForm: React.FC<MemberRegistFormProps> = ({
   const [verifyStart, {isLoading}] = useVerifyStartMutation();
 
   const handleSubmit = async (values: RegistFormValues) => {
+    console.log(values);
     if (!isVerified) Alert.alert('전화번호를 인증해주세요');
     else {
       await RegistSchema.validate(values, {abortEarly: false})
@@ -387,7 +378,7 @@ const RegistForm: React.FC<MemberRegistFormProps> = ({
                 <RegistFormText style={{marginRight: 5}}>카드사</RegistFormText>
                 <View
                   style={{
-                    width: '50%',
+                    width: '60%',
                     marginTop: 2,
                     marginBottom: 5,
                     borderRadius: 10,
@@ -396,46 +387,9 @@ const RegistForm: React.FC<MemberRegistFormProps> = ({
                     selectedValue={values.companyName}
                     onValueChange={handleChange('companyName')}
                     style={{color: '#747273'}}>
-                    <Picker.Item
-                      style={{fontSize: 13}}
-                      label="현대"
-                      value="현대"
-                    />
-                    <Picker.Item
-                      style={{fontSize: 13}}
-                      label="신한"
-                      value="신한"
-                    />
-                    <Picker.Item
-                      style={{fontSize: 13}}
-                      label="KB국민"
-                      value="KB국민"
-                    />
-                    <Picker.Item
-                      style={{fontSize: 13}}
-                      label="롯데"
-                      value="롯데"
-                    />
-                    <Picker.Item
-                      style={{fontSize: 13}}
-                      label="하나"
-                      value="하나"
-                    />
-                    <Picker.Item
-                      style={{fontSize: 13}}
-                      label="우리"
-                      value="우리"
-                    />
-                    <Picker.Item
-                      style={{fontSize: 13}}
-                      label="NH농협"
-                      value="NH농협"
-                    />
-                    <Picker.Item
-                      style={{fontSize: 13}}
-                      label="IBK"
-                      value="IBK"
-                    />
+                    {Object.keys(Bank).map(bank => (
+                      <Picker.Item key={bank} label={Bank[bank]} value={bank} />
+                    ))}
                   </Picker>
                 </View>
               </InputView>

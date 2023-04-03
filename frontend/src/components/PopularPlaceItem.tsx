@@ -5,6 +5,8 @@ import RatingStar from './RatingStar';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import {calcRating} from '../utils';
 import {IconButton} from 'react-native-paper';
+import {useDispatch} from 'react-redux';
+import {addSelectedPlace} from '../redux/slices/mainSlice';
 
 interface PopularPlaceItemProps {
   place: Place;
@@ -17,11 +19,16 @@ const PopularPlaceItem: React.FC<PopularPlaceItemProps> = ({
   index,
   onPress,
 }) => {
+  const dispatch = useDispatch();
+  const handlePress = () => {
+    if (onPress) onPress();
+    dispatch(addSelectedPlace(place));
+  };
   const rating = calcRating(place.ratingSum, place.ratingCount);
 
   return (
     <>
-      <TouchableContainer>
+      <TouchableContainer onPress={handlePress}>
         <CardContainer>
           <ImageBackGround source={{uri: place.image}}>
             <ContentContainer>

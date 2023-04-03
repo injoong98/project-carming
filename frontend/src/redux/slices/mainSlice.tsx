@@ -1,10 +1,12 @@
 import {PayloadAction, createSlice} from '@reduxjs/toolkit';
-import {Place, RegionObject} from '../../types';
+import {Course, Place, RegionObject} from '../../types';
 import {SeoulDistrict} from '../../types/SeoulDistrict';
 
 type MainState = {
   regionList: SeoulDistrict[];
   preCart: Place[];
+  selectedPlace?: Place | null;
+  selectedCourse?: Course | null;
 };
 
 const initialState: MainState = {
@@ -12,6 +14,9 @@ const initialState: MainState = {
   regionList: [],
   //추천 장소 및 코스를 통해 선택된 장소들
   preCart: [],
+  //메인 화면에서 추천 컴포넌트들을 클릭해 모달을 띄울 때 선택된 요소
+  selectedPlace: null,
+  selectedCourse: null,
 };
 
 const mainSlice = createSlice({
@@ -22,6 +27,8 @@ const mainSlice = createSlice({
     initializeMainState: state => {
       state.regionList = [];
       state.preCart = [];
+      state.selectedPlace = null;
+      state.selectedCourse = null;
     },
 
     //regionList
@@ -46,9 +53,11 @@ const mainSlice = createSlice({
     addPlaceToPreCart: (state, action: PayloadAction<Place>) => {
       const newPlace = action.payload;
       // 이미 추가된 장소인지 검사
-      if (!state.preCart.includes(newPlace)) {
-        state.preCart.push(newPlace);
-      }
+      // if (!state.preCart.includes(newPlace)) {
+      //   state.preCart.push(newPlace);
+      // }
+      state.preCart = state.preCart.filter(place => place.id !== newPlace.id);
+      state.preCart = [...state.preCart, newPlace];
     },
     addPlaceListToPreCart: (state, action: PayloadAction<Place[]>) => {
       const newPlaceList = action.payload;
@@ -58,10 +67,29 @@ const mainSlice = createSlice({
         ...newPlaceList.filter(place => !state.preCart.includes(place)),
       ];
     },
-    removePlaceFromPreCart: (state, action: PayloadAction<SeoulDistrict>) => {
-      state.regionList = state.regionList.filter(
-        region => region !== action.payload,
-      );
+    removePlaceFromPreCart: (state, action: PayloadAction<Place>) => {
+      // state.preCart = state.preCart.filter(place => place !== action.payload);
+      const placeId = action.payload.id;
+      const modifiedCart = state.preCart.filter(place => place.id !== placeId);
+      state.preCart = [...modifiedCart];
+    },
+
+    //selectedPlace
+    addSelectedPlace: (state, action: PayloadAction<Place>) => {
+      const selPlace = action.payload;
+      state.selectedPlace = selPlace;
+    },
+    initializeSelectedPlace: state => {
+      state.selectedPlace = null;
+    },
+
+    //selectedCourse
+    addSelectedCourse: (state, action: PayloadAction<Course>) => {
+      const selCourse = action.payload;
+      state.selectedCourse = selCourse;
+    },
+    initializeSelectedCourse: state => {
+      state.selectedCourse = null;
     },
   },
 });
@@ -75,4 +103,8 @@ export const {
   addPlaceToPreCart,
   addPlaceListToPreCart,
   removePlaceFromPreCart,
+  addSelectedPlace,
+  initializeSelectedPlace,
+  addSelectedCourse,
+  initializeSelectedCourse,
 } = mainSlice.actions;

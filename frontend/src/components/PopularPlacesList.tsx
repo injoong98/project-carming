@@ -3,6 +3,11 @@ import {Place} from '../types';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import styled from 'styled-components';
 import PopularPlaceItem from './PopularPlaceItem';
+import {useState} from 'react';
+import {useDispatch, useSelector} from 'react-redux';
+import {RootState} from '../redux/store';
+import MainPlaceCardModal from './MainPlaceCardModal';
+import {initializeSelectedPlace} from '../redux/slices/mainSlice';
 
 interface PopularPlacesListProps {
   placeList?: Place[];
@@ -11,6 +16,17 @@ interface PopularPlacesListProps {
 const PopularPlacesList: React.FC<PopularPlacesListProps> = ({
   placeList = [], //placeList가 undefined일 경우 오류 발생 가능. 따라서, placeList의 기본값을 빈 배열로 설정.
 }) => {
+  const dispatch = useDispatch();
+  //장소 모달
+  const [isPlaceModalVisible, setIsPlaceModalVisible] = useState(false);
+  const handlePlaceModalClose = () => {
+    dispatch(initializeSelectedPlace);
+    setIsPlaceModalVisible(false);
+  };
+  const selectedPlace = useSelector(
+    (state: RootState) => state.main.selectedPlace,
+  );
+
   return (
     <>
       <TitleView>
@@ -22,13 +38,26 @@ const PopularPlacesList: React.FC<PopularPlacesListProps> = ({
           data={placeList}
           horizontal={true}
           renderItem={({item, index}) => (
-            <PopularPlaceItem key={index} place={item} index={index} />
+            <PopularPlaceItem
+              key={index}
+              place={item}
+              index={index}
+              onPress={() => setIsPlaceModalVisible(!isPlaceModalVisible)}
+            />
           )}
           keyExtractor={(item, index) => `${index}`}
           contentContainerStyle={styles.placeListView}
           showsHorizontalScrollIndicator={false}
         />
       </View>
+
+      {selectedPlace && (
+        <MainPlaceCardModal
+          isVisible={isPlaceModalVisible}
+          place={selectedPlace}
+          onClose={handlePlaceModalClose}
+        />
+      )}
     </>
   );
 };

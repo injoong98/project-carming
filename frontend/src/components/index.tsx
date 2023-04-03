@@ -12,6 +12,8 @@ import CustomMapView from './CustomMapView';
 import RecommendCardDesc from './RecommendCardDesc';
 import CarCallInfoCard from './CarCallInfoCard';
 import CarMoveInfoCard from './CarMoveInfoCard';
+import PlacePreCart from './PlacePreCart';
+import MainPlaceCardModal from './MainPlaceCardModal';
 
 export {
   CourseRecommendCard,
@@ -28,4 +30,6 @@ export {
   RecommendCardDesc,
   CarCallInfoCard,
   CarMoveInfoCard,
+  PlacePreCart,
+  MainPlaceCardModal,
 };

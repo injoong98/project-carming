@@ -20,6 +20,7 @@ const MainMap: React.FC<MainMapProps> = ({imgStyle, onPress, disabled}) => {
   //스크린이 처음 렌더링 될 때 main store 초기화(regionList, preCart)
   useEffect(() => {
     dispatch(initializeMainState());
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const regionList = useSelector((state: RootState) => state.main.regionList);

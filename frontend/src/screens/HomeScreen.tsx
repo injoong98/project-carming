@@ -1,4 +1,11 @@
-import {View, Text, Button, ImageBackground, Image} from 'react-native';
+import {
+  View,
+  Text,
+  Button,
+  ImageBackground,
+  Image,
+  StyleSheet,
+} from 'react-native';
 import {useDispatch, useSelector} from 'react-redux';
 import styled from 'styled-components';
 import {logout} from '../redux/slices/authSlice';
@@ -8,12 +15,26 @@ import {ScrollView} from 'react-native-gesture-handler';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import PopularPlacesList from '../components/PopularPlacesList';
 import PopularCoursesList from '../components/PopularCoursesList';
-import {Category, Course, Place, Tag} from '../types';
+import {Category, Course, Place} from '../types';
+import {PlacePreCart} from '../components';
+import Icon from 'react-native-vector-icons/Ionicons';
+import {useState} from 'react';
 
 const HomeScreen = () => {
   const dispatch = useDispatch();
   const {token, memberInfo} = useSelector((state: RootState) => state.auth);
+  const preCart = useSelector((state: RootState) => state.main.preCart);
 
+  //코스 모달
+  const [isCourseModalVisible, setIsCourseModalVisible] = useState(false);
+  const handleCourseModalClose = () => {
+    setIsCourseModalVisible(false);
+  };
+  const selectedCourse = useSelector(
+    (state: RootState) => state.main.selectedCourse,
+  );
+
+  //로그아웃
   const handleLogout = () => {
     dispatch(logout());
   };
@@ -35,6 +56,23 @@ const HomeScreen = () => {
             - 지역을 선택해주세요 -
           </MainText>
           <MainMap />
+          {preCart.length > 0 && (
+            <Container>
+              <TitleView>
+                <Icon name="cart-outline" style={styles.titleIcon} />
+                <TitleText>"{memberInfo?.nickname}" 님의 미리 담기</TitleText>
+              </TitleView>
+              <PlacePreCart
+                preCart={preCart}
+                iconColor="rgba(0, 0, 0, 0.6)"
+                componentStyle={{
+                  width: '95%',
+                  marginBottom: '3%',
+                  justifyContent: 'flex-start',
+                }}
+              />
+            </Container>
+          )}
           <Container style={{}}>
             <PopularPlacesList placeList={places} />
             {/* <Button title="로그아웃" onPress={handleLogout} color={'grey'} /> */}
@@ -72,23 +110,28 @@ const MainText = styled(Text)`
   font-family: 'SeoulNamsanM';
 `;
 
-const tags: Tag[] = [
-  {
-    id: 0,
-    name: '맛있는',
-    category: Category.음식점,
+const TitleView = styled(View)`
+  flex-direction: row;
+  width: 90%;
+  align-items: flex-end;
+  justify-content: flex-start;
+  margin-bottom: 3%;
+`;
+
+const TitleText = styled(Text)`
+  font-family: SeoulNamsanM;
+  font-size: 16px;
+  color: #df94c2;
+`;
+
+const styles = StyleSheet.create({
+  titleIcon: {
+    fontSize: 23,
+    color: '#df94c2',
+    marginRight: '2%',
   },
-  {
-    id: 1,
-    name: '청결한',
-    category: Category.음식점,
-  },
-  {
-    id: 2,
-    name: '유명한',
-    category: Category.음식점,
-  },
-];
+});
+
 const places: Place[] = [
   {
     id: 0,

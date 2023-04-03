@@ -11,6 +11,17 @@ import {
   CourseReviewRequest,
   ReviewRequest,
 } from './ReviewRequest';
+import {Bank} from './Bank';
 
-export type {Tag, Place, Member, Course, Coordinate, RegionObject, PlaceReviewRequest, CourseReviewRequest, ReviewRequest};
-export {Category, SeoulDistrict};
+export type {
+  Tag,
+  Place,
+  Member,
+  Course,
+  Coordinate,
+  RegionObject,
+  PlaceReviewRequest,
+  CourseReviewRequest,
+  ReviewRequest,
+};
+export {Category, SeoulDistrict, Bank};
