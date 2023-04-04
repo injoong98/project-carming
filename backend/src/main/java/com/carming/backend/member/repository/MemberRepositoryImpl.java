@@ -17,7 +17,7 @@ public class MemberRepositoryImpl implements MemberRepositoryCustom{
     public Optional<Member> findByPhone(String phoneNumber) {
         return Optional.ofNullable(queryFactory
                 .selectFrom(member)
-                .where(member.phoneNumber.eq(phoneNumber))
+                .where(member.phone.eq(phoneNumber))
                 .fetchFirst());
     }
 

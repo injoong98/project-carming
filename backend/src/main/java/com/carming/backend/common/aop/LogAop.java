@@ -43,6 +43,9 @@ public class LogAop {
             return;
         }
         for (Object arg : args) {
+            if (arg == null) {
+                continue;
+            }
             log.info(" - requestType[{}] = {}", arg.getClass().getSimpleName(), arg);
         }
     }

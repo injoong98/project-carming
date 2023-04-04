@@ -51,7 +51,7 @@ public class MemberCreateDto {
 
     public Member toEntity() {
         return Member.builder()
-                .phoneNumber(phone)
+                .phone(phone)
                 .password(PasswordEncoder.encode(password))
                 .nickname(nickname)
                 .name(name)
