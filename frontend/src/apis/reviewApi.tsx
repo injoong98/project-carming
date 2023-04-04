@@ -1,10 +1,11 @@
-import {createApi, fetchBaseQuery} from '@reduxjs/toolkit/query/react';
+import {createApi} from '@reduxjs/toolkit/query/react';
 import {REST_API_URL} from '@env';
 import {ReviewRequest} from '../types';
+import customFetchBaseQuery from './customFetchBaseQuery';
 
 export const reviewApi = createApi({
   reducerPath: 'reviewApi',
-  baseQuery: fetchBaseQuery({baseUrl: REST_API_URL + '/reviews'}),
+  baseQuery: customFetchBaseQuery({baseUrl: REST_API_URL + '/reviews'}),
   tagTypes: ['Reviews'],
   endpoints: builder => ({
     getReviews: builder.query<any[], number>({

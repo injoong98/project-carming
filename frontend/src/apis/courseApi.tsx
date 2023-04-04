@@ -1,6 +1,7 @@
-import {createApi, fetchBaseQuery} from '@reduxjs/toolkit/query/react';
+import {createApi} from '@reduxjs/toolkit/query/react';
 import {REST_API_URL} from '@env';
 import {Course} from '../types';
+import customFetchBaseQuery from './customFetchBaseQuery';
 
 export interface CourseSearch {
   regions: string[];
@@ -14,7 +15,7 @@ interface CheckCourseResponse {
 
 export const courseApi = createApi({
   reducerPath: 'courseApi',
-  baseQuery: fetchBaseQuery({baseUrl: REST_API_URL + '/courses'}),
+  baseQuery: customFetchBaseQuery({baseUrl: REST_API_URL + '/courses'}),
   tagTypes: ['Courses'],
   endpoints: builder => ({
     getCourses: builder.query<Course[], CourseSearch>({

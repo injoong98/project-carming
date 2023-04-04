@@ -1,11 +1,12 @@
-import {createApi, fetchBaseQuery} from '@reduxjs/toolkit/query/react';
+import {createApi} from '@reduxjs/toolkit/query/react';
 import {REACT_APP_API_URL} from '@env';
+import customFetchBaseQuery from './customFetchBaseQuery';
 
 const apiUrl: string = REACT_APP_API_URL;
 
 export const memberRegistApi = createApi({
   reducerPath: 'memberRegistApi',
-  baseQuery: fetchBaseQuery({
+  baseQuery: customFetchBaseQuery({
     baseUrl: `${apiUrl}/member`,
   }),
   endpoints: builder => ({

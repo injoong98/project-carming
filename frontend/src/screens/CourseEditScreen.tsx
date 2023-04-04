@@ -22,6 +22,7 @@ import {
 import {callNaverDirectionApi} from '../apis/mapApi';
 import {
   useGetCurrentCarPositionQuery,
+  useSetDestinationCoordinateMutation,
   useSetDriveStartStatusMutation,
   useSetIsDestinationMutation,
 } from '../apis/journeyApi';
@@ -62,8 +63,10 @@ const CourseEditScreen: React.FC<CourseEditScreenProps> = ({
   const [routeInfo, setRouteInfo] = useState<any>({});
 
   const {data: currentCarPosition} = useGetCurrentCarPositionQuery();
-  const [setIsDestination] = useSetIsDestinationMutation();
-  const [setDriveStartStatus] = useSetDriveStartStatusMutation();
+  const [setDestinationCoordinate, setDestCoordStatus] =
+    useSetDestinationCoordinateMutation();
+  const [setIsDestination, setIsDestStatus] = useSetIsDestinationMutation();
+  const [setDriveStart, setDriveStartStatus] = useSetDriveStartStatusMutation();
 
   useEffect(() => {
     route.params.recommendType === '0'
@@ -86,23 +89,45 @@ const CourseEditScreen: React.FC<CourseEditScreenProps> = ({
   };
 
   const journeyStartBtnPressed = async () => {
-    if (currentCarPosition) {
-      dispatch(setJourneyPlaceList([clientPlace, ...coursePlaces]));
-      setDriveStartStatus(1);
-      setIsDestination(0);
-      navigation.replace('Journey', {
-        screen: 'CarCall',
-        params: {start: currentCarPosition, end: currentClientPosition},
-      });
-    } else {
+    dispatch(setJourneyPlaceList([clientPlace, ...coursePlaces]));
+    setDestinationCoordinate(currentClientPosition);
+    setDriveStart(1);
+    setIsDestination(0);
+    setRouteModalVisible(false);
+  };
+
+  useEffect(() => {
+    const redisSetSuccess =
+      setDestCoordStatus.isSuccess &&
+      setIsDestStatus.isSuccess &&
+      setDriveStartStatus.isSuccess;
+
+    const redisSetError =
+      setDestCoordStatus.isError ||
+      setIsDestStatus.isError ||
+      setDriveStartStatus.isError;
+
+    if (redisSetSuccess) {
+      if (currentCarPosition) {
+        navigation.replace('Journey', {
+          screen: 'CarCall',
+          params: {start: currentCarPosition, end: currentClientPosition},
+        });
+      } else {
+        Toast.show({
+          type: ALERT_TYPE.WARNING,
+          title: '준비된 차량이 없습니다.',
+          textBody: '잠시 후에 다시 이용해 주세요.',
+        });
+      }
+    } else if (redisSetError) {
       Toast.show({
         type: ALERT_TYPE.WARNING,
-        title: '준비된 차량이 없습니다.',
+        title: '서버에 문제가 발생했습니다.',
         textBody: '잠시 후에 다시 이용해 주세요.',
       });
     }
-    setRouteModalVisible(false);
-  };
+  }, [setDestCoordStatus, setIsDestStatus, setDriveStartStatus]);
 
   return (
     <GradientBackground colors={['#70558e7a', '#df94c283', '#ffbdc1b0']}>

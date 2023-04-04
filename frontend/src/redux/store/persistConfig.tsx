@@ -5,8 +5,7 @@ import {PersistConfig} from 'redux-persist';
 const persistConfig: PersistConfig<ReducersState> = {
   key: 'carming',
   storage: AsyncStorage,
-  whitelist: [],
-  blacklist: [],
+  whitelist: ['auth'],
 };
 
 export default persistConfig;

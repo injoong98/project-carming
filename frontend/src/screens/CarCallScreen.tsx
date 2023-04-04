@@ -8,6 +8,7 @@ import styled from 'styled-components';
 import {
   useGetCurrentCarPositionQuery,
   useGetGlobalPathQuery,
+  useSetDestinationCoordinateMutation,
   useSetDriveStartStatusMutation,
   useSetIsDestinationMutation,
 } from '../apis/journeyApi';
@@ -15,10 +16,16 @@ import {CarCallInfoCard, CustomButton, CustomMapView} from '../components';
 import {iconPlace} from '../components/MapMarker';
 import {L3_TotalJourneyStackParamList} from '../navigations/L3_TotalJourneyStackNavigator';
 import {L4_JourneyStackParamList} from '../navigations/L4_JourneyStackNavigator';
-import {calcArrivalTime, coordinateToIconPlace} from '../utils';
+import {
+  calcArrivalTime,
+  coordinateToIconPlace,
+  placeToCoordinate,
+} from '../utils';
 import {useCheckIsDestinationQuery} from '../apis/journeyApi';
-import {useDispatch} from 'react-redux';
+import {useDispatch, useSelector} from 'react-redux';
 import {setCurrentIdx} from '../redux/slices/journeySlice';
+import {RootState} from '../redux/store';
+import {ALERT_TYPE, Toast} from 'react-native-alert-notification';
 
 export type CarCallScreenProps = CompositeScreenProps<
   NativeStackScreenProps<L4_JourneyStackParamList, 'CarCall'>,
@@ -33,6 +40,9 @@ const CarCallScreen: React.FC<CarCallScreenProps> = ({navigation, route}) => {
   const startPlace = coordinateToIconPlace('map-marker', startCoordinate);
   const endPlace = coordinateToIconPlace('hail', endCoordinate);
 
+  const {placeList: journeyPlaceList} = useSelector(
+    (state: RootState) => state.journey,
+  );
   const [buttonAbled, setButtonAbled] = useState<boolean>(false);
   const [currentCarPlace, setCurrentCarPlace] = useState<iconPlace>(
     coordinateToIconPlace('taxi', startCoordinate),
@@ -52,8 +62,10 @@ const CarCallScreen: React.FC<CarCallScreenProps> = ({navigation, route}) => {
   const {data: isDestination} = useCheckIsDestinationQuery(undefined, {
     pollingInterval: navigation.isFocused() ? 1000 : undefined,
   });
-  const [setDriveStartStatus] = useSetDriveStartStatusMutation();
-  const [setIsDestination] = useSetIsDestinationMutation();
+  const [setDestinationCoordinate, setDestCoordStatus] =
+    useSetDestinationCoordinateMutation();
+  const [setIsDestination, setIsDestStatus] = useSetIsDestinationMutation();
+  const [setDriveStart, setDriveStartStatus] = useSetDriveStartStatusMutation();
 
   useEffect(() => {
     if (currentCarCoordinate !== undefined) {
@@ -75,11 +87,33 @@ const CarCallScreen: React.FC<CarCallScreenProps> = ({navigation, route}) => {
   }, [isDestination]);
 
   const completeBoardBtnPressed = () => {
-    setDriveStartStatus(1);
+    setDestinationCoordinate(placeToCoordinate(journeyPlaceList[1]));
+    setDriveStart(1);
     setIsDestination(0);
-    dispatch(setCurrentIdx(1));
-    navigation.replace('CarMove');
   };
+
+  useEffect(() => {
+    const redisSetSuccess =
+      setDestCoordStatus.isSuccess &&
+      setIsDestStatus.isSuccess &&
+      setDriveStartStatus.isSuccess;
+
+    const redisSetError =
+      setDestCoordStatus.isError ||
+      setIsDestStatus.isError ||
+      setDriveStartStatus.isError;
+
+    if (redisSetSuccess) {
+      dispatch(setCurrentIdx(1));
+      navigation.replace('CarMove');
+    } else if (redisSetError) {
+      Toast.show({
+        type: ALERT_TYPE.WARNING,
+        title: '서버에 문제가 발생했습니다.',
+        textBody: '잠시 후에 다시 시도해 주세요.',
+      });
+    }
+  }, [setDestCoordStatus, setIsDestStatus, setDriveStartStatus]);
 
   return (
     <StyledSafeAreaView>

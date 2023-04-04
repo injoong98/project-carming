@@ -1,4 +1,4 @@
-import {createApi, fetchBaseQuery} from '@reduxjs/toolkit/query/react';
+import {createApi} from '@reduxjs/toolkit/query/react';
 import {REST_API_URL} from '@env';
 import {Coordinate} from '../types';
 import {
@@ -6,6 +6,7 @@ import {
   redisPositionToCoordinate,
   textToJson,
 } from '../utils';
+import customFetchBaseQuery from './customFetchBaseQuery';
 
 type RedisPosition = {
   lat: number;
@@ -14,7 +15,7 @@ type RedisPosition = {
 
 export const journeyApi = createApi({
   reducerPath: 'journeyApi',
-  baseQuery: fetchBaseQuery({baseUrl: REST_API_URL + '/orders'}),
+  baseQuery: customFetchBaseQuery({baseUrl: REST_API_URL + '/orders'}),
   tagTypes: [
     'currentCarPosition',
     'globalPath',

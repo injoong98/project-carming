@@ -1,7 +1,7 @@
 import {CompositeScreenProps} from '@react-navigation/native';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {useEffect, useState} from 'react';
-import {StyleSheet, View} from 'react-native';
+import {StyleSheet, Text, View} from 'react-native';
 import {ActivityIndicator, useTheme} from 'react-native-paper';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import {useDispatch, useSelector} from 'react-redux';
@@ -15,13 +15,12 @@ import {
 import {L3_TotalJourneyStackParamList} from '../navigations/L3_TotalJourneyStackNavigator';
 import {L4_JourneyStackParamList} from '../navigations/L4_JourneyStackNavigator';
 import {RootState} from '../redux/store';
-import {Category, Place} from '../types';
+import {Place} from '../types';
 import {
   calcArrivalTime,
   coordinateToIconPlace,
   placeToCoordinate,
   placeToIconPlace,
-  placesToCoordinates,
 } from '../utils';
 import {iconPlace} from '../components/MapMarker';
 import {
@@ -29,6 +28,7 @@ import {
   useCheckIsDestinationQuery,
   useGetCurrentCarPositionQuery,
   useGetGlobalPathQuery,
+  useSetDestinationCoordinateMutation,
   useSetDriveStartStatusMutation,
   useSetIsDestinationMutation,
 } from '../apis/journeyApi';
@@ -57,6 +57,7 @@ const CarMoveScreen: React.FC<CarMoveScreenProps> = ({navigation, route}) => {
     placeToIconPlace('taxi', placeList[currentIdx - 1]),
   );
   const [isFetching, setIsFetching] = useState<boolean>(false);
+  const [isError, setIsError] = useState<boolean>(false);
 
   const {data: currentCarCoordinate} = useGetCurrentCarPositionQuery(
     undefined,
@@ -71,20 +72,33 @@ const CarMoveScreen: React.FC<CarMoveScreenProps> = ({navigation, route}) => {
   }>(
     calcArrivalTime(placeToCoordinate(startPlace), placeToCoordinate(endPlace)),
   );
-  const {data: isDestination, isFetching: isDestinationFetching} =
-    useCheckIsDestinationQuery(undefined, {
-      pollingInterval: navigation.isFocused() ? 1000 : undefined,
-    });
-  const {data: driveStartStatus, isFetching: driveStartStatusFetching} =
+  const {data: isDestination} = useCheckIsDestinationQuery(undefined, {
+    pollingInterval: navigation.isFocused() ? 1000 : undefined,
+  });
+  const {data: driveStartStatus, ...getDriverStartStatus} =
     useCheckDriveStartStatusQuery();
 
-  const [setDriveStartStatus, {isLoading: driveStartStatusLoading}] =
-    useSetDriveStartStatusMutation();
+  const [setDestinaitonCoordinate, setDestCoordStatus] =
+    useSetDestinationCoordinateMutation();
+  const [setDriveStart, setDriveStartStatus] = useSetDriveStartStatusMutation();
   const [setIsDestination] = useSetIsDestinationMutation();
 
   useEffect(() => {
-    setIsFetching(driveStartStatusFetching || driveStartStatusLoading);
-  }, [driveStartStatusFetching, driveStartStatusLoading]);
+    setIsFetching(
+      getDriverStartStatus.isLoading ||
+        setDriveStartStatus.isLoading ||
+        setDestCoordStatus.isLoading,
+    );
+    setIsError(
+      getDriverStartStatus.isError ||
+        setDriveStartStatus.isError ||
+        setDestCoordStatus.isError,
+    );
+  }, [getDriverStartStatus, setDriveStartStatus, setDestCoordStatus]);
+
+  useEffect(() => {
+    setButtonAbled((isDestination ?? false) && !isFetching && !isError);
+  }, [isDestination, isFetching, isError]);
 
   useEffect(() => {
     setStartPlace(placeToIconPlace('map-marker', placeList[currentIdx - 1]));
@@ -100,20 +114,15 @@ const CarMoveScreen: React.FC<CarMoveScreenProps> = ({navigation, route}) => {
     }
   }, [currentCarCoordinate]);
 
-  useEffect(() => {
-    if (isDestination !== undefined) {
-      setButtonAbled(isDestination && !isFetching);
-    }
-  }, [isDestination, isFetching]);
-
   const getOffBtnPressed = () => {
-    setDriveStartStatus(0);
+    setDriveStart(0);
     dispatch(setCurrentIdx(currentIdx + 1));
   };
 
   const completeBoardBtnPressed = () => {
+    setDestinaitonCoordinate(placeToCoordinate(placeList[currentIdx]));
     setIsDestination(0);
-    setDriveStartStatus(1);
+    setDriveStart(1);
   };
 
   const journeyEndBtnPressed = () => {
@@ -195,6 +204,10 @@ const CarMoveScreen: React.FC<CarMoveScreenProps> = ({navigation, route}) => {
           color={theme.colors.onPrimary}
         />
       );
+    }
+
+    if (isError) {
+      return <Text style={{fontSize: 40}}>😭</Text>;
     }
 
     if (
