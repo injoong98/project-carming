@@ -17,8 +17,14 @@ public class CourseSearch {
 
     private Long size = DEFAULT_SIZE;
 
+    private Integer page;
+
     public CourseSearch(List<String> regions, Long size) {
         this.regions = regions;
         this.size = size == null ? DEFAULT_SIZE : size;
+    }
+
+    public long getOffset() {
+        return (this.page - 1) * this.size;
     }
 }

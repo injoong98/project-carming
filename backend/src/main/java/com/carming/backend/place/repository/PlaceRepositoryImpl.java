@@ -29,6 +29,7 @@ public class PlaceRepositoryImpl implements PlaceRepositoryCustom {
                 .selectFrom(place)
                 .where(regionEq(search.getRegions()), categoryEq(search.getCategory()))
                 .orderBy(place.ratingSum.desc())
+                .offset(search.getOffset())
                 .limit(search.getSize())
                 .fetch();
     }

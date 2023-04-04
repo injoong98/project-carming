@@ -30,6 +30,7 @@ public class CourseRepositoryImpl implements CourseRepositoryCustom {
                 .selectFrom(course)
                 .where(containsRegions(search))
                 .orderBy(course.ratingSum.desc())
+                .offset(search.getOffset())
                 .limit(search.getSize())
                 .fetch();
     }
