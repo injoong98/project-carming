@@ -1,5 +1,6 @@
 package com.carming.backend;
 
+import com.carming.backend.member.domain.CardCompany;
 import com.carming.backend.member.domain.Gender;
 import com.carming.backend.member.dto.request.MemberCreateDto;
 import com.carming.backend.member.service.MemberService;
@@ -46,7 +47,7 @@ public class InitDb {
                     .name(name)
                     .gender(Gender.MALE)
                     .birthDate("1995/05/15")
-                    .cardDto(new MemberCreateDto.CardDto("1", "2", "3", "4", "5"))
+                    .cardDto(new MemberCreateDto.CardDto("1", "2", "3", "4", CardCompany.BC))
                     .build();
         }
     }

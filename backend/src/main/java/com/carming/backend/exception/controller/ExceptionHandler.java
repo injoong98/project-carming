@@ -6,14 +6,13 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
-import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 @RestControllerAdvice
-public class ExceptionController {
+public class ExceptionHandler {
 
-    @ExceptionHandler(CustomException.class)
+    @org.springframework.web.bind.annotation.ExceptionHandler(CustomException.class)
     public ResponseEntity<ErrorResponse> customException(CustomException e) {
         int statusCode = e.getStatusCode();
 
@@ -27,7 +26,7 @@ public class ExceptionController {
     }
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    @ExceptionHandler(MethodArgumentNotValidException.class)
+    @org.springframework.web.bind.annotation.ExceptionHandler(MethodArgumentNotValidException.class)
     public ErrorResponse invalidRequestHandler(MethodArgumentNotValidException e) {
         ErrorResponse response = ErrorResponse.builder()
                 .code("400")

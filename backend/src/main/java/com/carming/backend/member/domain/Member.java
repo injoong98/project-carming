@@ -24,7 +24,7 @@ public class Member implements UserDetails {
     private Long id;
 
     @Column(name = "member_phone_number")
-    private String phoneNumber;
+    private String phone;
 
     @Column(name = "member_password")
     private String password;
@@ -35,7 +35,7 @@ public class Member implements UserDetails {
     @Column(name = "member_name")
     private String name;
 
-    @Column(name = "member_image")
+    @Column(name = "member_profile")
     private String profile;
 
     @Enumerated(EnumType.STRING)
@@ -46,17 +46,17 @@ public class Member implements UserDetails {
     private LocalDate birthday;
 
     @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "member_card_id")
+    @JoinColumn(name = "card_id")
     private Card card;
 
     @OneToMany(mappedBy = "member")
     private List<Review> reviews = new ArrayList<>();
 
     @Builder
-    public Member(String phoneNumber, String password,
+    public Member(String phone, String password,
                   String nickname, String name, String profile,
                   Gender gender, LocalDate birthday) {
-        this.phoneNumber = phoneNumber;
+        this.phone = phone;
         this.password = password;
         this.nickname = nickname;
         this.name = name;

@@ -1,8 +1,7 @@
 package com.carming.backend.member.service;
 
-import com.carming.backend.common.JsonMapper;
+import com.carming.backend.member.domain.CardCompany;
 import com.carming.backend.member.domain.Member;
-import com.carming.backend.member.domain.valid.AuthenticationInfo;
 import com.carming.backend.member.dto.request.MemberCreateDto;
 import com.carming.backend.member.repository.CardRepository;
 import com.carming.backend.member.repository.MemberRepository;
@@ -11,15 +10,10 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.BDDMockito;
 import org.mockito.Mockito;
-import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.transaction.annotation.Transactional;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.eq;
 
 class MemberServiceTest {
 
@@ -73,7 +67,7 @@ class MemberServiceTest {
                 .nickname("광")
                 .name("이신광")
                 .birthDate("1993/02/06")
-                .cardDto(new MemberCreateDto.CardDto("1", "2", "3", "4", "5"))
+                .cardDto(new MemberCreateDto.CardDto("1", "2", "3", "4", CardCompany.BC))
                 .build();
     }
 }

@@ -30,13 +30,13 @@ public class Card {
     @Column(name = "card_password")
     private String password;
 
-    //todo change enum card
+    @Enumerated(EnumType.STRING)
     @Column(name = "card_company_name")
-    private String companyName;
+    private CardCompany companyName;
 
     @Builder
     public Card(String number, String cvv, String expiredDate,
-                String password, String companyName) {
+                String password, CardCompany companyName) {
         this.number = number;
         this.cvv = cvv;
         this.expiredDate = expiredDate;

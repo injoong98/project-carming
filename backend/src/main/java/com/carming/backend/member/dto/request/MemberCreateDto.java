@@ -2,6 +2,7 @@ package com.carming.backend.member.dto.request;
 
 import com.carming.backend.login.authentication.PasswordEncoder;
 import com.carming.backend.member.domain.Card;
+import com.carming.backend.member.domain.CardCompany;
 import com.carming.backend.member.domain.Gender;
 import com.carming.backend.member.domain.Member;
 import lombok.Builder;
@@ -61,32 +62,6 @@ public class MemberCreateDto {
                 .build();
     }
 
-//    @NoArgsConstructor
-//    @Data
-//    public static class BirthInfoDto {
-//
-//        @Pattern(regexp = "^(19[0-9][0-9]|20\\d{2})", message = "유효하지 않은 출생년도입니다.")
-//        private String year;
-//
-//        @Pattern(regexp = "(0[1-9]|1[0-2])", message = "유효하지 않은 월입니다.")
-//        private String month;
-//
-//        @Pattern(regexp = "0[1-9]|[1-2][0-9]|3[0-1]", message = "유효하지 않는 일입니다.")
-//        private String day;
-//
-//        public BirthInfoDto(String year, String month, String day) {
-//            this.year = year;
-//            this.month = month;
-//            this.day = day;
-//        }
-//
-//        public LocalDate toLocalDate(List<String> birthDate) {
-//            return LocalDate.of(Integer.valueOf(birthDate.get(0)), Integer.valueOf(birthDate.get(1)), Integer.valueOf(birthDate.get(2)));
-//        }
-//    }
-
-
-
     @NoArgsConstructor
     @Data
     public static class CardDto {
@@ -99,10 +74,10 @@ public class MemberCreateDto {
 
         private String cardPassword;
 
-        private String companyName;
+        private CardCompany companyName;
 
         @Builder
-        public CardDto(String cardNumber, String cvv, String cardExp, String cardPassword, String companyName) {
+        public CardDto(String cardNumber, String cvv, String cardExp, String cardPassword, CardCompany companyName) {
             this.cardNumber = cardNumber;
             this.cvv = cvv;
             this.cardExp = cardExp;
