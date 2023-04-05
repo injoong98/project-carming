@@ -5,8 +5,8 @@ spring:
   datasource:
     url: jdbc:mysql://j8a408.p.ssafy.io:3306/carming
     driver-class-name: com.mysql.cj.jdbc.Driver
-    username: carming
-    password: carming123
+    username: root
+    password: carming123!
 
   redis:
     host: j8a408.p.ssafy.io
@@ -20,7 +20,7 @@ spring:
   # show-sql: true -> 해당하는 query를 보여줌 (JPA N + 1 문제 확인용) [배포에선 사용 X]
   jpa:
     hibernate:
-      ddl-auto: none
+      ddl-auto: create
     properties:
       hibernate:
         show_sql: true

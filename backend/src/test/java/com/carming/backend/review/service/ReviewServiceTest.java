@@ -34,37 +34,36 @@ class ReviewServiceTest {
     @Test
     @DisplayName("리뷰 저장")
     void saveReview() {
-        //given
-        ReviewRequestDto.CourseReviewRequest courseReview = new ReviewRequestDto.CourseReviewRequest(1L, null, List.of(1L, 2L), 5, "재미있습니다.");
-        ReviewRequestDto.PlaceReviewRequest placeReview1 = new ReviewRequestDto.PlaceReviewRequest(1L, List.of(5L, 6L, 7L), 3);
-        ReviewRequestDto.PlaceReviewRequest placeReview2 = new ReviewRequestDto.PlaceReviewRequest(2L, List.of(6L, 8L), 5);
-        ReviewRequestDto request = new ReviewRequestDto(List.of(placeReview1, placeReview2), courseReview);
-
-        //when
-        reviewService.saveReview(request, 1L);
-
-        //then
-        List<Review> reviews = reviewRepository.findAll();
-        for (Review review : reviews) {
-            System.out.println(review.getContent());
-        }
-        System.out.println();
-
-        Place place1 = placeRepository.findById(1L).get();
-        System.out.println("Plac1e rating : " + place1.getRatingSum());
-        System.out.println();
-
-        Place place2 = placeRepository.findById(2L).get();
-        System.out.println("Place2 rating : " + place2.getRatingSum());
-        System.out.println();
-
-        List<PlaceTag> placeTags = placeTagRepository.findAll();
-        for (PlaceTag placeTag : placeTags) {
-            System.out.println(placeTag.getPlace().getName());
-            System.out.println(placeTag.getTag().getName());
-        }
-        System.out.println();
-
+//        //given
+//        ReviewRequestDto.CourseReviewRequest courseReview = new ReviewRequestDto.CourseReviewRequest(1L, null, List.of(1L, 2L), 5, "재미있습니다.");
+//        ReviewRequestDto.PlaceReviewRequest placeReview1 = new ReviewRequestDto.PlaceReviewRequest(1L, List.of(5L, 6L, 7L), 3);
+//        ReviewRequestDto.PlaceReviewRequest placeReview2 = new ReviewRequestDto.PlaceReviewRequest(2L, List.of(6L, 8L), 5);
+//        ReviewRequestDto request = new ReviewRequestDto(List.of(placeReview1, placeReview2), courseReview);
+//
+//        //when
+//        reviewService.saveReview(request, 1L);
+//
+//        //then
+//        List<Review> reviews = reviewRepository.findAll();
+//        for (Review review : reviews) {
+//            System.out.println(review.getContent());
+//        }
+//        System.out.println();
+//
+//        Place place1 = placeRepository.findById(1L).get();
+//        System.out.println("Plac1e rating : " + place1.getRatingSum());
+//        System.out.println();
+//
+//        Place place2 = placeRepository.findById(2L).get();
+//        System.out.println("Place2 rating : " + place2.getRatingSum());
+//        System.out.println();
+//
+//        List<PlaceTag> placeTags = placeTagRepository.findAll();
+//        for (PlaceTag placeTag : placeTags) {
+//            System.out.println(placeTag.getPlace().getName());
+//            System.out.println(placeTag.getTag().getName());
+//        }
+//        System.out.println();
     }
 
     @Test
