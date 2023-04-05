@@ -11,6 +11,9 @@ import {initializeMainState} from '../redux/slices/mainSlice';
 import {useNavigation} from '@react-navigation/native';
 import {L2_AppDrawerParamList} from '../navigations/L2_AppDrawerNavigator';
 import {DrawerNavigationProp} from '@react-navigation/drawer';
+import {setJourneyPlaceList} from '../redux/slices/journeySlice';
+import {setPlaceCart, setPlaceList} from '../redux/slices/placeSlice';
+import {Place} from '../types';
 
 interface MainMapProps {
   imgStyle?: ImageStyle;
@@ -36,6 +39,10 @@ const MainMap: React.FC<MainMapProps> = ({imgStyle, onPress, disabled}) => {
       params: {screen: 'Recommend'},
     });
   };
+
+  const preCart: Place[] = useSelector((state: RootState) => {
+    return state.main.preCart;
+  });
 
   return (
     <>
@@ -180,7 +187,10 @@ const MainMap: React.FC<MainMapProps> = ({imgStyle, onPress, disabled}) => {
           paddingHorizontal: 40,
           borderRadius: 100,
         }}
-        onPress={() => startBtnPressed()}
+        onPress={() => {
+          startBtnPressed();
+          dispatch(setPlaceCart(preCart));
+        }}
       />
       <View style={{marginBottom: '5%'}}></View>
       {/* </View> */}

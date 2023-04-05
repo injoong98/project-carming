@@ -60,6 +60,20 @@ const MainCourseCardModal: React.FC<MainCourseCardModalProps> = ({
     console.log(selectedCourseInstanceReviews);
   }, [selectedCourseInstance, selectedCourseInstanceReviews]);
 
+  const carImages = [
+    require('../assets/images/car1.png'),
+    require('../assets/images/car2.png'),
+    require('../assets/images/car3.png'),
+    require('../assets/images/car4.png'),
+    require('../assets/images/car5.png'),
+    require('../assets/images/car6.png'),
+    require('../assets/images/car7.png'),
+  ];
+  function getRandomCarImage() {
+    const randomIndex = Math.floor(Math.random() * carImages.length);
+    return carImages[randomIndex];
+  }
+
   return (
     <Modal
       animationType="fade"
@@ -143,14 +157,15 @@ const MainCourseCardModal: React.FC<MainCourseCardModalProps> = ({
                       }}>
                       <View style={{flexDirection: 'row'}}>
                         <ImageBackground
-                          source={require('../assets/images/login_screen.png')}
+                          source={getRandomCarImage()}
                           style={{
                             width: 30,
                             height: 30,
                             borderRadius: 5,
                             overflow: 'hidden',
                             marginRight: '5%',
-                          }}></ImageBackground>
+                          }}
+                        />
                         <View>
                           <CustomText
                             style={{

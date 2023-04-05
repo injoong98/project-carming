@@ -48,6 +48,10 @@ const placeSlice = createSlice({
       );
       state.placeCart = [...modifiedCart];
     },
+    setPlaceCart: (state, action: PayloadAction<Place[]>) => {
+      const preCart = action.payload;
+      state.placeCart = [...preCart];
+    },
 
     // Place Tag
     setPlaceTagList: (state, action: PayloadAction<Tag[]>) => {
@@ -85,4 +89,5 @@ export const {
   setPlaceTagList,
   addCheckedTag,
   deleteCheckedTag,
+  setPlaceCart,
 } = placeSlice.actions;

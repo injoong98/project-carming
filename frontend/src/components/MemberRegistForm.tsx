@@ -137,6 +137,7 @@ const RegistForm: React.FC<MemberRegistFormProps> = ({
     if (phone === '') Alert.alert('전화번호를 입력해주세요.');
     else {
       const data = {phone: phone};
+      console.log(data);
       verifyStart(data)
         .unwrap()
         .then(response => {
