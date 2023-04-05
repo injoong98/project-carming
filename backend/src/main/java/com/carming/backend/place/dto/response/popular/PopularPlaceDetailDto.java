@@ -13,6 +13,8 @@ public class PopularPlaceDetailDto {
 
     private String name;
 
+    private  String tel;
+
     private String image;
 
     private String region;

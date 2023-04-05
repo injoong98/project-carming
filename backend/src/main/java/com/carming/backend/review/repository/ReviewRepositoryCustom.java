@@ -9,5 +9,5 @@ public interface ReviewRepositoryCustom {
 
     List<ReviewResponseDto> findByCourseTest2(Long courseId);
 
-    List<Review> findByCourseTest1(Long courseId);
+    List<Review> findByCourseTest1(Long courseId, Long size);
 }

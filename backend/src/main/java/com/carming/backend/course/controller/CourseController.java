@@ -34,8 +34,12 @@ public class CourseController {
      * 코스에 따른 리뷰
      */
     @GetMapping("/{id}/reviews")
-    public List<ReviewResponseDto> findCourseReviews(@PathVariable Long id) {
-        return reviewService.findByCourseTest1(id);
+    public List<ReviewResponseDto> findCourseReviews(@PathVariable Long id,
+                                                     @RequestParam(required = false) Long size) {
+        if (size == null) {
+            size = 10L;
+        }
+        return reviewService.findByCourseTest1(id, size);
     }
 
     /**

@@ -11,6 +11,8 @@ public interface PlaceRepositoryCustom {
 
     List<Place> findPlaces(PlaceSearch search);
 
+    List<Place> findPlacesByTag(PlaceSearch search);
+
     List<Place> findPlacesByCourse(List<Long> placeKeys);
 
     List<PopularPlaceListDto> findPopular(Long size);

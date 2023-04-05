@@ -11,20 +11,25 @@ import java.util.List;
 @Data
 public class CourseSearch {
 
-    public final static Long DEFAULT_SIZE = 30L;
+    public final static Integer DEFAULT_SIZE = 30;
+
+    public final static Integer DEFAULT_PAGE = 1;
+
+    public final static Integer MAX_SIZE = 1000;
 
     private List<String> regions;
 
-    private Long size = DEFAULT_SIZE;
+    private Integer size = DEFAULT_SIZE;
 
-    private Integer page;
+    private Integer page = DEFAULT_PAGE;
 
-    public CourseSearch(List<String> regions, Long size) {
+    public CourseSearch(List<String> regions, Integer size, Integer page) {
         this.regions = regions;
-        this.size = size == null ? DEFAULT_SIZE : size;
+        this.size = size != null ? size : DEFAULT_SIZE;
+        this.page = page != null ? page : DEFAULT_PAGE;
     }
 
     public long getOffset() {
-        return (this.page - 1) * this.size;
+        return (Math.max(page, 1) - 1) * Math.min(size, MAX_SIZE);
     }
 }

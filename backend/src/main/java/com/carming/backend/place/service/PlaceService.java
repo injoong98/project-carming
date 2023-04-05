@@ -23,10 +23,10 @@ public class PlaceService {
     private final PlaceRepository placeRepository;
 
     public List<PlaceResponseDto> getPlaces(PlaceSearch search) {
-        List<Place> places = placeRepository.findPlaces(search);
-        return places.stream()
-                .map(PlaceResponseDto::from)
-                .collect(Collectors.toList());
+        if (search.getTagId() != null) {
+            return findPlacesByTag(search);
+        }
+        return findPlaces(search);
     }
 
     public List<PopularPlaceListDto> getPopularPlaces() {
@@ -35,5 +35,19 @@ public class PlaceService {
 
     public PopularPlaceDetailDto getPopularPlaceDetail(Long placeId) {
         return placeRepository.findPopularPlaceDetail(placeId);
+    }
+
+    private List<PlaceResponseDto> findPlaces(PlaceSearch search) {
+        List<Place> places = placeRepository.findPlaces(search);
+        return places.stream()
+                .map(PlaceResponseDto::from)
+                .collect(Collectors.toList());
+    }
+
+    private List<PlaceResponseDto> findPlacesByTag(PlaceSearch search) {
+        List<Place> places = placeRepository.findPlacesByTag(search);
+        return places.stream()
+                .map(PlaceResponseDto::from)
+                .collect(Collectors.toList());
     }
 }

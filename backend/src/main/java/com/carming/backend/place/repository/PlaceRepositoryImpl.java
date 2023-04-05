@@ -10,8 +10,10 @@ import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
+import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import static com.carming.backend.place.domain.QPlace.place;
@@ -25,11 +27,33 @@ public class PlaceRepositoryImpl implements PlaceRepositoryCustom {
 
     @Override
     public List<Place> findPlaces(PlaceSearch search) {
-        return queryFactory
-                .selectFrom(place)
+        List<Long> ids = queryFactory
+                .select(place.id)
+                .from(place)
                 .where(regionEq(search.getRegions()), categoryEq(search.getCategory()))
                 .orderBy(place.ratingSum.desc())
                 .offset(search.getOffset())
+                .limit(search.getSize())
+                .fetch();
+
+        if (CollectionUtils.isEmpty(ids)) {
+            return new ArrayList<>();
+        }
+
+        return queryFactory
+                .selectFrom(place)
+                .where(place.id.in(ids))
+                .fetch();
+    }
+
+    @Override
+    public List<Place> findPlacesByTag(PlaceSearch search) {
+        return queryFactory
+                .select(placeTag.place)
+                .from(placeTag)
+                .where(regionTagEq(search.getRegions()), placeTag.tag.id.eq(search.getTagId()))
+                .groupBy(placeTag.place)
+                .orderBy(placeTag.place.count().desc())
                 .limit(search.getSize())
                 .fetch();
     }
@@ -57,7 +81,7 @@ public class PlaceRepositoryImpl implements PlaceRepositoryCustom {
     public PopularPlaceDetailDto findPopularPlaceDetail(Long id) {
         PopularPlaceDetailDto placeDetail = queryFactory
                 .select(Projections.fields(PopularPlaceDetailDto.class,
-                        place.id, place.name, place.image, place.region,
+                        place.id, place.name, place.tel, place.image, place.region,
                         place.address, place.ratingSum, place.ratingCount))
                 .from(place)
                 .where(place.id.eq(id))
@@ -70,8 +94,8 @@ public class PlaceRepositoryImpl implements PlaceRepositoryCustom {
                 .from(placeTag)
                 .join(placeTag.tag, tag)
                 .join(placeTag.place, place)
-                .groupBy(placeTag.tag)
                 .where(placeTag.place.id.eq(id))
+                .groupBy(placeTag.tag)
                 .fetch();
 
         placeDetail.changePlaceTagsBox(tags);
@@ -105,6 +129,16 @@ public class PlaceRepositoryImpl implements PlaceRepositoryCustom {
             return null;
         }
         return place.region.in(regions);
+    }
+
+    private BooleanExpression regionTagEq(List<String> regions) {
+        if (regions == null) { //지역구 선택이 없을 시
+            return null;
+        }
+        if (regions.isEmpty()) {//빈 리스트일 때
+            return null;
+        }
+        return placeTag.place.region.in(regions);
     }
 
     private BooleanExpression categoryEq(String category) {

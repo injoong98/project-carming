@@ -46,7 +46,7 @@ class PlaceServiceTest {
                 .count();
 
         //when
-        List<PlaceResponseDto> placesWithRegion = placeService.getPlaces(new PlaceSearch(regions, category, 50L));
+        List<PlaceResponseDto> placesWithRegion = placeService.getPlaces(new PlaceSearch(regions, category, null, 50, null));
 
         //then
         assertThat(placesWithRegion.size()).isEqualTo(Math.min(50, (categoryCount * sameCount) * count));

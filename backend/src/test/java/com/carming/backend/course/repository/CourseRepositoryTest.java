@@ -32,7 +32,7 @@ class CourseRepositoryTest {
         Course test5 = createCourse("1|65|603|534", "강동구|종로구|마포구", "TEST5");
 
         saveCourse(test1, test2, test3, test4, test5);
-        CourseSearch search = new CourseSearch(List.of("은평구", "마포구", "동작구"), null);
+        CourseSearch search = new CourseSearch(List.of("은평구", "마포구", "동작구"), null, null);
 
         //when
         List<Course> courses = courseRepository.findCourses(search);

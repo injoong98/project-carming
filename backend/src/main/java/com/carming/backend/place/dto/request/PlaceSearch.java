@@ -9,23 +9,31 @@ import java.util.List;
 @Data
 public class PlaceSearch {
 
-    private final static Long DEFAULT_SIZE = 50L;
+    private final static Integer DEFAULT_SIZE = 50;
+
+    private final static Integer DEFAULT_PAGE = 1;
+
+    private final static Integer MAX_SIZE = 1000;
 
     private List<String> regions;
 
     private String category;
 
-    private Long size = DEFAULT_SIZE;
+    private Long tagId;
 
-    private Integer page;
+    private Integer size = DEFAULT_SIZE;
 
-    public PlaceSearch(List<String> regions, String category, Long size) {
+    private Integer page = DEFAULT_PAGE;
+
+    public PlaceSearch(List<String> regions, String category, Long tagId, Integer size, Integer page) {
         this.regions = regions;
         this.category = category;
+        this.tagId = tagId;
         this.size = size == null ? DEFAULT_SIZE : size;
+        this.page = page == null ? DEFAULT_PAGE : page;
     }
 
     public long getOffset() {
-        return (this.page-1) * this.size;
+        return (Math.max(page, 1) - 1) * Math.min(size, MAX_SIZE);
     }
 }

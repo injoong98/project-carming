@@ -13,7 +13,7 @@ class CourseSearchTest {
     @DisplayName("size를 따로 입력하지 않으면 size는 기본 30이다")
     void defaultSize() {
         //given
-        CourseSearch searchCondition = new CourseSearch(List.of("은평구"), null);
+        CourseSearch searchCondition = new CourseSearch(List.of("은평구"), null, null);
 
         //expected
         assertThat(searchCondition.getSize()).isEqualTo(CourseSearch.DEFAULT_SIZE);

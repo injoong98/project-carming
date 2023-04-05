@@ -40,7 +40,7 @@ class ReviewRepositoryTest {
         //given
         saveReviewTag();
 
-        reviewRepository.findByCourseTest1(1L);
+        reviewRepository.findByCourseTest1(1L, 10L);
 
     }
 

@@ -25,7 +25,7 @@ import java.util.stream.Collectors;
 @Service
 public class CourseService {
 
-    private final Long DEFAULT_POPULAR_SIZE = 3L;
+    private final Integer DEFAULT_POPULAR_SIZE = 3;
 
     private final CourseRepository courseRepository;
 
@@ -58,7 +58,7 @@ public class CourseService {
     }
 
     public List<PopularCourseListDto> findPopularCourseList() {
-        List<Course> courses = courseRepository.findCourses(new CourseSearch(null, DEFAULT_POPULAR_SIZE));
+        List<Course> courses = courseRepository.findCourses(new CourseSearch(null, DEFAULT_POPULAR_SIZE, null));
         return courses.stream()
                 .map(this::convertToPopularResponse)
                 .collect(Collectors.toList());

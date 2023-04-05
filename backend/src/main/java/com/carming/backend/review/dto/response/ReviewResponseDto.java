@@ -16,6 +16,8 @@ import java.util.stream.Collectors;
 @Data
 public class ReviewResponseDto {
 
+    private Long reviewId;
+
     private String profile;
 
     private String nickname;
@@ -29,9 +31,10 @@ public class ReviewResponseDto {
     private String createdTime;
 
     @Builder
-    public ReviewResponseDto(String profile, String nickname,
+    public ReviewResponseDto(Long reviewId, String profile, String nickname,
                              Integer rating, String content,
                              List<String> tags, String createdTime) {
+        this.reviewId = reviewId;
         this.profile = profile;
         this.nickname = nickname;
         this.rating = rating;
@@ -42,6 +45,7 @@ public class ReviewResponseDto {
 
     public static ReviewResponseDto from(Review review) {
         return ReviewResponseDto.builder()
+                .reviewId(review.getId())
                 .profile(review.getMember().getProfile())
                 .nickname(review.getMember().getNickname())
                 .rating(review.getCourseRating())

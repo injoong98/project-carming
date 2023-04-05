@@ -8,6 +8,10 @@ build/
 ### QueryDSL QClass ignore
 generated
 
+### Mac
+.DS_Store
+
+
 ### STS ###
 .apt_generated
 .classpath

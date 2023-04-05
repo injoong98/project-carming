@@ -1,16 +1,9 @@
 package com.carming.backend.review.repository;
 
-import com.carming.backend.course.domain.QCourse;
-import com.carming.backend.member.domain.QMember;
-import com.carming.backend.review.domain.QReview;
-import com.carming.backend.review.domain.QReviewTag;
 import com.carming.backend.review.domain.Review;
-import com.carming.backend.review.domain.ReviewTag;
 import com.carming.backend.review.dto.response.ReviewResponseDto;
 import com.carming.backend.tag.domain.Category;
-import com.carming.backend.tag.domain.QTag;
 import com.carming.backend.tag.domain.Tag;
-import com.querydsl.core.types.Projections;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 
@@ -18,11 +11,11 @@ import javax.persistence.EntityManagerFactory;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static com.carming.backend.course.domain.QCourse.*;
-import static com.carming.backend.member.domain.QMember.*;
-import static com.carming.backend.review.domain.QReview.*;
-import static com.carming.backend.review.domain.QReviewTag.*;
-import static com.carming.backend.tag.domain.QTag.*;
+import static com.carming.backend.course.domain.QCourse.course;
+import static com.carming.backend.member.domain.QMember.member;
+import static com.carming.backend.review.domain.QReview.review;
+import static com.carming.backend.review.domain.QReviewTag.reviewTag;
+import static com.carming.backend.tag.domain.QTag.tag;
 
 @RequiredArgsConstructor
 public class ReviewRepositoryImpl implements ReviewRepositoryCustom {
@@ -32,14 +25,14 @@ public class ReviewRepositoryImpl implements ReviewRepositoryCustom {
     private final EntityManagerFactory emf;
 
     @Override
-    public List<Review> findByCourseTest1(Long courseId) {
+    public List<Review> findByCourseTest1(Long courseId, Long size) {
         return queryFactory.select(review).distinct()
                 .from(review)
                 .join(review.reviewTags, reviewTag).fetchJoin() //OneToMany
                 .join(review.course, course).fetchJoin() //ManyToOne
                 .join(review.member, member).fetchJoin()
                 .where(review.course.id.eq(courseId))
-                .limit(20L)
+                .limit(size)
                 .orderBy(review.id.desc())
                 .fetch();
 

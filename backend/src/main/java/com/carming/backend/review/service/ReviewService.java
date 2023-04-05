@@ -89,20 +89,12 @@ public class ReviewService {
         return savedReview.getId();
     }
 
-    public List<ReviewResponseDto> findByCourseTest1(Long courseId) {
+    public List<ReviewResponseDto> findByCourseTest1(Long courseId, Long size) {
         // 리뷰 리스트를 가져와 반환, 쿼리가 기본 쿼리 1개, 태그 쿼리가 태그 개수만큼 최대 4번 더 나간다.
-        List<Review> reviews = reviewRepository.findByCourseTest1(courseId);
+        List<Review> reviews = reviewRepository.findByCourseTest1(courseId, size);
 
         List<ReviewResponseDto> response = reviews.stream()
-                .map(review -> ReviewResponseDto.builder()
-                        .profile(review.getMember().getProfile())
-                        .nickname(review.getMember().getNickname())
-                        .rating(review.getCourseRating())
-                        .content(review.getContent())
-                        .tags(getTagName(review.getReviewTags()))
-                        .createdTime(review.getCreatedTime().toLocalDate().toString())
-                        .build()
-                )
+                .map(ReviewResponseDto::from)
                 .collect(Collectors.toList());
 
         return response;

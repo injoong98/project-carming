@@ -10,6 +10,8 @@ import java.util.List;
 @Data
 public class CourseResponseDto {
 
+    private Long id;
+
     private String name;
 
     private Integer ratingCount;
@@ -21,10 +23,11 @@ public class CourseResponseDto {
     private List<CoursePlaceResponse> places;
 
     @Builder
-    public CourseResponseDto(String name,
+    public CourseResponseDto(Long id, String name,
                              Integer ratingCount, Integer ratingSum,
                              List<String> regions,
                              List<CoursePlaceResponse> places) {
+        this.id = id;
         this.name = name;
         this.ratingCount = ratingCount;
         this.ratingSum = ratingSum;
@@ -34,6 +37,7 @@ public class CourseResponseDto {
 
     public static CourseResponseDto from(Course course, List<CoursePlaceResponse> places) {
         return CourseResponseDto.builder()
+                .id(course.getId())
                 .name(course.getName())
                 .ratingCount(course.getRatingCount())
                 .ratingSum(course.getRatingSum())

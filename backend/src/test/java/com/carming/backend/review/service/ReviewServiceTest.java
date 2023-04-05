@@ -72,7 +72,7 @@ class ReviewServiceTest {
     void test() {
         System.out.println(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
 
-        List<ReviewResponseDto> reviews = reviewService.findByCourseTest1(1L);
+        List<ReviewResponseDto> reviews = reviewService.findByCourseTest1(1L, 10L);
 
         for (ReviewResponseDto review : reviews) {
             System.out.println(review);
