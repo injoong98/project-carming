@@ -5,8 +5,8 @@ spring:
   datasource:
     url: jdbc:mysql://j8a408.p.ssafy.io:3306/carming
     driver-class-name: com.mysql.cj.jdbc.Driver
-    username: carming
-    password: carming123
+    username: root
+    password: carming123!
 
   redis:
     host: j8a408.p.ssafy.io
