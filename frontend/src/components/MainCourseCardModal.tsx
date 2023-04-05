@@ -9,6 +9,7 @@ import {
   ImageBackground,
   ScrollView,
   StyleSheet,
+  FlatList,
 } from 'react-native';
 import {useDispatch, useSelector} from 'react-redux';
 import {Course, Place} from '../types';
@@ -85,7 +86,7 @@ const MainCourseCardModal: React.FC<MainCourseCardModalProps> = ({
               <CustomText
                 style={{
                   fontFamily: 'SeoulNamsanB',
-                  fontSize: 16,
+                  fontSize: 13,
                   marginVertical: '1%',
                 }}>
                 {course.name}
@@ -102,7 +103,7 @@ const MainCourseCardModal: React.FC<MainCourseCardModalProps> = ({
                 </RatingText>
               </View>
             </ContentView>
-            <ContentView style={{marginBottom: '7%'}}>
+            <ContentView style={{marginBottom: '6%'}}>
               <ScrollView
                 horizontal
                 nestedScrollEnabled={true}
@@ -119,9 +120,81 @@ const MainCourseCardModal: React.FC<MainCourseCardModalProps> = ({
                   ))}
               </ScrollView>
             </ContentView>
+            <ContentView style={{justifyContent: 'flex-end'}}>
+              <CustomText>
+                {' '}
+                총 {selectedCourseInstanceReviews.length}개의 리뷰
+              </CustomText>
+            </ContentView>
             <ContentView
               style={{justifyContent: 'center', alignItems: 'flex-start'}}>
-              <ScrollView
+              <FlatList
+                data={selectedCourseInstanceReviews}
+                keyExtractor={(item, index) => index.toString()}
+                style={(styles.textContainer, {width: '100%', height: '45%'})}
+                renderItem={({item}) => (
+                  <View style={{marginBottom: '4%'}}>
+                    <View
+                      style={{
+                        flexDirection: 'row',
+                        justifyContent: 'space-between',
+                        flexWrap: 'wrap',
+                        marginBottom: '2%',
+                      }}>
+                      <View style={{flexDirection: 'row'}}>
+                        <ImageBackground
+                          source={require('../assets/images/login_screen.png')}
+                          style={{
+                            width: 30,
+                            height: 30,
+                            borderRadius: 5,
+                            overflow: 'hidden',
+                            marginRight: '5%',
+                          }}></ImageBackground>
+                        <View>
+                          <CustomText
+                            style={{
+                              fontFamily: 'SeoulNamsanEB',
+                              fontSize: 12,
+                              marginVertical: '1%',
+                            }}>
+                            {item.nickname}
+                          </CustomText>
+                          <CustomText
+                            style={{
+                              fontFamily: 'SeoulNamsanM',
+                              fontSize: 10,
+                              marginVertical: '1%',
+                            }}>
+                            {item.createdTime}
+                          </CustomText>
+                        </View>
+                      </View>
+                      <View
+                        style={{flexDirection: 'row', alignItems: 'center'}}>
+                        <RatingStar
+                          rating={rating}
+                          containerStyle={{marginRight: 8}}
+                          iconStyle={{margin: -8}}
+                          inactiveColor="grey"
+                          iconSize={12}
+                        />
+                      </View>
+                    </View>
+                    <View>
+                      <CustomText
+                        style={{
+                          fontFamily: 'SeoulNamsanM',
+                          fontSize: 14,
+                          marginLeft: '3%',
+                        }}>
+                        {item.content}
+                      </CustomText>
+                    </View>
+                  </View>
+                )}
+              />
+              {/* <ScrollView
                 nestedScrollEnabled={true}
                 showsVerticalScrollIndicator={false}
                 style={(styles.textContainer, {width: '100%', height: '45%'})}>
@@ -139,7 +212,8 @@ const MainCourseCardModal: React.FC<MainCourseCardModalProps> = ({
                           <ImageBackground
                             source={require('../assets/images/login_screen.png')}
                             style={{
-                              width: 38,
+                              width: 30,
+                              height: 30,
                               borderRadius: 5,
                               overflow: 'hidden',
                               marginRight: '5%',
@@ -148,7 +222,7 @@ const MainCourseCardModal: React.FC<MainCourseCardModalProps> = ({
                             <CustomText
                               style={{
                                 fontFamily: 'SeoulNamsanEB',
-                                fontSize: 14,
+                                fontSize: 12,
                                 marginVertical: '1%',
                               }}>
                               {review.nickname}
@@ -156,7 +230,7 @@ const MainCourseCardModal: React.FC<MainCourseCardModalProps> = ({
                             <CustomText
                               style={{
                                 fontFamily: 'SeoulNamsanM',
-                                fontSize: 12,
+                                fontSize: 10,
                                 marginVertical: '1%',
                               }}>
                               {review.createdTime}
@@ -170,25 +244,23 @@ const MainCourseCardModal: React.FC<MainCourseCardModalProps> = ({
                             containerStyle={{marginRight: 8}}
                             iconStyle={{margin: -8}}
                             inactiveColor="grey"
+                            iconSize={12}
                           />
-                          <RatingText>
-                            {rating} ({course.ratingCount})
-                          </RatingText>
                         </View>
                       </View>
                       <View>
                         <CustomText
                           style={{
-                            fontFamily: 'SeoulNamsanB',
-                            fontSize: 16,
-                            marginLeft: '5%',
+                            fontFamily: 'SeoulNamsanM',
+                            fontSize: 14,
+                            marginLeft: '3%',
                           }}>
                           {review.content}
                         </CustomText>
                       </View>
                     </View>
                   ))}
-              </ScrollView>
+              </ScrollView> */}
             </ContentView>
           </ContentsContainer>
           <View
@@ -291,7 +363,7 @@ const styles = StyleSheet.create({
   text: {
     fontFamily: 'SeoulNamsanM',
     color: 'black',
-    fontSize: 22,
+    fontSize: 18,
   },
 });
 export default MainCourseCardModal;

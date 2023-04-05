@@ -7,6 +7,7 @@ import UserPlacesScreen from '../screens/UserPlacesScreen';
 import UserCoursesScreen from '../screens/UserCoursesScreen';
 import UserPaymentsScreen from '../screens/UserPaymentsScreen';
 import {MainHeaderTitleLogo} from '../components';
+import {MainHeaderRight} from '../components/MainHeader';
 
 export type L3_MainDrawerParamList = {
   home: undefined;
@@ -33,6 +34,8 @@ function L3_MainDrawerNavigator() {
         headerTintColor: '#fff',
         headerTitleAlign: 'center',
         headerTitle: () => MainHeaderTitleLogo(),
+        headerLeft: () => <></>, // 헤더 좌측 메뉴 버튼 없애기
+        headerRight: () => MainHeaderRight(),
       }}>
       <Drawer.Screen
         name="home"
@@ -43,9 +46,33 @@ function L3_MainDrawerNavigator() {
           } as DrawerOptions
         } // DrawerOptions 타입으로 캐스팅하여 gestureEnabled 속성 사용 가능
       />
-      <Drawer.Screen name="UserPlaces" component={UserPlacesScreen} />
-      <Drawer.Screen name="UserCourses" component={UserCoursesScreen} />
-      <Drawer.Screen name="UserPayments" component={UserPaymentsScreen} />
+      <Drawer.Screen
+        name="UserPlaces"
+        component={UserPlacesScreen}
+        options={
+          {
+            gestureEnabled: false,
+          } as DrawerOptions
+        } // DrawerOptions 타입으로 캐스팅하여 gestureEnabled 속성 사용 가능
+      />
+      <Drawer.Screen
+        name="UserCourses"
+        component={UserCoursesScreen}
+        options={
+          {
+            gestureEnabled: false,
+          } as DrawerOptions
+        } // DrawerOptions 타입으로 캐스팅하여 gestureEnabled 속성 사용 가능
+      />
+      <Drawer.Screen
+        name="UserPayments"
+        component={UserPaymentsScreen}
+        options={
+          {
+            gestureEnabled: false,
+          } as DrawerOptions
+        } // DrawerOptions 타입으로 캐스팅하여 gestureEnabled 속성 사용 가능
+      />
     </Drawer.Navigator>
   );
 }

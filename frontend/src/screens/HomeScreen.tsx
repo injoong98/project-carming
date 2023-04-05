@@ -60,11 +60,6 @@ const HomeScreen = () => {
     console.error('popularCoursesError: ', popularCoursesError);
   }
 
-  //로그아웃
-  const handleLogout = () => {
-    dispatch(logout());
-  };
-
   return (
     <SafeAreaView style={{flex: 1}}>
       <ScrollView contentContainerStyle={{flexGrow: 1}}>

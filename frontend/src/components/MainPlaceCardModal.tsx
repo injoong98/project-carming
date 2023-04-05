@@ -53,6 +53,12 @@ const MainPlaceCardModal: React.FC<MainPlaceCardModalProps> = ({
   const selectedPlaceInstance = useSelector(
     (state: RootState) => state.main.selectedPopularPlace,
   );
+  let tags: {tagName: string; tagCount: number}[] = [];
+  if (selectedPlaceInstance) {
+    tags = selectedPlaceInstance.tags
+      .slice()
+      .sort((a, b) => b.tagCount - a.tagCount);
+  }
   useEffect(() => {
     console.log(selectedPlaceInstance);
   }, [selectedPlaceInstance]);
@@ -110,11 +116,15 @@ const MainPlaceCardModal: React.FC<MainPlaceCardModalProps> = ({
             </ContentView>
             {selectedPlaceInstance && (
               <ContentView>
-                {selectedPlaceInstance.tags?.map((tag, index) => {
+                {tags?.map((tag, index) => {
                   return (
                     <CustomText
                       key={index}
-                      style={{fontFamily: 'SeoulNamsanEB', fontSize: 14}}>
+                      style={{
+                        fontFamily:
+                          index < 2 ? 'SeoulNamsanEB' : 'SeoulNamsanM',
+                        fontSize: index < 2 ? 15 : 12,
+                      }}>
                       #{tag.tagName}({tag.tagCount})
                     </CustomText>
                   );
