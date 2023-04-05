@@ -43,6 +43,7 @@ public class PlaceRepositoryImpl implements PlaceRepositoryCustom {
         return queryFactory
                 .selectFrom(place)
                 .where(place.id.in(ids))
+                .orderBy(place.ratingSum.desc())
                 .fetch();
     }
 
