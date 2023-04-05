@@ -77,12 +77,12 @@ const HomeScreen = () => {
             - 지역을 선택해주세요 -
           </MainText>
           <MainMap />
-          {preCart.length > 0 && (
-            <Container>
-              <TitleView>
-                <Icon name="cart-outline" style={styles.titleIcon} />
-                <TitleText>"{memberInfo?.nickname}" 님의 미리 담기</TitleText>
-              </TitleView>
+          <Container>
+            <TitleView>
+              <Icon name="cart-outline" style={styles.titleIcon} />
+              <TitleText>"{memberInfo?.nickname}" 님의 미리 담기</TitleText>
+            </TitleView>
+            {preCart.length > 0 ? (
               <PlacePreCart
                 preCart={preCart}
                 iconColor="rgba(0, 0, 0, 0.6)"
@@ -92,8 +92,19 @@ const HomeScreen = () => {
                   justifyContent: 'flex-start',
                 }}
               />
-            </Container>
-          )}
+            ) : (
+              <TitleText
+                style={{
+                  fontFamily: 'SeoulNamsanL',
+                  fontSize: 14,
+                  marginTop: '1%',
+                  marginBottom: '5%',
+                  color: 'grey',
+                }}>
+                - 원하는 장소나 코스를 미리 담을 수 있어요! -
+              </TitleText>
+            )}
+          </Container>
           <Container style={{}}>
             <PopularPlacesList placeList={popularPlaces} />
             {/* <Button title="로그아웃" onPress={handleLogout} color={'grey'} /> */}
