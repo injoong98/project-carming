@@ -12,6 +12,7 @@ import {
   ReviewRequest,
 } from './ReviewRequest';
 import {Bank} from './Bank';
+import {Review} from './Review';
 
 export type {
   Tag,
@@ -23,5 +24,6 @@ export type {
   PlaceReviewRequest,
   CourseReviewRequest,
   ReviewRequest,
+  Review,
 };
 export {Category, SeoulDistrict, Bank};

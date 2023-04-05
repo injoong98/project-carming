@@ -18,21 +18,47 @@ import PopularCoursesList from '../components/PopularCoursesList';
 import {Category, Course, Place} from '../types';
 import {PlacePreCart} from '../components';
 import Icon from 'react-native-vector-icons/Ionicons';
-import {useState} from 'react';
+import {useEffect, useState} from 'react';
+import {useGetPopularPlacesQuery} from '../apis/placeApi';
+import {useGetCoursesQuery, useGetPopularCoursesQuery} from '../apis/courseApi';
 
 const HomeScreen = () => {
   const dispatch = useDispatch();
-  const {token, memberInfo} = useSelector((state: RootState) => state.auth);
+  const {memberInfo} = useSelector((state: RootState) => state.auth);
   const preCart = useSelector((state: RootState) => state.main.preCart);
 
-  //코스 모달
-  const [isCourseModalVisible, setIsCourseModalVisible] = useState(false);
-  const handleCourseModalClose = () => {
-    setIsCourseModalVisible(false);
-  };
-  const selectedCourse = useSelector(
-    (state: RootState) => state.main.selectedCourse,
-  );
+  const {
+    data: popularPlacesData,
+    error: popularPlacesError,
+    isLoading: popularPlacesIsLoading,
+    isError: popularPlacesIsError,
+  } = useGetPopularPlacesQuery();
+  const {
+    data: popularCoursesData,
+    error: popularCoursesError,
+    isLoading: popularCoursesIsLoading,
+    isError: popularCoursesIsError,
+  } = useGetPopularCoursesQuery(3);
+
+  const [popularPlaces, setPopularPlaces] = useState<Place[]>([]);
+  const [popularCourses, setPopularCourses] = useState<Course[]>([]);
+  useEffect(() => {
+    if (popularPlacesData) {
+      setPopularPlaces(popularPlacesData);
+      console.log('Popular Places:', popularPlacesData);
+    }
+    if (popularCoursesData) {
+      setPopularCourses(popularCoursesData);
+      console.log('Popular Course:', popularCoursesData);
+    }
+  }, [popularPlacesData, popularCoursesData]);
+
+  if (popularPlacesError) {
+    console.error('popularPlacesError: ', popularPlacesError);
+  }
+  if (popularCoursesError) {
+    console.error('popularCoursesError: ', popularCoursesError);
+  }
 
   //로그아웃
   const handleLogout = () => {
@@ -74,11 +100,11 @@ const HomeScreen = () => {
             </Container>
           )}
           <Container style={{}}>
-            <PopularPlacesList placeList={places} />
+            <PopularPlacesList placeList={popularPlaces} />
             {/* <Button title="로그아웃" onPress={handleLogout} color={'grey'} /> */}
           </Container>
           <Container style={{}}>
-            <PopularCoursesList courseList={courses} />
+            <PopularCoursesList courseList={popularCourses} />
           </Container>
         </HomeContainer>
       </ScrollView>

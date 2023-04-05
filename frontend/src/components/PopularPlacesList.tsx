@@ -3,11 +3,13 @@ import {Place} from '../types';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import styled from 'styled-components';
 import PopularPlaceItem from './PopularPlaceItem';
-import {useState} from 'react';
+import {useState, useEffect} from 'react';
 import {useDispatch, useSelector} from 'react-redux';
 import {RootState} from '../redux/store';
 import MainPlaceCardModal from './MainPlaceCardModal';
 import {initializeSelectedPlace} from '../redux/slices/mainSlice';
+import {useGetSelectedPopularPlaceQuery} from '../apis/placeApi';
+import {SelectedPopularPlaceResponse} from '../types/MainResponse';
 
 interface PopularPlacesListProps {
   placeList?: Place[];
@@ -20,7 +22,7 @@ const PopularPlacesList: React.FC<PopularPlacesListProps> = ({
   //장소 모달
   const [isPlaceModalVisible, setIsPlaceModalVisible] = useState(false);
   const handlePlaceModalClose = () => {
-    dispatch(initializeSelectedPlace);
+    dispatch(initializeSelectedPlace());
     setIsPlaceModalVisible(false);
   };
   const selectedPlace = useSelector(

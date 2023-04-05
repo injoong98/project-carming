@@ -1,12 +1,16 @@
 import {ImageBackground, Text, TouchableOpacity, View} from 'react-native';
 import styled from 'styled-components';
 import {Place} from '../types';
-import RatingStar from './RatingStar';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import {calcRating} from '../utils';
 import {IconButton} from 'react-native-paper';
-import {useDispatch} from 'react-redux';
-import {addSelectedPlace} from '../redux/slices/mainSlice';
+import {useDispatch, useSelector} from 'react-redux';
+import {
+  addSelectedPlace,
+  addSelectedPlaceInstance,
+} from '../redux/slices/mainSlice';
+import {REACT_APP_API_URL, REST_API_URL} from '@env';
+import {RootState} from '../redux/store';
 
 interface PopularPlaceItemProps {
   place: Place;
@@ -20,9 +24,26 @@ const PopularPlaceItem: React.FC<PopularPlaceItemProps> = ({
   onPress,
 }) => {
   const dispatch = useDispatch();
-  const handlePress = () => {
-    if (onPress) onPress();
+  const token = useSelector((state: RootState) => state.auth.token);
+  const headers = token ? {Authorization: token} : {};
+  const handlePress = async () => {
     dispatch(addSelectedPlace(place));
+    // 선택된 place의 id를 기반으로 추가적인 정보를 불러옴
+    console.log(place);
+    try {
+      if (onPress) onPress();
+      const response = await fetch(
+        `${REST_API_URL}/places/popular/${place.id}`,
+        {method: 'GET', headers},
+      ); // 예시: 서버 API 엔드포인트
+      const data = await response.json();
+      // data를 기반으로 상태 업데이트
+      // console.log('Selected Place Instance:', data);
+      dispatch(addSelectedPlaceInstance(data));
+    } catch (error) {
+      // 에러 처리
+      console.error('Failed to fetch selected place:', error);
+    }
   };
   const rating = calcRating(place.ratingSum, place.ratingCount);
 

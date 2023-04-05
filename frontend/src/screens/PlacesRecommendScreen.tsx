@@ -43,6 +43,7 @@ const PlacesRecommendScreen: React.FC<
 
   const {
     data: places,
+    error,
     isFetching,
     isError,
     isSuccess,
@@ -51,6 +52,10 @@ const PlacesRecommendScreen: React.FC<
     category: selectedCategory,
     size: 10,
   });
+
+  useEffect(() => {
+    console.log(error);
+  }, [error]);
 
   useEffect(() => {
     dispatch(setPlaceTagList(filterTagsByCategory(tags, selectedCategory)));

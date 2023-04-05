@@ -1,9 +1,9 @@
 export type Review = {
-  id: number;
+  reviewId: number;
+  profile: string;
+  nickname: string;
   rating: number;
   content: string;
+  tags: string[];
   createdTime: string;
-  modifiedTime: string;
-  courseId: number;
-  memberId: number;
 };

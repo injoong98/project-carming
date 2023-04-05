@@ -12,6 +12,15 @@ import {Course} from '../types';
 import {calcRating} from '../utils';
 import styled from 'styled-components';
 import RatingStar from './RatingStar';
+import {useDispatch, useSelector} from 'react-redux';
+import {
+  addPlaceListToPreCart,
+  addSelectedCourse,
+  addSelectedCoursesInstance,
+  addSelectedCoursesInstanceReviews,
+} from '../redux/slices/mainSlice';
+import {RootState} from '../redux/store';
+import {REST_API_URL} from '@env';
 
 interface PopularCourseItemProps {
   course: Course;
@@ -32,9 +41,32 @@ const PopularCourseItem: React.FC<PopularCourseItemProps> = ({
   onPress,
   disabled = false,
 }) => {
-  const handlePress = () => {
-    if (onPress && !disabled) {
-      onPress();
+  const dispatch = useDispatch();
+  const token = useSelector((state: RootState) => state.auth.token);
+  const headers = token ? {Authorization: token} : {};
+  const handlePress = async () => {
+    dispatch(addSelectedCourse(course));
+    // 선택된 course의 id를 기반으로 추가적인 정보를 불러옴
+    console.log(course);
+    try {
+      if (onPress && !disabled) onPress();
+      const response1 = await fetch(
+        `${REST_API_URL}/courses/popular/${course.id}`,
+        {method: 'GET', headers},
+      ); // 인기 코스 중 선택된 것의 상세 호출
+      const response2 = await fetch(
+        `${REST_API_URL}/courses/${course.id}/reviews`,
+        {method: 'GET', headers},
+      ); // 선택된 코스의 리뷰 호출
+      const data1 = await response1.json();
+      const data2 = await response2.json();
+      // data를 기반으로 상태 업데이트
+      // console.log('Selected Place Instance:', data);
+      dispatch(addSelectedCoursesInstance(data1));
+      dispatch(addSelectedCoursesInstanceReviews(data2));
+    } catch (error) {
+      // 에러 처리
+      console.error('Failed to fetch selected course:', error);
     }
   };
 
