@@ -19,6 +19,8 @@ import {Category, Course, Place} from '../types';
 import {PlacePreCart} from '../components';
 import Icon from 'react-native-vector-icons/Ionicons';
 import {useEffect, useState} from 'react';
+import {useGetTagsQuery} from '../apis/tagApi';
+import {setTagList} from '../redux/slices/tagSlice';
 import {useGetPopularPlacesQuery} from '../apis/placeApi';
 import {useGetCoursesQuery, useGetPopularCoursesQuery} from '../apis/courseApi';
 
@@ -53,6 +55,16 @@ const HomeScreen = () => {
     }
   }, [popularPlacesData, popularCoursesData]);
 
+  //초기 태그 리스트 불러오기
+  const {data: tagLists} = useGetTagsQuery();
+  useEffect(() => {
+    if (tagLists !== undefined) dispatch(setTagList(tagLists));
+  }, [tagLists]);
+
+  //로그아웃
+  const handleLogout = () => {
+    dispatch(logout());
+  };
   if (popularPlacesError) {
     console.error('popularPlacesError: ', popularPlacesError);
   }

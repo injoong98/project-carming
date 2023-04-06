@@ -55,6 +55,7 @@ public class PlaceRepositoryImpl implements PlaceRepositoryCustom {
                 .where(regionTagEq(search.getRegions()), placeTag.tag.id.eq(search.getTagId()))
                 .groupBy(placeTag.place)
                 .orderBy(placeTag.place.count().desc())
+                .offset(search.getOffset())
                 .limit(search.getSize())
                 .fetch();
     }

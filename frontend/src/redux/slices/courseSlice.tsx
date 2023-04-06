@@ -6,6 +6,7 @@ type SliceState = {
   courseCart: Place[];
   courseTagList: Tag[];
   checkedTagList: Tag[];
+  coursePage: number;
 };
 
 const courseSlice = createSlice({
@@ -15,6 +16,7 @@ const courseSlice = createSlice({
     courseCart: [],
     courseTagList: [],
     checkedTagList: [],
+    coursePage: 1,
   } as SliceState,
   reducers: {
     // Course List
@@ -60,6 +62,14 @@ const courseSlice = createSlice({
       );
       state.checkedTagList = [...modifiedTagList];
     },
+
+    // Course Page
+    increaseCoursePage: (state, action: PayloadAction<void>) => {
+      state.coursePage += 1;
+    },
+    resetCoursePage: (state, action: PayloadAction<void>) => {
+      state.coursePage = 0;
+    },
   },
 });
 
@@ -73,4 +83,6 @@ export const {
   setCourseTagList,
   addCheckedTag,
   deleteCheckedTag,
+  increaseCoursePage,
+  resetCoursePage,
 } = courseSlice.actions;

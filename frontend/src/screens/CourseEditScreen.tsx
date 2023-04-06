@@ -42,8 +42,8 @@ export type CourseEditScreenProps = CompositeScreenProps<
 
 const {width: screenWidth, height: screenHeight} = Dimensions.get('window');
 const currentClientPosition: Coordinate = {
-  latitude: 37.503353299999844,
-  longitude: 127.04569145393688,
+  latitude: 37.57948501077321,
+  longitude: 126.8884875696561,
 };
 
 const CourseEditScreen: React.FC<CourseEditScreenProps> = ({
@@ -177,7 +177,7 @@ const CourseEditScreen: React.FC<CourseEditScreenProps> = ({
         testID={'modal'}
         isVisible={routeModalVisible}
         onSwipeComplete={() => setRouteModalVisible(false)}
-        swipeDirection={['down']}
+        swipeDirection={[]}
         style={styles.view}>
         <StyledView style={styles.modalView}>
           <CustomMapView

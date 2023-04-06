@@ -1,6 +1,5 @@
 import {useState, useEffect} from 'react';
 import {View, StyleSheet} from 'react-native';
-import {useDispatch} from 'react-redux';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import {IconButton, useTheme, SegmentedButtons} from 'react-native-paper';
 import LinearGradient from 'react-native-linear-gradient';
@@ -10,8 +9,6 @@ import CoursesRecommendScreen from './CoursesRecommendScreen';
 import {L4_CourseCreateStackParamList} from '../navigations/L4_CourseCreateStackNavigator';
 import {CustomButton} from '../components';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
-import {useGetTagsQuery} from '../apis/tagApi';
-import {setTagList} from '../redux/slices/tagSlice';
 import {CompositeScreenProps} from '@react-navigation/native';
 import {DrawerScreenProps} from '@react-navigation/drawer';
 import {L2_AppDrawerParamList} from '../navigations/L2_AppDrawerNavigator';
@@ -23,15 +20,8 @@ export type RecommendScreenProps = CompositeScreenProps<
 
 const RecommendScreen: React.FC<RecommendScreenProps> = ({navigation}) => {
   const theme = useTheme();
-  const dispatch = useDispatch();
 
   const [recommendType, setRecommendType] = useState<string>('0');
-  const {data: tagLists} = useGetTagsQuery();
-
-  useEffect(() => {
-    if (tagLists !== undefined) dispatch(setTagList(tagLists));
-  }, [tagLists]);
-
   const homeBtnPressed = () => {
     navigation.navigate('Main');
   };

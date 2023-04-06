@@ -7,6 +7,7 @@ type SliceState = {
   placeTagList: Tag[];
   checkedTagList: Tag[];
   selectedCategory: Category;
+  placePage: number;
 };
 
 const placeSlice = createSlice({
@@ -17,6 +18,7 @@ const placeSlice = createSlice({
     placeTagList: [],
     checkedTagList: [],
     selectedCategory: Category.음식점,
+    placePage: 1,
   } as SliceState,
   reducers: {
     // Place List
@@ -59,8 +61,8 @@ const placeSlice = createSlice({
       state.placeTagList = [...newPlaceTagList];
     },
     addCheckedTag: (state, action: PayloadAction<Tag>) => {
-      const newTag = action.payload;
-      state.checkedTagList = [...state.checkedTagList, newTag];
+      const newTagList = [action.payload];
+      state.checkedTagList = newTagList;
     },
     deleteCheckedTag: (state, action: PayloadAction<Tag>) => {
       const deletedTag = action.payload;
@@ -74,6 +76,14 @@ const placeSlice = createSlice({
     selectCategory: (state, action: PayloadAction<Category>) => {
       const newCategory = action.payload;
       state.selectedCategory = newCategory;
+    },
+
+    // Page
+    increasePlacePage: state => {
+      state.placePage += 1;
+    },
+    resetPlacePage: state => {
+      state.placePage = 1;
     },
   },
 });
@@ -89,5 +99,7 @@ export const {
   setPlaceTagList,
   addCheckedTag,
   deleteCheckedTag,
+  increasePlacePage,
+  resetPlacePage,
   setPlaceCart,
 } = placeSlice.actions;

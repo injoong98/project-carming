@@ -58,7 +58,9 @@ const CarCallScreen: React.FC<CarCallScreenProps> = ({navigation, route}) => {
       pollingInterval: navigation.isFocused() ? 1000 : undefined,
     },
   );
-  const {data: globalPath} = useGetGlobalPathQuery();
+  const {data: globalPath} = useGetGlobalPathQuery(undefined, {
+    pollingInterval: navigation.isFocused() ? 1000 : undefined,
+  });
   const {data: isDestination} = useCheckIsDestinationQuery(undefined, {
     pollingInterval: navigation.isFocused() ? 1000 : undefined,
   });

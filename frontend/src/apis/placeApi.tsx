@@ -8,6 +8,8 @@ export interface PlaceSearch {
   regions: string[];
   category: Category;
   size: number;
+  page: number;
+  tagId?: number;
 }
 
 export const placeApi = createApi({
@@ -20,6 +22,17 @@ export const placeApi = createApi({
         url: '/',
         params: filter,
       }),
+      serializeQueryArgs: endpointName => {
+        const {category, tagId, regions} = endpointName.queryArgs;
+        const key = `${regions}${category}${tagId}`;
+        return key;
+      },
+      merge: (currentCache, newItems) => {
+        currentCache.push(...newItems);
+      },
+      forceRefetch: ({currentArg, previousArg}) => {
+        return currentArg?.page !== previousArg?.page;
+      },
       providesTags: ['Places'],
     }),
     getPopularPlaces: builder.query<Place[], void>({
