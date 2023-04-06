@@ -91,14 +91,14 @@ const HomeScreen = () => {
                 style={{
                   flex: 1,
                   width: '85%',
-                  marginTop: '0.5%',
-                  marginBottom: '4%',
+                  marginTop: '-1.5%',
+                  marginBottom: '2%',
                 }}>
                 <PlacePreCart
                   preCart={preCart}
                   iconColor="rgba(0, 0, 0, 0.6)"
                   componentStyle={{
-                    height: '100%',
+                    flex: 1,
                     width: '95%',
                     justifyContent: 'flex-start',
                   }}
