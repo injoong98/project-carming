@@ -1,44 +1,53 @@
 import {createApi} from '@reduxjs/toolkit/query/react';
-import {REACT_APP_API_URL} from '@env';
+import {REST_API_URL} from '@env';
 import customFetchBaseQuery from './customFetchBaseQuery';
 
-const apiUrl: string = REACT_APP_API_URL;
+const API_URL: string = REST_API_URL;
 
 export const memberRegistApi = createApi({
   reducerPath: 'memberRegistApi',
   baseQuery: customFetchBaseQuery({
-    baseUrl: `${apiUrl}/member`,
+    baseUrl: `${API_URL}/member`,
   }),
   endpoints: builder => ({
     signup: builder.mutation({
-      query: member => ({
-        url: '/signup',
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: member,
-      }),
+      query: member => {
+        console.log();
+        return {
+          url: '/signup',
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: member,
+        };
+      },
     }),
     verifyStart: builder.mutation({
-      query: phone => ({
-        url: '/valid-number/request',
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: phone,
-      }),
+      query: phone => {
+        console.log();
+        return {
+          url: '/valid-number/request',
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: phone,
+        };
+      },
     }),
     verify: builder.mutation({
-      query: phone => ({
-        url: '/valid-number/valid',
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: phone,
-      }),
+      query: phone => {
+        console.log();
+        return {
+          url: '/valid-number/valid',
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: phone,
+        };
+      },
     }),
   }),
 });
