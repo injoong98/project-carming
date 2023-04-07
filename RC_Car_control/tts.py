@@ -1,13 +1,11 @@
 """
-pip install playsound
+sudo apt-get install mpg123
 pip install google-tts
 pip install google-cloud-texttospeech
-
-export GOOGLE_APPLICATION_CREDENTIALS=="JSON파일의 경로"
 """
 
 # text-to-speech api로 텍스트 전달
-from playsound import playsound
+import subprocess
 import sys
 
 def synthesize_text(text):
@@ -38,7 +36,13 @@ def synthesize_text(text):
     with open("output.mp3", "wb") as out:
         out.write(response.audio_content)
         print('Audio content written to file "output.mp3"')
+    subprocess.call(["mpg123", "output.mp3"])
 
 
-    playsound("output.mp3")
+if __name__ == '__main__':
+    synthesize_text("카밍카입니다 ")
+
+
+
+    
 
