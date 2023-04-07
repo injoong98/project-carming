@@ -23,13 +23,19 @@ class SERVO_MOTOR:
     ## 조향 함수
     def steering(self, direction):        
         try:
-            if direction == -1:  ## left
+            if direction == -2:  ## left
                 self.pwm.ChangeDutyCycle(5.5)
+
+            elif direction == -1:  ## semi left
+                self.pwm.ChangeDutyCycle(6.25)
 
             elif direction == 0:  ## center
                 self.pwm.ChangeDutyCycle(7.75)
 
-            elif direction == 1:  ## right
+            elif direction == 1:  ## semi right
+                self.pwm.ChangeDutyCycle(8.5)
+
+            elif direction == 2:  ## right
                 self.pwm.ChangeDutyCycle(9)
 
             time.sleep(0.3)

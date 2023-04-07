@@ -3,28 +3,34 @@
 
 import rospy
 import rospkg
+import sys
+import os
+import numpy as np
+import json
 from math import cos, sin, pi, sqrt, pow, atan2
 from geometry_msgs.msg import Point, PoseWithCovarianceStamped
 from nav_msgs.msg import Odometry, Path
-from morai_msgs.msg import CtrlCmd, EgoVehicleStatus, ObjectStatusList
-import numpy as np
+from morai_msgs.msg import CtrlCmd, EgoVehicleStatus, ObjectStatusList, GetTrafficLightStatus
 import tf
 from tf.transformations import euler_from_quaternion, quaternion_from_euler
 from morai_msgs.msg import GPSMessage, EventInfo
 from std_msgs.msg import Float32MultiArray
-import os
 from pyproj import Proj
 import pyproj
 from morai_msgs.srv import MoraiEventCmdSrv
-import redis
-import json
-import os
 import time
+
+import redis
 
 redis_client = redis.Redis(host='j8a408.p.ssafy.io', port=6379, db=0, password='carming123')
 
 from enum import Enum
 
+# 파일의 상대 경로 출력
+current_path = os.path.dirname(os.path.realpath(__file__))
+sys.path.append(current_path)
+
+from lib.mgeo.class_defs import *
 
 # acc 는 차량의 Adaptive Cruise Control 예제입니다.
 # 차량 경로상의 장애물을 탐색하여 탐색된 차량과의 속도 차이를 계산하여 Cruise Control 을 진행합니다.
@@ -52,6 +58,17 @@ class pure_pursuit:
     def __init__(self):
         rospy.init_node('pure_pursuit', anonymous=True)
 
+        ## Mgeo data 읽어온 후 데이터 확인  R_KR_PR_Sangam_nobuildings , R_KR_PG_K-City
+        ### odom_callback보다 먼저 실행해야함
+        load_path = os.path.normpath(os.path.join(current_path, 'lib/mgeo_data/R_KR_PG_K-City'))
+        mgeo_planner_map = MGeo.create_instance_from_json(load_path)
+
+        node_set = mgeo_planner_map.node_set
+        link_set = mgeo_planner_map.link_set
+
+        self.nodes = node_set.nodes
+        self.links = link_set.lines
+
         # TODO: (1) Global/Local Path Odometry Object/Ego Status CtrlCmd subscriber, publisher 선언
         ## 값이 변함과 동시에 callback 함수 내에서 값이 변경
         rospy.Subscriber("/global_path", Path, self.global_path_callback)
@@ -59,6 +76,7 @@ class pure_pursuit:
         rospy.Subscriber("odom", Odometry, self.odom_callback)
         rospy.Subscriber("/Ego_topic", EgoVehicleStatus, self.status_callback)
         rospy.Subscriber("/Object_topic", ObjectStatusList, self.object_info_callback)
+        rospy.Subscriber("/GetTrafficLightStatus", GetTrafficLightStatus, self.traffic_info_callback)
         self.ctrl_cmd_pub = rospy.Publisher('ctrl_cmd', CtrlCmd, queue_size=1)
 
         ## 차량의 실시간 주행 좌표 받기
@@ -68,11 +86,12 @@ class pure_pursuit:
         self.ctrl_cmd_msg = CtrlCmd()
         self.ctrl_cmd_msg.longlCmdType = 1
 
+
         self.is_path = False
         self.is_odom = False
         self.is_status = False
         self.is_global_path = False
-
+        self.is_traffic_info = False
         self.is_look_forward_point = False
 
         self.forward_point = Point()
@@ -114,7 +133,7 @@ class pure_pursuit:
             ## 승차 확인 후에 안내 메세지가 끝났다면 주행 시작
             if self.get_in == b'1':
                 ## 안내메세지 10초 이후에 출발
-                time.slee(10)
+                time.sleep(10)
                 self.send_gear_cmd(Gear.D.value)
                 break
 
@@ -141,7 +160,7 @@ class pure_pursuit:
                 local_ped_info = result[3]
                 global_obs_info = result[4]
                 local_obs_info = result[5]
-
+                
                 ## 차량의 가속, 브레이크, 속도, 조향각 레디스에 저장
                 redis_client.set('current_acceleration', self.status_msg.acceleration.x)
                 redis_client.set('current_brake', self.status_msg.brake)
@@ -157,7 +176,7 @@ class pure_pursuit:
                 if self.is_look_forward_point:
                     self.ctrl_cmd_msg.steering = steering
                 else:
-                    rospy.loginfo("no found forward point")
+                    # rospy.loginfo("no found forward point")
                     self.ctrl_cmd_msg.steering = 0.0
 
                 # self.adaptive_cruise_control.check_object(self.path, local_obj, global_obj,current_traffic_light=[])
@@ -173,9 +192,28 @@ class pure_pursuit:
                 output = self.pid.pid(self.target_velocity, self.status_msg.velocity.x * 3.6)
 
                 if output > 0.0:
-                    self.ctrl_cmd_msg.accel = output
-                    self.ctrl_cmd_msg.brake = 0.0
+                    if self.is_traffic_info == True and (self.traffic_data.trafficLightStatus == 1 or self.traffic_data.trafficLightStatus == 33 or self.traffic_data.trafficLightStatus == 4):
+                        print("red")
+                        print("state", self.traffic_data.trafficLightStatus)
+                        self.stop_to_node = self.find_to_node()
+                        print(self.current_postion.y , self.current_postion.x)
+                        print(self.stop_to_node[1] , self.stop_to_node[0])
+                        if abs(self.current_postion.x - self.stop_to_node[0])<=1 and abs(self.current_postion.y - self.stop_to_node[1])<=1:
+                            self.ctrl_cmd_msg.accel = 0.0
+                            self.ctrl_cmd_msg.brake = 1.0
+                            print("brake")
+                            self.ctrl_cmd_pub.publish(self.ctrl_cmd_msg)
+                        self.is_traffic_info = False
+                    elif self.is_traffic_info == True:
+                        self.ctrl_cmd_msg.accel = output
+                        self.ctrl_cmd_msg.brake = 0.0
+                        print("state", self.traffic_data.trafficLightStatus)
+                        self.is_traffic_info = False
+                    elif self.is_traffic_info == False:
+                        self.ctrl_cmd_msg.accel = output
+                        self.ctrl_cmd_msg.brake = 0.0
                     ### redis_client.set('current_gear', 4)  ## 주행
+                    self.is_traffic_info = False
 
                 else:
                     self.ctrl_cmd_msg.accel = 0.0
@@ -189,6 +227,8 @@ class pure_pursuit:
                     os.system("pkill -9 -ef Adaptive_Cruise_Control.launch")
                     print("ok")
                     break
+
+                
 
             rate.sleep()
 
@@ -247,10 +287,53 @@ class pure_pursuit:
         self.is_object_info = True
         self.object_data = data
 
+    ## 신호등 정보
+    def traffic_info_callback(self, data):
+        self.is_traffic_info = True
+        self.traffic_data = data
+
+    def find_to_node(self):
+        ## 차량에서 가까운 노드 확인
+        xy_zone = self.proj_UTM(self.lon, self.lat)
+
+        x = xy_zone[0]-self.e_o
+        y = xy_zone[1]-self.n_o
+
+        min_dis = float('inf')
+        node_id = -1
+
+        to_x = 0
+        to_y = 0
+        from_x = 0
+        from_y = 0
+
+        for node_id, node in list(self.nodes.items()):
+            dx = node.point[0] - x
+            dy = node.point[1] - y
+            dist = sqrt(dx * dx + dy * dy)
+
+            if dist < min_dis:
+                min_dis = dist
+                node_id = node_id
+                from_x = node.point[0]
+                from_y = node.point[1]
+
+        self.nearest_node = node_id
+
+        for link_idx in self.links :
+            if self.links[link_idx].from_node.point[0] == from_x and self.links[link_idx].from_node.point[1] == from_y:
+                to_x = self.links[link_idx].to_node.point[0]
+                to_y = self.links[link_idx].to_node.point[1]
+                break
+                
+        
+        return [to_x, to_y]
+            
+
     def get_current_waypoint(self, ego_status, global_path):
         min_dist = float('inf')
         currnet_waypoint = 0
-
+        
         ego_pose_x = ego_status[0]
         ego_pose_y = ego_status[1]
         ########---------------------------------------

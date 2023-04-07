@@ -1,5 +1,4 @@
 import time
-import threading
 import os
 import sys
 import socket
@@ -12,7 +11,9 @@ import re
 import tts
 import serial
 
-ser = serial.Serial('/dev/ttyACM0', 9600, exclusive=True)
+ser = serial.Serial('/dev/ttyACM1', 9600, exclusive=True)
+## ls /dev/ttyA* 명령 입력해서 연결된 포트 확인하기
+## 통신 중에 프로그램이 종료될 경우, ACM뒤의 포트 번호가 계속 올라간다.
 
 class main():
     def __init__(self):
@@ -22,16 +23,16 @@ class main():
 
     ## redis에서 데이터 확인
     def run(self):
+        start_flag = 0
         redis_client = redis.StrictRedis(host='j8a408.p.ssafy.io', port=6379, db=0, password='carming123')
         
-        door_flag = 0
-        start_flag = 0
         try:
             while True:
+                door_flag = 0
                 ## 속도 b'1.4650933742523193' 형태로 출력
                 current_velocity = redis_client.get('current_velocity')
                 speed = re.findall(b'\d+', current_velocity)[0]  ### 정규식으로 바이트 문자열에서 숫자만 추출
-                speed = 5 * int(speed)  ## 모터의 출력율로 변환 (대충 20이하의 값이 나오므로 5배 처리)
+                speed = 7 * int(speed)  ## 모터의 출력율로 변환 (대충 20이하의 값이 나오므로 5배 처리)
 
                 wheel_angle = redis_client.get('wheel_angle')
                 wheel_angle = float(wheel_angle.decode())
@@ -39,50 +40,82 @@ class main():
                 ## 왼쪽 -
                 ## 오른쪽 +
                 ## 직진 0
-                if wheel_angle <= -10:
+                if wheel_angle <= -2:  ## left
                     num = 2
                     ser.write(num.to_bytes(1, 'little'))
-                    self.servo_motor.steering(-1)
-                    time.sleep(1)
+                    time.sleep(0.1)
+                    self.servo_motor.steering(-2)
+                    time.sleep(0.3)
 
-                elif wheel_angle >= 10:
+                elif wheel_angle >= 2:  ## right
                     num = 3
                     ser.write(num.to_bytes(1, 'little'))
+                    time.sleep(0.1)
+                    self.servo_motor.steering(2)
+                    time.sleep(0.3)
+
+                elif wheel_angle <= -1 and wheel_angle > -2:  ## semi left
+                    num = 2
+                    ser.write(num.to_bytes(1, 'little'))
+                    time.sleep(0.1)
+                    self.servo_motor.steering(-1)
+                    time.sleep(0.3)
+
+                elif wheel_angle >= 1 and wheel_angle < 2:  ## semi right
+                    num = 3
+                    ser.write(num.to_bytes(1, 'little'))
+                    time.sleep(0.1)
                     self.servo_motor.steering(1)
-                    time.sleep(1)
+                    time.sleep(0.3)
 
                 else:
                     num = 1
                     ser.write(num.to_bytes(1, 'little'))
+                    time.sleep(0.1)
                     self.servo_motor.steering(0)
-                    time.sleep(1)
+                    time.sleep(0.3)
 
             
                 
                 
                 get_in = redis_client.get('get_in')
                 is_destination = redis_client.get('is_destination')
+                #print('get_in : ', get_in)
+                #print('is_destination : ', is_destination)
                 
-                ## 탑승 완료
-                if get_in == '1' and start_flag == 0:
-                    tts.synthesize_text("안전벨트를 매주세요!... 출발하겠습니다~")
-                    start_flag = 1
-                    ## 주행 시작하면서 문열림 flag 초기화
-                    door_flag = 0
-                
-                ## 문열림 한 번만 하기 위해서 flag 사용
-                if is_destination == '1' and door_flag == 0:
-                    tts.synthesize_text("목적지에 도착하였습니다. 하차 준비를 하세요~")
-                    door_flag = 1
+                ## 차량이 사용자의 위치로 도착, 승차하기 전
+                ## 승차한 후 is_destination = 0, get_in = 1
+                if is_destination == b'1' and get_in == 0 and start_flag == 0:
                     num = 4
                     ser.write(num.to_bytes(1, 'little'))
-                    # 1분뒤에 문열림
-                    time.sleep(60)
+                    tts.synthesize_text("안녕하세요! 카밍카 입니다! 승차해 주세요!")
+                    # 10초 뒤에 문열림
+                    time.sleep(10)
                     openclose()
-                    
+                    start_flag = 1
+
+                ## 사용자가 탑승한 상황, 출발
+                if get_in == b'1':
+                    tts.synthesize_text("안전벨트를 매주세요!... 출발하겠습니다~")
+                    ## 주행 시작하면서 문열림 flag 초기화
+
+
+                
+                ## 사용자가 탑승한 차량이 목적지에 도착한 경우
+                if get_in == b'1' and is_destination == b'1' and door_flag == 0:
+                    num = 4
+                    ser.write(num.to_bytes(1, 'little'))
+                    tts.synthesize_text("목적지에 도착하였습니다. 하차 준비를 하세요~")
+                    door_flag = 1
+                    # 1분뒤에 문열림
+                    time.sleep(10)
+                    openclose()
+                    start_flag = 0
                             
                 self.dc_motor.drive(speed)  # DC_MOTOR 객체의 drive 함수 호출
                 
+                
+
                 ## 조향 자체가 어떻게 찍히는 지 확인해서 dutycycle 변수 입력
                 ##SERVO_MOTOR.steering(dutycycle)
 
