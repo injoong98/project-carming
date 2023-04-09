@@ -1,0 +1,36 @@
+spring:
+  config:
+    import: naver-sms-local.properties
+
+  datasource:
+    url: jdbc:h2:mem:test
+    driver-class-name: org.h2.Driver
+    username: sa
+    password:
+
+  redis:
+    host: localhost
+    port: 6379
+    password:
+
+  # ddl-auto: create -> Entity에 맞게 자동으로 테이블 및 필드 생성 [배포에선 사용 X]
+  # show-sql: true -> 해당하는 query를 보여줌 (JPA N + 1 문제 확인용) [배포에선 사용 X]
+  jpa:
+    hibernate:
+      ddl-auto: create
+    properties:
+      hibernate:
+        show_sql: true
+        format_sql: true
+
+  # paging index를 들어올 때 1부터 시작하는 설정
+  data:
+    web:
+      pageable:
+        one-indexed-parameters: true
+
+## naver-sms
+#key:
+#  service: ncp:sms:kr:297853391013:carming
+#  access: cAeEXzNhz9oRCqJJJlcr
+#  secret: lKl7HkNpeuwjP9U6W6FIZJxja5edE4mLMY4fFimj
